@@ -1,0 +1,108 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  background-color: var(--color-bg-secondary);
+  overflow: hidden;
+}
+
+.topbar {
+  height: 60px;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border-bottom: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+  z-index: 100;
+}
+
+.viewerContainer {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0;
+  padding-bottom: 100px; /* Space for the floating navigation */
+  overflow: auto;
+  position: relative;
+}
+
+@media (min-width: 768px) {
+  .viewerContainer {
+    padding: 2rem;
+    padding-bottom: 100px;
+  }
+}
+
+.pageWrapper {
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-width: 800px;
+  container-type: inline-size;
+  background-color: #fff;
+  margin: auto;
+  overflow: hidden;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+@media (min-width: 768px) {
+  .pageWrapper {
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
+  }
+}
+
+.navigation {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  padding: 10px 20px;
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--glass-border);
+  z-index: 100;
+}
+
+.navButton {
+  background: var(--color-white);
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-purple);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+}
+
+.navButton:hover:not(:disabled) {
+  background: var(--color-pink);
+  color: var(--color-white);
+  transform: translateY(-2px);
+}
+
+.navButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pageIndicator {
+  font-weight: 600;
+  color: var(--color-purple);
+  padding: 0 10px;
+}
