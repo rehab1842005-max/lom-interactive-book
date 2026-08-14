@@ -162,42 +162,7 @@ export default function StudentViewer({ styles }: { styles: any }) {
   };
 
   return (
-    <div className={styles.viewerContainer} style={{ paddingBottom: '100px' }}>
-      
-      <AnimatePresence>
-        {currentPage.pageVideoUrl && (
-          <motion.button 
-            initial={{ y: -50, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            onClick={handleMasterVideoClick}
-            style={{
-              position: 'fixed',
-              top: '20px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              background: 'var(--color-pink)',
-              color: 'white',
-              border: 'none',
-              borderRadius: '25px',
-              padding: '8px 20px',
-              fontSize: '1rem',
-              fontWeight: 'bold',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              boxShadow: '0 4px 15px rgba(255, 79, 163, 0.4)',
-              cursor: 'pointer',
-              zIndex: 99,
-              whiteSpace: 'nowrap'
-            }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <i className="fa-brands fa-youtube" style={{ fontSize: '1.2rem' }}></i> شرح الصفحة
-          </motion.button>
-        )}
-      </AnimatePresence>
-
+    <div className={styles.viewerContainer} style={{ paddingBottom: '180px' }}>
       <AnimatePresence mode="wait">
         <motion.div
           key={currentPage.id}
@@ -208,6 +173,36 @@ export default function StudentViewer({ styles }: { styles: any }) {
           className={styles.pageWrapper}
           style={{ containerType: 'inline-size' }}
         >
+          {/* Top Page Video Button (If available) */}
+          {currentPage.pageVideoUrl && (
+            <div style={{ display: 'flex', justifyContent: 'center', margin: '20px 0 15px 0' }}>
+              <motion.button 
+                initial={{ y: -20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                onClick={handleMasterVideoClick}
+                style={{
+                  background: 'var(--color-pink)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '25px',
+                  padding: '8px 20px',
+                  fontSize: '1.1rem',
+                  fontWeight: 'bold',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  boxShadow: '0 4px 15px rgba(255, 79, 163, 0.4)',
+                  cursor: 'pointer',
+                  zIndex: 99,
+                  whiteSpace: 'nowrap'
+                }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <i className="fa-brands fa-youtube" style={{ fontSize: '1.2rem' }}></i> شرح الصفحة
+              </motion.button>
+            </div>
+          )}
           {/* Container for Image and Zones to keep percentages accurate */}
           <div style={{ position: 'relative', width: '100%', lineHeight: 0 }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
