@@ -246,7 +246,7 @@ export default function StudentViewer({ styles }: { styles: any }) {
                   </svg>
                 ) : (
                   <div
-                    className="glass-zone-3d"
+                    className="pro-zone-3d"
                     style={{
                       width: '100%', height: '100%',
                       pointerEvents: 'auto',

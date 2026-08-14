@@ -464,38 +464,39 @@ body {
 }
 
 /* 3D Transparent Glass Zone (For Student Mode) */
-/* 3D Transparent Glass Zone (For Student Mode) - CLEAN ELEGANT GLASS */
-.glass-zone-3d {
-  background: rgba(255, 255, 255, 0.1); /* Very light glass tint */
+/* Highly Professional 3D Glass Zone */
+.pro-zone-3d {
+  background: rgba(255, 255, 255, 0.05); /* Extremely subtle fill */
   border-radius: 12px; 
   box-shadow: 
-    0 6px 0 rgba(255, 255, 255, 0.5), /* Clean, bright 3D edge instead of dark */
-    0 10px 15px rgba(0, 0, 0, 0.1), /* Soft, elegant drop shadow */
-    inset 0 2px 4px rgba(255, 255, 255, 0.6), /* Bright top highlight */
-    inset 0 -2px 4px rgba(255, 255, 255, 0.3); /* Bright bottom highlight */
-  border: 1px solid rgba(255, 255, 255, 0.6); /* Clean white border */
-  backdrop-filter: blur(1px); /* Just a tiny bit of blur to separate from background */
-  -webkit-backdrop-filter: blur(1px);
-  transition: all 0.1s cubic-bezier(0.25, 0.8, 0.25, 1);
+    0 4px 8px rgba(0, 0, 0, 0.12), /* Soft, natural drop shadow */
+    0 1px 3px rgba(0, 0, 0, 0.08), /* Base shadow */
+    inset 0 1px 1px rgba(255, 255, 255, 0.6), /* Sharp top edge light (3D volume) */
+    inset 0 -2px 4px rgba(0, 0, 0, 0.05); /* Soft bottom volume */
+  border: 1px solid rgba(255, 255, 255, 0.25); /* Fine, elegant border */
+  backdrop-filter: blur(2px); /* Very slight blur to unify with background */
+  -webkit-backdrop-filter: blur(2px);
+  transition: all 0.2s cubic-bezier(0.1, 0.7, 0.1, 1);
   cursor: pointer;
 }
 
-.glass-zone-3d:hover {
-  background: rgba(255, 255, 255, 0.2);
+.pro-zone-3d:hover {
+  background: rgba(255, 255, 255, 0.15); /* Slightly brighter on hover */
   box-shadow: 
-    0 6px 0 rgba(255, 255, 255, 0.6),
-    0 12px 20px rgba(0, 0, 0, 0.15),
-    inset 0 2px 6px rgba(255, 255, 255, 0.8),
-    inset 0 -2px 6px rgba(255, 255, 255, 0.4);
+    0 8px 16px rgba(0, 0, 0, 0.15),
+    0 2px 6px rgba(0, 0, 0, 0.1),
+    inset 0 1px 1px rgba(255, 255, 255, 0.8),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px); /* Professional subtle lift */
 }
 
-.glass-zone-3d:active {
-  transform: translateY(6px) !important; /* Move down the thickness */
+.pro-zone-3d:active {
+  transform: translateY(2px) !important; /* Gentle, realistic mechanical press */
   box-shadow: 
-    0 0px 0 rgba(255, 255, 255, 0.5), /* Thickness disappears */
-    0 2px 5px rgba(0, 0, 0, 0.1), /* Smaller drop shadow */
-    inset 0 4px 8px rgba(0, 0, 0, 0.1), /* Gentle inner shadow */
-    inset 0 -2px 4px rgba(255, 255, 255, 0.5); /* Bottom edge reflection */
+    0 1px 2px rgba(0, 0, 0, 0.1), /* Shadow flattens completely */
+    inset 0 3px 6px rgba(0, 0, 0, 0.1), /* Recessed inner shadow */
+    inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .panel-header {
