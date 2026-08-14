@@ -172,20 +172,20 @@ export default function StudentViewer({ styles }: { styles: any }) {
             onClick={handleMasterVideoClick}
             style={{
               position: 'fixed',
-              top: 'clamp(20px, 4vw, 30px)',
+              top: '20px',
               left: '50%',
               transform: 'translateX(-50%)',
-              background: '#ef4444',
+              background: 'var(--color-pink)',
               color: 'white',
               border: 'none',
               borderRadius: '25px',
-              padding: 'clamp(8px, 2vw, 12px) clamp(16px, 4vw, 25px)',
-              fontSize: 'clamp(0.9rem, 3vw, 1.1rem)',
+              padding: '8px 20px',
+              fontSize: '1rem',
               fontWeight: 'bold',
               display: 'flex',
               alignItems: 'center',
-              gap: '10px',
-              boxShadow: '0 4px 15px rgba(239, 68, 68, 0.4)',
+              gap: '8px',
+              boxShadow: '0 4px 15px rgba(255, 79, 163, 0.4)',
               cursor: 'pointer',
               zIndex: 99,
               whiteSpace: 'nowrap'
@@ -329,19 +329,19 @@ export default function StudentViewer({ styles }: { styles: any }) {
             onClick={() => setShowPageQuiz(true)}
             style={{
               position: 'fixed',
-              bottom: 'clamp(65px, 12vw, 85px)', // Above the navigation bar
+              bottom: '80px', // Right above the new flat bottom bar
               left: '50%',
               transform: 'translateX(-50%)',
               background: 'var(--color-pink)',
               color: 'white',
               border: 'none',
               borderRadius: '25px',
-              padding: 'clamp(8px, 2vw, 12px) clamp(16px, 4vw, 25px)',
-              fontSize: 'clamp(0.9rem, 3vw, 1.1rem)',
+              padding: '10px 24px',
+              fontSize: '1.05rem',
               fontWeight: 'bold',
               display: 'flex',
               alignItems: 'center',
-              gap: '10px',
+              gap: '8px',
               boxShadow: '0 4px 15px rgba(255, 79, 163, 0.4)',
               cursor: 'pointer',
               zIndex: 99,
@@ -356,28 +356,34 @@ export default function StudentViewer({ styles }: { styles: any }) {
       </AnimatePresence>
 
       <div className={styles.navigation} style={{ 
-        display: 'flex', gap: '10px', alignItems: 'center', justifyContent: 'center', padding: '10px 15px',
-        position: 'fixed', bottom: '10px', left: '50%', transform: 'translateX(-50%)',
-        background: 'var(--bg-header)', backdropFilter: 'blur(10px)',
-        borderRadius: '50px', boxShadow: '0 10px 25px rgba(0,0,0,0.2)', zIndex: 100,
-        width: 'max-content', maxWidth: '95%'
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 20px',
+        position: 'fixed', bottom: '0', left: '0', right: '0', width: '100%',
+        background: 'rgba(255, 255, 255, 0.95)', backdropFilter: 'blur(10px)',
+        borderTop: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 -4px 20px rgba(0,0,0,0.05)', zIndex: 100
       }}>
-        <button className={styles.navButton} onClick={handleNext} disabled={currentIndex === pages.length - 1} style={{ padding: '8px 15px', display: 'flex', gap: '5px', alignItems: 'center', background: 'var(--primary-color)', color: 'white', borderRadius: '25px', border: 'none', cursor: currentIndex === pages.length - 1 ? 'not-allowed' : 'pointer', opacity: currentIndex === pages.length - 1 ? 0.5 : 1, fontWeight: 'bold', fontSize: '0.9rem' }}>
+        {/* Right side: Previous (السابق) */}
+        <button onClick={handlePrev} disabled={currentIndex === 0} style={{ 
+          padding: '8px 16px', display: 'flex', gap: '8px', alignItems: 'center', 
+          background: 'transparent', color: 'var(--primary-color)', border: '2px solid var(--primary-color)', borderRadius: '25px', 
+          cursor: currentIndex === 0 ? 'not-allowed' : 'pointer', opacity: currentIndex === 0 ? 0.3 : 1, 
+          fontWeight: 'bold', fontSize: '0.95rem', transition: 'all 0.2s' 
+        }}>
+           <FaChevronRight /> <span>السابق</span>
+        </button>
+
+        {/* Center: Page indicator */}
+        <span style={{ fontWeight: 'bold', fontSize: '1.1rem', color: 'var(--text-secondary)' }}>
+          {currentIndex + 1} / {pages.length}
+        </span>
+
+        {/* Left side: Next (التالي) */}
+        <button onClick={handleNext} disabled={currentIndex === pages.length - 1} style={{ 
+          padding: '8px 16px', display: 'flex', gap: '8px', alignItems: 'center', 
+          background: 'var(--primary-color)', color: 'white', borderRadius: '25px', border: 'none', 
+          cursor: currentIndex === pages.length - 1 ? 'not-allowed' : 'pointer', opacity: currentIndex === pages.length - 1 ? 0.5 : 1, 
+          fontWeight: 'bold', fontSize: '0.95rem', transition: 'all 0.2s', boxShadow: '0 2px 8px rgba(255, 79, 163, 0.3)'
+        }}>
           <span>التالي</span> <FaChevronLeft />
-        </button>
-
-        <button onClick={() => window.scrollBy({ top: 300, behavior: 'smooth' })} style={{ background: 'var(--bg-surface-elevated)', border: '1px solid var(--border-color)', borderRadius: '50%', width: '35px', height: '35px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text-primary)' }} title="نزول لأسفل">
-          <i className="fa-solid fa-arrow-down"></i>
-        </button>
-        
-        <span className={styles.pageIndicator} style={{ fontWeight: 'bold', fontSize: '1rem', color: 'var(--text-primary)', margin: '0 2px' }}>{currentIndex + 1}/{pages.length}</span>
-
-        <button onClick={() => window.scrollBy({ top: -300, behavior: 'smooth' })} style={{ background: 'var(--bg-surface-elevated)', border: '1px solid var(--border-color)', borderRadius: '50%', width: '35px', height: '35px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text-primary)' }} title="صعود لأعلى">
-          <i className="fa-solid fa-arrow-up"></i>
-        </button>
-
-        <button className={styles.navButton} onClick={handlePrev} disabled={currentIndex === 0} style={{ padding: '8px 15px', display: 'flex', gap: '5px', alignItems: 'center', background: 'var(--primary-color)', color: 'white', borderRadius: '25px', border: 'none', cursor: currentIndex === 0 ? 'not-allowed' : 'pointer', opacity: currentIndex === 0 ? 0.5 : 1, fontWeight: 'bold', fontSize: '0.9rem' }}>
-          <FaChevronRight /> <span>السابق</span>
         </button>
       </div>
 
