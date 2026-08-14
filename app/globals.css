@@ -415,41 +415,44 @@ body {
   animation-delay: 1s;
 }
 
-/* 2026 Glass Icon Container - 3D Tactile Button */
+/* 2026 Glass Icon Container - 3D Mechanical Keyboard Button */
 .glass-icon-2026 {
-  background: linear-gradient(135deg, var(--color-pink), #FF85C2);
-  border-radius: 50%;
+  background: linear-gradient(180deg, #ff9ecd, #ff5e9f); /* Pink gradient */
+  border-radius: 16px; /* Squircle shape like a modern keycap */
   box-shadow: 
-    0 6px 0 #c21a69, /* 3D Bottom Thickness */
-    0 8px 15px rgba(255, 79, 163, 0.4), /* Drop Shadow */
-    inset 0 2px 4px rgba(255, 255, 255, 0.6); /* Inner Top Highlight */
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 2px solid #ffffff;
+    0 8px 0 #d12a76, /* Thick 3D bottom (the mechanical switch height) */
+    0 10px 10px rgba(0,0,0,0.3), /* Drop shadow below the key */
+    inset 0 4px 4px rgba(255, 255, 255, 0.7), /* Top glossy highlight */
+    inset 0 -2px 6px rgba(0, 0, 0, 0.2); /* Bottom inner shading */
+  border: 1px solid #ffbfe0;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
   position: relative;
-  overflow: visible; /* To allow glow/waves to expand outside */
-  transition: box-shadow 0.1s ease-out, transform 0.1s ease-out;
+  overflow: visible;
+  transition: all 0.05s ease-out; /* Ultra-fast transition for snappy mechanical feel */
 }
 
-/* Soft Glow Hover Effect */
+/* Hover State */
 .glass-icon-2026:hover {
+  background: linear-gradient(180deg, #ffb3d9, #ff7ab0);
   box-shadow: 
-    0 6px 0 #c21a69,
-    0 12px 25px rgba(255, 79, 163, 0.5),
-    inset 0 2px 4px rgba(255, 255, 255, 0.7);
+    0 8px 0 #d12a76,
+    0 12px 15px rgba(0,0,0,0.4),
+    inset 0 4px 4px rgba(255, 255, 255, 0.9),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.2);
 }
 
-/* Pressed/Active State */
+/* Pressed/Active State (Mechanical Press) */
 .glass-icon-2026:active {
+  transform: translateY(8px) !important; /* Move down physically by exactly the thickness */
   box-shadow: 
-    0 2px 0 #c21a69, /* Reduced thickness */
-    0 4px 8px rgba(255, 79, 163, 0.4),
-    inset 0 2px 4px rgba(255, 255, 255, 0.6);
-  transform: translateY(4px) !important; /* Move down physically to match the compressed shadow */
+    0 0px 0 #d12a76, /* 3D thickness completely disappears as it hits the bottom */
+    0 1px 2px rgba(0,0,0,0.3), /* Drop shadow minimizes */
+    inset 0 4px 8px rgba(0, 0, 0, 0.3), /* Invert inner shadow to show it's pressed in */
+    inset 0 -2px 2px rgba(255, 255, 255, 0.4);
+  background: linear-gradient(180deg, #ff5e9f, #ff9ecd); /* Invert gradient */
 }
 
 /* Radial Menu Item */
