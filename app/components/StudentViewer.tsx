@@ -206,7 +206,7 @@ export default function StudentViewer({ styles }: { styles: any }) {
           exit={{ opacity: 0, scale: 0.95 }}
           transition={{ duration: 0.3 }}
           className={styles.pageWrapper}
-          style={{ containerType: 'inline-size' }}
+          style={{ containerType: 'inline-size', marginBottom: '180px' }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img 
