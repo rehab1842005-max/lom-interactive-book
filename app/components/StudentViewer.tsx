@@ -208,12 +208,14 @@ export default function StudentViewer({ styles }: { styles: any }) {
           className={styles.pageWrapper}
           style={{ containerType: 'inline-size' }}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img 
-            src={currentPage.imageUrl} 
-            alt="Page" 
-            style={{ display: "block", width: "100%", height: "auto", userSelect: "none", WebkitUserSelect: "none" }}
-          />
+          {/* Container for Image and Zones to keep percentages accurate */}
+          <div style={{ position: 'relative', width: '100%', lineHeight: 0 }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img 
+              src={currentPage.imageUrl} 
+              alt="Page" 
+              style={{ display: "block", width: "100%", height: "auto", userSelect: "none", WebkitUserSelect: "none" }}
+            />
           
           {currentZones.map(zone => {
             return (
@@ -318,14 +320,16 @@ export default function StudentViewer({ styles }: { styles: any }) {
               </div>
             );
           })}
+          </div>
 
           {/* Bottom Spacer & Quiz Button */}
           <div style={{
             width: '100%',
-            height: '180px', // Provides scroll clearance for side buttons
+            height: '120px', // Provides scroll clearance for side buttons
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            paddingBottom: '20px'
           }}>
             {pages[currentIndex]?.questions && pages[currentIndex].questions!.length > 0 && (
               <motion.button 
@@ -339,12 +343,12 @@ export default function StudentViewer({ styles }: { styles: any }) {
                   color: 'white',
                   border: 'none',
                   borderRadius: '25px',
-                  padding: '12px 35px',
-                  fontSize: '1.2rem',
+                  padding: '8px 24px', // Smaller padding
+                  fontSize: '1rem', // Smaller font
                   fontWeight: 'bold',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '10px',
+                  gap: '8px',
                   boxShadow: '0 4px 15px rgba(255, 79, 163, 0.4)',
                   cursor: 'pointer'
                 }}
@@ -361,15 +365,17 @@ export default function StudentViewer({ styles }: { styles: any }) {
         onClick={handlePrev} 
         disabled={currentIndex === 0}
         style={{
-          position: 'fixed', right: '15px', top: '50%', transform: 'translateY(-50%)',
-          width: '50px', height: '50px', borderRadius: '50%',
+          position: 'fixed', right: '10px', top: '50%', transform: 'translateY(-50%)',
+          width: '40px', height: '40px', borderRadius: '50%',
           background: 'var(--color-pink)', color: 'white',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           border: 'none', boxShadow: '0 4px 15px rgba(255, 79, 163, 0.4)',
           zIndex: 100, cursor: currentIndex === 0 ? 'not-allowed' : 'pointer',
-          opacity: currentIndex === 0 ? 0.2 : 0.85,
-          fontSize: '1.3rem', transition: 'all 0.2s'
+          opacity: currentIndex === 0 ? 0.2 : 0.6,
+          fontSize: '1.2rem', transition: 'all 0.2s'
         }}
+        onMouseEnter={(e) => { if(currentIndex !== 0) e.currentTarget.style.opacity = '0.9'; }}
+        onMouseLeave={(e) => { if(currentIndex !== 0) e.currentTarget.style.opacity = '0.6'; }}
       >
         <FaChevronRight />
       </button>
@@ -379,15 +385,17 @@ export default function StudentViewer({ styles }: { styles: any }) {
         onClick={handleNext} 
         disabled={currentIndex === pages.length - 1}
         style={{
-          position: 'fixed', left: '15px', top: '50%', transform: 'translateY(-50%)',
-          width: '50px', height: '50px', borderRadius: '50%',
+          position: 'fixed', left: '10px', top: '50%', transform: 'translateY(-50%)',
+          width: '40px', height: '40px', borderRadius: '50%',
           background: 'var(--color-pink)', color: 'white',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           border: 'none', boxShadow: '0 4px 15px rgba(255, 79, 163, 0.4)',
           zIndex: 100, cursor: currentIndex === pages.length - 1 ? 'not-allowed' : 'pointer',
-          opacity: currentIndex === pages.length - 1 ? 0.2 : 0.85,
-          fontSize: '1.3rem', transition: 'all 0.2s'
+          opacity: currentIndex === pages.length - 1 ? 0.2 : 0.6,
+          fontSize: '1.2rem', transition: 'all 0.2s'
         }}
+        onMouseEnter={(e) => { if(currentIndex !== pages.length - 1) e.currentTarget.style.opacity = '0.9'; }}
+        onMouseLeave={(e) => { if(currentIndex !== pages.length - 1) e.currentTarget.style.opacity = '0.6'; }}
       >
         <FaChevronLeft />
       </button>
