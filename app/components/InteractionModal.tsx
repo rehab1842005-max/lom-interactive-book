@@ -186,7 +186,7 @@ export default function InteractionModal({ zone, onClose }: { zone: Zone; onClos
       justifyContent: "center",
       zIndex: 1000
     }}>
-      <div className="glass-panel" style={{ padding: "2rem", width: "400px", maxWidth: "90%", maxHeight: "90vh", overflowY: "auto" }}>
+      <div style={{ background: "#ffffff", padding: "2rem", width: "400px", maxWidth: "90%", maxHeight: "90vh", overflowY: "auto", borderRadius: "12px", boxShadow: "0 10px 30px rgba(0,0,0,0.5)" }}>
         <h3 style={{ marginBottom: "1.5rem", color: "var(--color-purple)" }}>إعدادات المنطقة: {name}</h3>
         
         <div style={{ display: "flex", flexDirection: "column", gap: "1rem", marginBottom: "2rem" }}>
