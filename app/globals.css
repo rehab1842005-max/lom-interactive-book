@@ -464,50 +464,46 @@ body {
 }
 
 /* 3D Transparent Glass Zone (For Student Mode) */
-/* Pure Invisible 3D Button (3D thickness only, NO drop shadows, NO white colors) */
+/* Pure Invisible 3D Button (Flat but interactive) */
 .invisible-btn-3d {
   background: transparent; 
   border-radius: 12px; 
   border: none; 
-  /* 0 blur radius = solid thickness. Increased to 20px to make it massively prominent */
-  box-shadow: 0 20px 0 rgba(255, 107, 157, 0.35); /* Light pink 3D thickness */
+  box-shadow: none; 
   cursor: pointer;
-  transition: all 0.1s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-.invisible-btn-3d[data-bottom-label]::after {
-  content: attr(data-bottom-label);
-  position: absolute;
-  bottom: -20px;
-  left: 0;
-  width: 100%;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 2px;
-  pointer-events: none;
-  opacity: 1;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.15);
   transition: all 0.1s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .invisible-btn-3d:hover {
   background: transparent;
-  box-shadow: 0 20px 0 rgba(255, 107, 157, 0.5); 
+  box-shadow: none; 
 }
 
 .invisible-btn-3d:active {
-  transform: translateY(20px) !important; /* Moves down exactly the depth of the new thickness */
+  transform: scale(0.98) !important; 
+  backdrop-filter: brightness(0.85);
   background: transparent;
-  box-shadow: 0 0px 0 rgba(255, 107, 157, 0.35); /* Thickness disappears into the page */
+  box-shadow: none; 
 }
 
-.invisible-btn-3d:active::after {
-  opacity: 0;
+.video-pill-3d {
+  background: white;
+  color: var(--primary-color);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 0 rgba(255, 107, 157, 0.4), 0 8px 15px rgba(0,0,0,0.15);
+  border: 1px solid rgba(255, 107, 157, 0.2);
+  transition: all 0.2s ease;
+}
+
+.video-pill-3d i {
+  color: var(--primary-color);
+  font-size: 1.1em;
 }
 
 .panel-header {

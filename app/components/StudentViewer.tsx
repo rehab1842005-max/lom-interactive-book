@@ -247,7 +247,6 @@ export default function StudentViewer({ styles }: { styles: any }) {
                 ) : (
                   <div
                     className="invisible-btn-3d"
-                    data-bottom-label={(zone.interactionTypes?.includes('video') || zone.interactionType === 'video' || !!zone.content?.videoUrl) ? "VIDEO" : undefined}
                     style={{
                       width: '100%', height: '100%',
                       pointerEvents: 'auto',
@@ -270,29 +269,44 @@ export default function StudentViewer({ styles }: { styles: any }) {
                     cx = zone.polygonPoints.reduce((sum, p) => sum + p.x, 0) / zone.polygonPoints.length;
                     cy = zone.polygonPoints.reduce((sum, p) => sum + p.y, 0) / zone.polygonPoints.length;
                   }
-                  const isVideo = !!zone.content?.videoUrl;
 
                   return (
-                    <div style={{ 
-                      position: 'absolute', 
-                      top: `${cy}%`, 
-                      left: `${cx}%`, 
-                      transform: 'translate(-50%, -50%)', 
-                      pointerEvents: 'none',
-                      zIndex: 20
-                    }}>
-                      {/* The pink video icon/text was removed here to prevent clutter (زحمة) on top of the original artwork */}
-                      
-                      {zone.showIcon && (
-                        <div style={{ pointerEvents: 'auto' }}>
-                          <ZoneInteractiveIcon 
-                            zone={zone} 
-                            onClick={() => handleZoneClick(zone)} 
-                            isPlayingAudio={playingAudioId === zone.id}
-                          />
+                    <>
+                      <div style={{ 
+                        position: 'absolute', 
+                        top: `${cy}%`, 
+                        left: `${cx}%`, 
+                        transform: 'translate(-50%, -50%)', 
+                        pointerEvents: 'none',
+                        zIndex: 20
+                      }}>
+                        {zone.showIcon && (
+                          <div style={{ pointerEvents: 'auto' }}>
+                            <ZoneInteractiveIcon 
+                              zone={zone} 
+                              onClick={() => handleZoneClick(zone)} 
+                              isPlayingAudio={playingAudioId === zone.id}
+                            />
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Video Pill */}
+                      {(zone.interactionTypes?.includes('video') || zone.interactionType === 'video' || !!zone.content?.videoUrl) && (
+                        <div style={{ 
+                          position: 'absolute', 
+                          bottom: '8px', 
+                          left: '50%', 
+                          transform: 'translateX(-50%)', 
+                          pointerEvents: 'none',
+                          zIndex: 20
+                        }}>
+                          <div className="video-pill-3d">
+                            <i className="fa-solid fa-play"></i> فيديو
+                          </div>
                         </div>
                       )}
-                    </div>
+                    </>
                   );
                 })()}
               </div>
