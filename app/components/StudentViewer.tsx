@@ -279,14 +279,7 @@ export default function StudentViewer({ styles }: { styles: any }) {
                       pointerEvents: 'none',
                       zIndex: 20
                     }}>
-                      {isVideo && (
-                        <div style={{ position: 'absolute', transform: 'translate(-50%, -100%)', marginTop: 'clamp(-10px, -2vw, -20px)', display: 'flex', flexDirection: 'column', alignItems: 'center', pointerEvents: 'none', zIndex: 21 }}>
-                          <span style={{ fontFamily: 'var(--font-arabic)', color: '#ff4fa3', fontWeight: 'bold', fontSize: 'clamp(10px, 2.5vw, 16px)', textShadow: '1px 1px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff', background: 'rgba(255,255,255,0.8)', padding: '2px 6px', borderRadius: '8px' }}>فيديو</span>
-                          <svg style={{ width: 'clamp(20px, 4vw, 35px)', height: 'clamp(20px, 4vw, 35px)', transform: 'rotate(-10deg)', marginTop: '2px' }} viewBox="0 0 100 100">
-                            <path d="M 80 10 Q 40 20 20 80 M 20 80 L 10 55 M 20 80 L 45 70" stroke="#ff4fa3" strokeWidth="12" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-                          </svg>
-                        </div>
-                      )}
+                      {/* The pink video icon/text was removed here to prevent clutter (زحمة) on top of the original artwork */}
                       
                       {zone.showIcon && (
                         <div style={{ pointerEvents: 'auto' }}>

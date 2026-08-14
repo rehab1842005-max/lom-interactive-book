@@ -464,23 +464,38 @@ body {
 }
 
 /* 3D Transparent Glass Zone (For Student Mode) */
-/* Completely Invisible Zone (Lets the original image artwork show perfectly) */
+/* Physical 3D Transparent Block (Sits perfectly over custom artwork) */
 .pro-zone-3d {
   background: transparent;
-  border: none;
-  box-shadow: none;
+  border-radius: 12px; 
+  /* Add thick 3D clear edges so the block ITSELF is prominent (بارز) */
+  box-shadow: 
+    0 6px 0 rgba(0, 0, 0, 0.15), /* Thick physical bottom edge */
+    0 8px 15px rgba(0, 0, 0, 0.2), /* Drop shadow */
+    inset 0 2px 4px rgba(255, 255, 255, 0.5), /* Top glass highlight */
+    inset 0 -2px 4px rgba(0, 0, 0, 0.1); /* Bottom glass shading */
+  border: 1px solid rgba(255, 255, 255, 0.3); /* Subtle clear border */
   cursor: pointer;
-  transition: background 0.2s ease;
-  border-radius: 12px;
+  transition: all 0.1s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .pro-zone-3d:hover {
-  background: rgba(255, 255, 255, 0.15); /* Very subtle brightening on hover */
+  background: rgba(255, 255, 255, 0.1); /* Slight brighten on hover */
+  box-shadow: 
+    0 6px 0 rgba(0, 0, 0, 0.2),
+    0 10px 20px rgba(0, 0, 0, 0.25),
+    inset 0 2px 6px rgba(255, 255, 255, 0.7),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.15);
 }
 
 .pro-zone-3d:active {
-  background: rgba(0, 0, 0, 0.1); /* Subtle darkening on press */
-  transform: scale(0.98); /* Slight shrink effect instead of 3D move, since we can't move the background image */
+  transform: translateY(6px) !important; /* The physical block moves down! */
+  background: rgba(0, 0, 0, 0.05); /* Slight darken on press */
+  box-shadow: 
+    0 0px 0 rgba(0, 0, 0, 0.15), /* Thickness disappears */
+    0 2px 4px rgba(0, 0, 0, 0.1), /* Small drop shadow */
+    inset 0 4px 8px rgba(0, 0, 0, 0.2), /* Deep inner shadow */
+    inset 0 -1px 2px rgba(255, 255, 255, 0.3);
 }
 
 .panel-header {
