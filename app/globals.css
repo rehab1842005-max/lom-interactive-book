@@ -495,21 +495,22 @@ body {
 .video-pill-3d {
   background: white;
   color: var(--primary-color);
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 0.95rem;
-  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
   display: flex;
   align-items: center;
-  gap: 8px;
-  box-shadow: 0 4px 0 rgba(255, 107, 157, 0.4), 0 8px 15px rgba(0,0,0,0.15);
+  gap: 6px;
+  /* Thin shadow to match the 3px dashed line thickness */
+  box-shadow: 0 2px 0 rgba(255, 107, 157, 0.4), 0 4px 10px rgba(0,0,0,0.1);
   border: 1px solid rgba(255, 107, 157, 0.2);
   transition: all 0.2s ease;
 }
 
 .video-pill-3d i {
   color: var(--primary-color);
-  font-size: 1.1em;
+  font-size: 0.9em;
 }
 
 .panel-header {
