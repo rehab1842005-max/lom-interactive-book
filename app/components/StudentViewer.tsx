@@ -245,19 +245,12 @@ export default function StudentViewer({ styles }: { styles: any }) {
                     />
                   </svg>
                 ) : (
-                  <motion.div
-                    whileTap={{ 
-                      scale: 0.95, 
-                      y: 4, 
-                      boxShadow: "inset 0px 4px 8px rgba(0,0,0,0.4)", 
-                      backgroundColor: "rgba(0,0,0,0.1)" 
-                    }}
+                  <div
+                    className="glass-zone-3d"
                     style={{
                       width: '100%', height: '100%',
-                      pointerEvents: 'auto', cursor: 'pointer',
-                      borderRadius: zone.shape === 'circle' ? "50%" : "8px",
-                      backgroundColor: rippleId === zone.id ? "rgba(255, 79, 163, 0.4)" : "transparent",
-                      transition: "background-color 0.2s ease"
+                      pointerEvents: 'auto',
+                      borderRadius: zone.shape === 'circle' ? "50%" : "12px",
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
