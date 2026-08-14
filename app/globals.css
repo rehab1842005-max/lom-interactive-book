@@ -415,25 +415,41 @@ body {
   animation-delay: 1s;
 }
 
-/* 2026 Glass Icon Container */
+/* 2026 Glass Icon Container - 3D Tactile Button */
 .glass-icon-2026 {
   background: linear-gradient(135deg, var(--color-pink), #FF85C2);
   border-radius: 50%;
-  box-shadow: 0 8px 32px rgba(255, 79, 163, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.5);
+  box-shadow: 
+    0 6px 0 #c21a69, /* 3D Bottom Thickness */
+    0 8px 15px rgba(255, 79, 163, 0.4), /* Drop Shadow */
+    inset 0 2px 4px rgba(255, 255, 255, 0.6); /* Inner Top Highlight */
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 2px solid #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
   position: relative;
   overflow: visible; /* To allow glow/waves to expand outside */
+  transition: box-shadow 0.1s ease-out, transform 0.1s ease-out;
 }
 
 /* Soft Glow Hover Effect */
 .glass-icon-2026:hover {
-  box-shadow: 0 10px 40px rgba(255, 79, 163, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.6);
+  box-shadow: 
+    0 6px 0 #c21a69,
+    0 12px 25px rgba(255, 79, 163, 0.5),
+    inset 0 2px 4px rgba(255, 255, 255, 0.7);
+}
+
+/* Pressed/Active State */
+.glass-icon-2026:active {
+  box-shadow: 
+    0 2px 0 #c21a69, /* Reduced thickness */
+    0 4px 8px rgba(255, 79, 163, 0.4),
+    inset 0 2px 4px rgba(255, 255, 255, 0.6);
+  transform: translateY(4px) !important; /* Move down physically to match the compressed shadow */
 }
 
 /* Radial Menu Item */

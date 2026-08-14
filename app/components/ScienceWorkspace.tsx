@@ -50,7 +50,7 @@ export default function ScienceWorkspace() {
           </label>
         </div>
 
-          <div className="canvas-tools-group" style={{ display: 'flex', gap: '10px', alignItems: 'center', background: '#fff', padding: '5px 10px', borderRadius: '8px', border: '3px solid red' }}>
+          <div className="canvas-tools-group" style={{ display: 'flex', gap: '10px', alignItems: 'center', background: '#f8fafc', padding: '5px 10px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
               <i className="fa-brands fa-youtube" style={{ color: '#ef4444', fontSize: '20px' }}></i>
               <input 

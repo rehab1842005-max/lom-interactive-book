@@ -37,8 +37,7 @@ export default function ZoneInteractiveIcon({ zone, onClick, isPlayingAudio, for
       className="glass-icon-2026"
       initial={{ scale: 0, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
-      whileHover={{ scale: 1.1 }}
-      whileTap={{ scale: 0.9 }}
+      whileHover={{ scale: 1.05 }}
       transition={{ type: "spring", stiffness: 400, damping: 15 }}
       style={{
         width: "60px",
