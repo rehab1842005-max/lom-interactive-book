@@ -299,18 +299,18 @@ export default function StudentViewer({ styles }: { styles: any }) {
             exit={{ y: 50, opacity: 0, x: '-50%' }}
             style={{
               position: 'fixed',
-              bottom: '20px',
+              bottom: '15px',
               left: '50%',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '8px',
-              padding: '8px 15px',
+              gap: '6px',
+              padding: '6px 12px',
               background: 'rgba(255, 255, 255, 0.85)',
               backdropFilter: 'blur(15px)',
               WebkitBackdropFilter: 'blur(15px)',
               border: '1px solid rgba(255, 79, 163, 0.2)',
-              borderRadius: '30px',
+              borderRadius: '25px',
               boxShadow: '0 8px 20px rgba(255, 79, 163, 0.15), 0 4px 10px rgba(0,0,0,0.05)',
               zIndex: 100,
             }}
@@ -323,27 +323,27 @@ export default function StudentViewer({ styles }: { styles: any }) {
                   background: 'transparent',
                   color: 'var(--color-pink)',
                   border: 'none',
-                  padding: '4px 8px',
-                  fontSize: '0.95rem',
+                  padding: '2px 6px',
+                  fontSize: '0.85rem',
                   fontWeight: 'bold',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '5px',
+                  gap: '4px',
                   cursor: 'pointer',
-                  borderRadius: '20px',
+                  borderRadius: '15px',
                   transition: 'background 0.2s',
                 }}
                 whileHover={{ backgroundColor: 'rgba(255, 79, 163, 0.1)' }}
                 whileTap={{ scale: 0.95 }}
               >
-                <i className="fa-brands fa-youtube" style={{ fontSize: '1.2rem' }}></i> 
+                <i className="fa-brands fa-youtube" style={{ fontSize: '1rem' }}></i> 
                 <span>شرح الصفحة</span>
               </motion.button>
             )}
 
             {/* Divider if both exist */}
             {currentPage.pageVideoUrl && (pages[currentIndex]?.questions && pages[currentIndex].questions!.length > 0) && (
-              <div style={{ width: '1px', height: '20px', background: 'rgba(255, 79, 163, 0.2)' }} />
+              <div style={{ width: '1px', height: '16px', background: 'rgba(255, 79, 163, 0.2)' }} />
             )}
 
             {/* Quiz Button inside Dock */}
@@ -354,13 +354,13 @@ export default function StudentViewer({ styles }: { styles: any }) {
                   background: 'linear-gradient(90deg, #ff4fa3, #ff7eb3)',
                   color: 'white',
                   border: 'none',
-                  borderRadius: '20px',
-                  padding: '6px 15px',
-                  fontSize: '0.95rem',
+                  borderRadius: '15px',
+                  padding: '4px 12px',
+                  fontSize: '0.85rem',
                   fontWeight: 'bold',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '6px',
+                  gap: '4px',
                   cursor: 'pointer',
                   boxShadow: '0 4px 10px rgba(255, 79, 163, 0.3)',
                 }}
