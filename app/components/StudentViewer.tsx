@@ -291,19 +291,25 @@ export default function StudentViewer({ styles }: { styles: any }) {
                         )}
                       </div>
 
-                      {/* Video Pill */}
+                      {/* Video Label inside the 3px shadow */}
                       {(zone.interactionTypes?.includes('video') || zone.interactionType === 'video' || !!zone.content?.videoUrl) && (
-                        <div style={{ 
+                        <div className="zone-shadow-text" style={{ 
                           position: 'absolute', 
-                          top: '10px', 
-                          left: '50%',
-                          transform: 'translateX(-50%)',
+                          bottom: '-3px', /* Sit exactly where the 3px shadow is */
+                          left: '0',
+                          width: '100%',
+                          height: '3px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
                           pointerEvents: 'none',
-                          zIndex: 20
+                          zIndex: 20,
+                          color: '#fff', /* White text stands out on the pink shadow */
+                          fontSize: '8px', /* Very small */
+                          fontWeight: '400', /* Thin */
+                          letterSpacing: '1px'
                         }}>
-                          <div className="video-pill-3d">
-                            <i className="fa-solid fa-play"></i> فيديو
-                          </div>
+                          فيديو
                         </div>
                       )}
                     </>

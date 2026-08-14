@@ -486,31 +486,9 @@ body {
   box-shadow: 0 0px 0 rgba(255, 107, 157, 0.4); /* Thickness disappears into the page */
 }
 
-/* Move the video pill down with the button when pressed */
-.invisible-btn-3d:active ~ div .video-pill-3d {
-  transform: translateY(3px);
-  box-shadow: 0 0px 0 rgba(255, 107, 157, 0.4); /* Make the pill's shadow disappear too */
-}
-
-.video-pill-3d {
-  background: white;
-  color: var(--primary-color);
-  padding: 3px 10px;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  /* Thin shadow to match the 3px dashed line thickness */
-  box-shadow: 0 2px 0 rgba(255, 107, 157, 0.4), 0 4px 10px rgba(0,0,0,0.1);
-  border: 1px solid rgba(255, 107, 157, 0.2);
-  transition: all 0.2s ease;
-}
-
-.video-pill-3d i {
-  color: var(--primary-color);
-  font-size: 0.9em;
+/* Hide the video text when the 3D thickness disappears */
+.invisible-btn-3d:active ~ .zone-shadow-text {
+  opacity: 0;
 }
 
 .panel-header {
