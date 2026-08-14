@@ -92,7 +92,7 @@ export default function QuestionBuilderModal({
           {/* Right Column: Basic settings & Question content */}
           <div style={{ flex: 2, display: 'flex', flexDirection: 'column', gap: '20px' }}>
             <div>
-              <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>نوع السؤال</label>
+              <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '8px', color: 'var(--text-color, #e2e8f0)' }}>نوع السؤال</label>
               <select 
                 value={q.type} 
                 onChange={e => setQ({ ...q, type: e.target.value as QuestionType, options: e.target.value === 'tf' ? ['صح', 'خطأ'] : [] })}
@@ -109,7 +109,7 @@ export default function QuestionBuilderModal({
             </div>
 
             <div>
-              <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>نص السؤال</label>
+              <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '8px', color: 'var(--text-color, #e2e8f0)' }}>نص السؤال</label>
               <textarea 
                 rows={3}
                 value={q.title} 
@@ -121,7 +121,7 @@ export default function QuestionBuilderModal({
 
             {(q.type === 'audio_q' || q.type === 'video_q') && (
               <div>
-                <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>{q.type === 'audio_q' ? 'رابط الصوت' : 'رابط الفيديو (YouTube)'}</label>
+                <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '8px', color: 'var(--text-color, #e2e8f0)' }}>{q.type === 'audio_q' ? 'رابط الصوت' : 'رابط الفيديو (YouTube)'}</label>
                 <div style={{ display: 'flex', gap: '10px' }}>
                   <input 
                     type="url" 
@@ -149,7 +149,7 @@ export default function QuestionBuilderModal({
             {/* Options Builder for MCQ / MultiSelect */}
             {(q.type === 'mcq' || q.type === 'multiselect' || q.type === 'audio_q' || q.type === 'video_q') && (
               <div style={{ background: 'var(--bg-surface)', padding: '15px', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
-                <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '15px' }}>الخيارات وتحديد الإجابة الصحيحة</label>
+                <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '15px', color: 'var(--text-color, #e2e8f0)' }}>الخيارات وتحديد الإجابة الصحيحة</label>
                 
                 {q.options?.map((opt, idx) => (
                   <div key={idx} style={{ display: 'flex', gap: '10px', marginBottom: '10px', alignItems: 'center' }}>
@@ -191,7 +191,7 @@ export default function QuestionBuilderModal({
             {/* True/False Settings */}
             {q.type === 'tf' && (
               <div style={{ background: 'var(--bg-surface)', padding: '15px', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
-                <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '15px' }}>الإجابة الصحيحة</label>
+                <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '15px', color: 'var(--text-color, #e2e8f0)' }}>الإجابة الصحيحة</label>
                 <div style={{ display: 'flex', gap: '20px' }}>
                   <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '18px' }}>
                     <input type="radio" name="tfAnswer" checked={q.correctAnswer === 'صح'} onChange={() => setQ({ ...q, correctAnswer: 'صح' })} style={{ width: '20px', height: '20px' }} /> صح
@@ -206,7 +206,7 @@ export default function QuestionBuilderModal({
             {/* Text Answer Settings */}
             {q.type === 'text' && (
               <div style={{ background: 'var(--bg-surface)', padding: '15px', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
-                <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '10px' }}>الإجابة الصحيحة المقبولة</label>
+                <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '10px', color: 'var(--text-color, #e2e8f0)' }}>الإجابة الصحيحة المقبولة</label>
                 <input 
                   type="text" 
                   value={q.correctAnswer as string} 
@@ -229,7 +229,7 @@ export default function QuestionBuilderModal({
           {/* Left Column: Advanced settings */}
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '20px', borderRight: '1px solid var(--border-color)', paddingRight: '20px' }}>
             <div>
-              <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>الدرجة (النقاط)</label>
+              <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '8px', color: 'var(--text-color, #e2e8f0)' }}>الدرجة (النقاط)</label>
               <input 
                 type="number" 
                 min="1"
@@ -240,7 +240,7 @@ export default function QuestionBuilderModal({
             </div>
             
             <div>
-              <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>عدد المحاولات المسموحة</label>
+              <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '8px', color: 'var(--text-color, #e2e8f0)' }}>عدد المحاولات المسموحة</label>
               <input 
                 type="number" 
                 min="1"
@@ -252,7 +252,7 @@ export default function QuestionBuilderModal({
 
             {(q.type === 'mcq' || q.type === 'multiselect' || q.type === 'audio_q' || q.type === 'video_q') && (
               <div>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', fontWeight: 'bold' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', fontWeight: 'bold', color: 'var(--text-color, #e2e8f0)' }}>
                   <input type="checkbox" checked={q.randomizeOptions} onChange={e => setQ({ ...q, randomizeOptions: e.target.checked })} style={{ width: '18px', height: '18px' }} />
                   ترتيب الخيارات عشوائياً للطالب
                 </label>
@@ -260,14 +260,14 @@ export default function QuestionBuilderModal({
             )}
 
             <div>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', fontWeight: 'bold' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', fontWeight: 'bold', color: 'var(--text-color, #e2e8f0)' }}>
                 <input type="checkbox" checked={q.showAnswer} onChange={e => setQ({ ...q, showAnswer: e.target.checked })} style={{ width: '18px', height: '18px' }} />
                 إظهار الإجابة الصحيحة بعد استنفاد المحاولات
               </label>
             </div>
 
             <div>
-              <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '8px', color: '#155724' }}>رسالة الإجابة الصحيحة</label>
+              <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '8px', color: '#4ade80' }}>رسالة الإجابة الصحيحة</label>
               <textarea 
                 rows={2}
                 value={q.successMessage} 
@@ -277,7 +277,7 @@ export default function QuestionBuilderModal({
             </div>
 
             <div>
-              <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '8px', color: '#721c24' }}>رسالة الإجابة الخاطئة</label>
+              <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '8px', color: '#f87171' }}>رسالة الإجابة الخاطئة</label>
               <textarea 
                 rows={2}
                 value={q.errorMessage} 
