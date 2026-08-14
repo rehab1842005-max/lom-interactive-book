@@ -351,23 +351,24 @@ export default function StudentViewer({ styles }: { styles: any }) {
               <motion.button 
                 onClick={() => setShowPageQuiz(true)}
                 style={{
-                  background: 'linear-gradient(90deg, #ff4fa3, #ff7eb3)',
-                  color: 'white',
+                  background: 'transparent',
+                  color: 'var(--color-pink)',
                   border: 'none',
-                  borderRadius: '15px',
-                  padding: '4px 12px',
+                  padding: '2px 6px',
                   fontSize: '0.85rem',
                   fontWeight: 'bold',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '4px',
                   cursor: 'pointer',
-                  boxShadow: '0 4px 10px rgba(255, 79, 163, 0.3)',
+                  borderRadius: '15px',
+                  transition: 'background 0.2s',
                 }}
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ backgroundColor: 'rgba(255, 79, 163, 0.1)' }}
                 whileTap={{ scale: 0.95 }}
               >
-                اختبر نفسك <FaClipboardCheck />
+                <span>اختبر نفسك</span>
+                <FaClipboardCheck style={{ fontSize: '1rem' }} />
               </motion.button>
             )}
           </motion.div>
