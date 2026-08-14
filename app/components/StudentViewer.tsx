@@ -162,7 +162,7 @@ export default function StudentViewer({ styles }: { styles: any }) {
   };
 
   return (
-    <div className={styles.viewerContainer} style={{ paddingBottom: '180px' }}>
+    <div className={styles.viewerContainer} style={{ paddingBottom: '40px' }}>
       <AnimatePresence mode="wait">
         <motion.div
           key={currentPage.id}
