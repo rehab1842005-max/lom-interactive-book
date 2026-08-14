@@ -246,7 +246,7 @@ export default function StudentViewer({ styles }: { styles: any }) {
                   </svg>
                 ) : (
                   <div
-                    className="pro-zone-3d"
+                    className="invisible-btn-3d"
                     style={{
                       width: '100%', height: '100%',
                       pointerEvents: 'auto',
