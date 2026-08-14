@@ -304,7 +304,7 @@ export default function StudentViewer({ styles }: { styles: any }) {
                           justifyContent: 'center',
                           pointerEvents: 'none',
                           zIndex: 20,
-                          color: '#fff', /* White text stands out on the pink shadow */
+                          color: '#ff4fa3', /* Pink text */
                           fontSize: '8px', /* Very small */
                           fontWeight: '400', /* Thin */
                           letterSpacing: '1px'
