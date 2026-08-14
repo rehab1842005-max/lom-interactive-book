@@ -206,7 +206,7 @@ export default function StudentViewer({ styles }: { styles: any }) {
           exit={{ opacity: 0, scale: 0.95 }}
           transition={{ duration: 0.3 }}
           className={styles.pageWrapper}
-          style={{ containerType: 'inline-size', marginBottom: '180px' }}
+          style={{ containerType: 'inline-size' }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img 
@@ -318,116 +318,71 @@ export default function StudentViewer({ styles }: { styles: any }) {
               </div>
             );
           })}
+
+          {/* Bottom Pink Area (Quiz / Spacer) */}
+          <div 
+            onClick={() => {
+              if (pages[currentIndex]?.questions && pages[currentIndex].questions!.length > 0) {
+                setShowPageQuiz(true);
+              }
+            }}
+            style={{
+              width: '100%',
+              minHeight: '180px', // Provides scroll clearance at the bottom
+              background: 'var(--color-pink)',
+              color: 'white',
+              display: 'flex',
+              alignItems: 'flex-start',
+              justifyContent: 'center',
+              paddingTop: '40px',
+              cursor: (pages[currentIndex]?.questions && pages[currentIndex].questions!.length > 0) ? 'pointer' : 'default',
+              fontSize: '1.4rem',
+              fontWeight: 'bold',
+              gap: '12px'
+            }}
+          >
+            {pages[currentIndex]?.questions && pages[currentIndex].questions!.length > 0 && (
+              <>اختبر نفسك <FaClipboardCheck /></>
+            )}
+          </div>
         </motion.div>
       </AnimatePresence>
 
-      <div style={{
-        position: 'fixed',
-        bottom: '20px',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: '12px',
-        zIndex: 100,
-        width: '95%',
-        maxWidth: '500px'
-      }}>
-        {/* Top Row: Navigation Controls */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          width: '100%'
-        }}>
-          {/* Left Group: Previous & Up */}
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: '4px',
-            background: 'rgba(255, 255, 255, 0.95)', padding: '4px', borderRadius: '30px',
-            boxShadow: '0 4px 15px rgba(0,0,0,0.08)', backdropFilter: 'blur(10px)'
-          }}>
-            <button onClick={handlePrev} disabled={currentIndex === 0} style={{
-              background: 'linear-gradient(90deg, #8ba4f9, #a3bbfb)',
-              color: 'white', border: 'none', borderRadius: '25px', padding: '8px 18px', 
-              fontWeight: 'bold', fontSize: '0.95rem', cursor: currentIndex === 0 ? 'not-allowed' : 'pointer',
-              opacity: currentIndex === 0 ? 0.5 : 1
-            }}>
-              السابق
-            </button>
-            <button onClick={() => window.scrollBy({ top: -300, behavior: 'smooth' })} style={{
-              background: 'transparent', color: '#4a6cf7', border: 'none', borderRadius: '50%', 
-              width: '32px', height: '32px', fontWeight: 'bold', fontSize: '1.2rem',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'
-            }}>
-              ↑
-            </button>
-          </div>
+      {/* Right (Previous) Navigation Button */}
+      <button 
+        onClick={handlePrev} 
+        disabled={currentIndex === 0}
+        style={{
+          position: 'fixed', right: '15px', top: '50%', transform: 'translateY(-50%)',
+          width: '50px', height: '50px', borderRadius: '50%',
+          background: 'var(--color-pink)', color: 'white',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          border: 'none', boxShadow: '0 4px 15px rgba(255, 79, 163, 0.4)',
+          zIndex: 100, cursor: currentIndex === 0 ? 'not-allowed' : 'pointer',
+          opacity: currentIndex === 0 ? 0.2 : 0.85,
+          fontSize: '1.3rem', transition: 'all 0.2s'
+        }}
+      >
+        <FaChevronRight />
+      </button>
 
-          {/* Center Group: Page Indicator */}
-          <div style={{
-            background: 'rgba(255, 255, 255, 0.95)', padding: '6px 20px', borderRadius: '20px',
-            boxShadow: '0 4px 15px rgba(0,0,0,0.08)', fontWeight: 'bold', color: '#1e3a8a', fontSize: '1.1rem',
-            backdropFilter: 'blur(10px)'
-          }}>
-            {currentIndex + 1}/{pages.length}
-          </div>
-
-          {/* Right Group: Down & Next */}
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: '4px',
-            background: 'rgba(255, 255, 255, 0.95)', padding: '4px', borderRadius: '30px',
-            boxShadow: '0 4px 15px rgba(0,0,0,0.08)', backdropFilter: 'blur(10px)'
-          }}>
-            <button onClick={() => window.scrollBy({ top: 300, behavior: 'smooth' })} style={{
-              background: 'transparent', color: '#4a6cf7', border: 'none', borderRadius: '50%', 
-              width: '32px', height: '32px', fontWeight: 'bold', fontSize: '1.2rem',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'
-            }}>
-              ↓
-            </button>
-            <button onClick={handleNext} disabled={currentIndex === pages.length - 1} style={{
-              background: 'linear-gradient(90deg, #4a6cf7, #3b82f6)',
-              color: 'white', border: 'none', borderRadius: '25px', padding: '8px 18px', 
-              fontWeight: 'bold', fontSize: '0.95rem', cursor: currentIndex === pages.length - 1 ? 'not-allowed' : 'pointer',
-              opacity: currentIndex === pages.length - 1 ? 0.5 : 1
-            }}>
-              التالي
-            </button>
-          </div>
-        </div>
-
-        {/* Bottom Row: Quiz Button */}
-        <AnimatePresence>
-          {pages[currentIndex]?.questions && pages[currentIndex].questions!.length > 0 && (
-            <motion.button 
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              onClick={() => setShowPageQuiz(true)}
-              style={{
-                background: 'linear-gradient(90deg, #ff4fa3, #ff7eb3)',
-                color: 'white',
-                border: 'none',
-                borderRadius: '25px',
-                padding: '8px 24px',
-                fontSize: '1rem',
-                fontWeight: 'bold',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                boxShadow: '0 4px 15px rgba(255, 79, 163, 0.4)',
-                cursor: 'pointer',
-                whiteSpace: 'nowrap'
-              }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              اختبر نفسك <FaClipboardCheck />
-            </motion.button>
-          )}
-        </AnimatePresence>
-      </div>
+      {/* Left (Next) Navigation Button */}
+      <button 
+        onClick={handleNext} 
+        disabled={currentIndex === pages.length - 1}
+        style={{
+          position: 'fixed', left: '15px', top: '50%', transform: 'translateY(-50%)',
+          width: '50px', height: '50px', borderRadius: '50%',
+          background: 'var(--color-pink)', color: 'white',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          border: 'none', boxShadow: '0 4px 15px rgba(255, 79, 163, 0.4)',
+          zIndex: 100, cursor: currentIndex === pages.length - 1 ? 'not-allowed' : 'pointer',
+          opacity: currentIndex === pages.length - 1 ? 0.2 : 0.85,
+          fontSize: '1.3rem', transition: 'all 0.2s'
+        }}
+      >
+        <FaChevronLeft />
+      </button>
 
       {/* Educational Journey Modal */}
       <AnimatePresence>
