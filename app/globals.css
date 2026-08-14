@@ -464,26 +464,26 @@ body {
 }
 
 /* 3D Transparent Glass Zone (For Student Mode) */
-/* Pure Invisible 3D Button (No white layers, preserves exact original colors, NO SHADOWS) */
+/* Pure Invisible 3D Button (3D thickness only, NO drop shadows, NO white colors) */
 .invisible-btn-3d {
-  background: transparent; /* Completely transparent face */
+  background: transparent; 
   border-radius: 12px; 
-  border: none; /* No white borders */
-  box-shadow: none; /* NO BLACK SHADOWS! */
+  border: none; 
+  /* 0 blur radius = solid thickness. This creates the 3D extrusion WITHOUT a shadow */
+  box-shadow: 0 8px 0 rgba(0, 0, 0, 0.15); 
   cursor: pointer;
   transition: all 0.1s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .invisible-btn-3d:hover {
   background: transparent;
-  box-shadow: none; /* NO SHADOWS */
+  box-shadow: 0 8px 0 rgba(0, 0, 0, 0.2); 
 }
 
 .invisible-btn-3d:active {
-  transform: scale(0.98) !important; /* Slight shrink on the image area itself */
-  backdrop-filter: brightness(0.85); /* Darkens the image underneath slightly to feel like a press */
+  transform: translateY(8px) !important; /* Moves down exactly the depth of the thickness */
   background: transparent;
-  box-shadow: none; /* NO SHADOWS */
+  box-shadow: 0 0px 0 rgba(0, 0, 0, 0.15); /* Thickness disappears into the page */
 }
 
 .panel-header {
