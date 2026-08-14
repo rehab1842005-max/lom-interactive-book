@@ -469,19 +469,19 @@ body {
   background: transparent; 
   border-radius: 12px; 
   border: none; 
-  /* 0 blur radius = solid thickness. This creates the 3D extrusion WITHOUT a shadow */
-  box-shadow: 0 8px 0 rgba(0, 0, 0, 0.15); 
+  /* 0 blur radius = solid thickness. Increased to 20px to make it massively prominent */
+  box-shadow: 0 20px 0 rgba(0, 0, 0, 0.15); 
   cursor: pointer;
   transition: all 0.1s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .invisible-btn-3d:hover {
   background: transparent;
-  box-shadow: 0 8px 0 rgba(0, 0, 0, 0.2); 
+  box-shadow: 0 20px 0 rgba(0, 0, 0, 0.2); 
 }
 
 .invisible-btn-3d:active {
-  transform: translateY(8px) !important; /* Moves down exactly the depth of the thickness */
+  transform: translateY(20px) !important; /* Moves down exactly the depth of the new thickness */
   background: transparent;
   box-shadow: 0 0px 0 rgba(0, 0, 0, 0.15); /* Thickness disappears into the page */
 }
