@@ -247,10 +247,12 @@ export default function StudentViewer({ styles }: { styles: any }) {
                 ) : (
                   <div
                     className="invisible-btn-3d"
+                    data-bottom-label={(zone.interactionTypes?.includes('video') || zone.interactionType === 'video' || !!zone.content?.videoUrl) ? "VIDEO" : undefined}
                     style={{
                       width: '100%', height: '100%',
                       pointerEvents: 'auto',
                       borderRadius: zone.shape === 'circle' ? "50%" : "12px",
+                      position: 'relative'
                     }}
                     onClick={(e) => {
                       e.stopPropagation();

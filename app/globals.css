@@ -475,6 +475,26 @@ body {
   transition: all 0.1s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
+.invisible-btn-3d[data-bottom-label]::after {
+  content: attr(data-bottom-label);
+  position: absolute;
+  bottom: -20px;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  pointer-events: none;
+  opacity: 1;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  transition: all 0.1s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
 .invisible-btn-3d:hover {
   background: transparent;
   box-shadow: 0 20px 0 rgba(255, 107, 157, 0.5); 
@@ -484,6 +504,10 @@ body {
   transform: translateY(20px) !important; /* Moves down exactly the depth of the new thickness */
   background: transparent;
   box-shadow: 0 0px 0 rgba(255, 107, 157, 0.35); /* Thickness disappears into the page */
+}
+
+.invisible-btn-3d:active::after {
+  opacity: 0;
 }
 
 .panel-header {
