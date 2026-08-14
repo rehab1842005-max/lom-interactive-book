@@ -319,30 +319,38 @@ export default function StudentViewer({ styles }: { styles: any }) {
             );
           })}
 
-          {/* Bottom Pink Area (Quiz / Spacer) */}
-          <div 
-            onClick={() => {
-              if (pages[currentIndex]?.questions && pages[currentIndex].questions!.length > 0) {
-                setShowPageQuiz(true);
-              }
-            }}
-            style={{
-              width: '100%',
-              minHeight: '180px', // Provides scroll clearance at the bottom
-              background: 'var(--color-pink)',
-              color: 'white',
-              display: 'flex',
-              alignItems: 'flex-start',
-              justifyContent: 'center',
-              paddingTop: '40px',
-              cursor: (pages[currentIndex]?.questions && pages[currentIndex].questions!.length > 0) ? 'pointer' : 'default',
-              fontSize: '1.4rem',
-              fontWeight: 'bold',
-              gap: '12px'
-            }}
-          >
+          {/* Bottom Spacer & Quiz Button */}
+          <div style={{
+            width: '100%',
+            height: '180px', // Provides scroll clearance for side buttons
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
             {pages[currentIndex]?.questions && pages[currentIndex].questions!.length > 0 && (
-              <>اختبر نفسك <FaClipboardCheck /></>
+              <motion.button 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setShowPageQuiz(true)}
+                style={{
+                  background: 'linear-gradient(90deg, #ff4fa3, #ff7eb3)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '25px',
+                  padding: '12px 35px',
+                  fontSize: '1.2rem',
+                  fontWeight: 'bold',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  boxShadow: '0 4px 15px rgba(255, 79, 163, 0.4)',
+                  cursor: 'pointer'
+                }}
+              >
+                اختبر نفسك <FaClipboardCheck />
+              </motion.button>
             )}
           </div>
         </motion.div>
