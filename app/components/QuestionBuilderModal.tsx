@@ -18,13 +18,13 @@ export default function QuestionBuilderModal({
     id: initialQuestion.id || Math.random().toString(),
     type: initialQuestion.type || 'mcq',
     title: initialQuestion.title || '',
-    points: initialQuestion.points || 10,
+    points: initialQuestion.points || 1,
     options: initialQuestion.options || [],
     correctAnswer: initialQuestion.correctAnswer || '',
     successMessage: initialQuestion.successMessage || 'إجابة صحيحة! أحسنت.',
     errorMessage: initialQuestion.errorMessage || 'إجابة خاطئة، حاول مرة أخرى.',
     showAnswer: initialQuestion.showAnswer ?? true,
-    maxAttempts: initialQuestion.maxAttempts || 3,
+    maxAttempts: initialQuestion.maxAttempts || 2,
     randomizeOptions: initialQuestion.randomizeOptions ?? false,
     mediaUrl: initialQuestion.mediaUrl || ''
   });

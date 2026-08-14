@@ -430,7 +430,7 @@ export default function ScienceSidebar() {
       name: defaultName,
       interactionType: type,
       interactionTypes: [type],
-      showIcon: true,
+      showIcon: false,
       content: {}
     });
   };

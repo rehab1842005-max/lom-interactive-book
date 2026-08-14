@@ -36,7 +36,7 @@ export default function Sidebar({ styles }: { styles: any }) {
       color: "#FF4FA3",
       name: defaultName,
       interactionType: type,
-      showIcon: true,
+      showIcon: false,
       content: {}
     });
   };
