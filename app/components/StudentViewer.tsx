@@ -248,7 +248,7 @@ export default function StudentViewer({ styles }: { styles: any }) {
                   <div
                     className="invisible-btn-3d"
                     style={{
-                      width: '100%', height: '100%',
+                      width: '100%', height: 'calc(100% - 20px)',
                       pointerEvents: 'auto',
                       borderRadius: zone.shape === 'circle' ? "50%" : "12px",
                       position: 'relative'
