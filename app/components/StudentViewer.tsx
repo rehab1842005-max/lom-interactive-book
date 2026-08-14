@@ -248,7 +248,7 @@ export default function StudentViewer({ styles }: { styles: any }) {
                   <div
                     className="invisible-btn-3d"
                     style={{
-                      width: '100%', height: 'calc(100% - 20px)',
+                      width: '100%', height: 'calc(100% - 3px)',
                       pointerEvents: 'auto',
                       borderRadius: zone.shape === 'circle' ? "50%" : "12px",
                       position: 'relative'
@@ -291,26 +291,19 @@ export default function StudentViewer({ styles }: { styles: any }) {
                         )}
                       </div>
 
-                      {/* Video Label placed perfectly over the 20px inset shadow */}
+                      {/* Video Pill */}
                       {(zone.interactionTypes?.includes('video') || zone.interactionType === 'video' || !!zone.content?.videoUrl) && (
-                        <div className="zone-bottom-label" style={{ 
+                        <div style={{ 
                           position: 'absolute', 
-                          bottom: '0', 
-                          left: '0',
-                          width: '100%',
-                          height: '20px', 
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          gap: '5px',
+                          top: '10px', 
+                          left: '50%',
+                          transform: 'translateX(-50%)',
                           pointerEvents: 'none',
-                          zIndex: 20,
-                          color: '#fff',
-                          fontSize: '11px',
-                          fontWeight: 'bold',
-                          transition: 'opacity 0.1s cubic-bezier(0.25, 0.8, 0.25, 1)',
+                          zIndex: 20
                         }}>
-                          فيديو <i className="fa-solid fa-play" style={{ color: '#ff4fa3', fontSize: '10px' }}></i> 
+                          <div className="video-pill-3d">
+                            <i className="fa-solid fa-play"></i> فيديو
+                          </div>
                         </div>
                       )}
                     </>

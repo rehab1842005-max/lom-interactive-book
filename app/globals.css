@@ -464,32 +464,32 @@ body {
 }
 
 /* 3D Transparent Glass Zone (For Student Mode) */
-/* Pure Invisible 3D Button (Shadow fills the 20px gap, so it never covers artwork below it) */
+/* Pure Invisible 3D Button (Shadow matches the 3px dashed border thickness) */
 .invisible-btn-3d {
   background: transparent; 
   border-radius: 12px; 
   border: none; 
-  /* OUTSET shadow drops into the 20px gap we created in the height */
-  box-shadow: 0 20px 0 rgba(255, 107, 157, 0.4); 
+  /* OUTSET shadow drops into the 3px gap we created in the height */
+  box-shadow: 0 3px 0 rgba(255, 107, 157, 0.4); 
   cursor: pointer;
   transition: all 0.1s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .invisible-btn-3d:hover {
   background: transparent;
-  box-shadow: 0 20px 0 rgba(255, 107, 157, 0.55); 
+  box-shadow: 0 3px 0 rgba(255, 107, 157, 0.6); 
 }
 
 .invisible-btn-3d:active {
-  transform: translateY(20px) !important; /* Moves down exactly the depth of the thickness */
+  transform: translateY(3px) !important; /* Moves down exactly the depth of the thickness */
   background: transparent;
   box-shadow: 0 0px 0 rgba(255, 107, 157, 0.4); /* Thickness disappears into the page */
 }
 
-/* Hide the label when the button is pressed because the 3D thickness disappears */
-.invisible-btn-3d:active + .zone-bottom-label,
-.invisible-btn-3d:active ~ .zone-bottom-label {
-  opacity: 0;
+/* Move the video pill down with the button when pressed */
+.invisible-btn-3d:active ~ div .video-pill-3d {
+  transform: translateY(3px);
+  box-shadow: 0 0px 0 rgba(255, 107, 157, 0.4); /* Make the pill's shadow disappear too */
 }
 
 .video-pill-3d {
