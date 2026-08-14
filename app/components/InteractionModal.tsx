@@ -6,14 +6,32 @@ import QuestionBuilderModal from "./QuestionBuilderModal";
 import VideoTrimmer from "./VideoTrimmer";
 
 export default function InteractionModal({ zone, onClose }: { zone: Zone; onClose: () => void }) {
-  const { updateZone } = useBookStore();
+  const { updateZone, pages } = useBookStore();
+  const currentPage = pages.find(p => p.id === zone.pageId);
+
   const [name, setName] = useState(zone.name);
   const [color, setColor] = useState(zone.color);
   const [showIcon, setShowIcon] = useState(zone.showIcon);
   const [types, setTypes] = useState<InteractionType[]>(zone.interactionTypes || (zone.interactionType !== 'none' ? [zone.interactionType] : []));
   const [audioUrl, setAudioUrl] = useState(zone.content.audioUrl || "");
-  const [videoUrl, setVideoUrl] = useState(zone.content.videoUrl || "");
   const [questions, setQuestions] = useState<any[]>(zone.content.questions || (zone.content.question ? [zone.content.question] : []));
+
+  // Determine initial video values, applying auto-slicing logic if applicable
+  let initialVideoUrl = zone.content.videoUrl || "";
+  let initialStartTime = zone.content.videoStartTime;
+  let initialEndTime = zone.content.videoEndTime;
+
+  if (!initialVideoUrl && currentPage?.pageVideoUrl && !isNaN(Number(zone.name))) {
+    const seq = Number(zone.name);
+    if (seq > 0) {
+      initialVideoUrl = currentPage.pageVideoUrl;
+      const interval = currentPage.videoSplitInterval || 8;
+      initialStartTime = (seq - 1) * interval;
+      initialEndTime = seq * interval;
+    }
+  }
+
+  const [videoUrl, setVideoUrl] = useState(initialVideoUrl);
 
   const formatSecondsToTime = (seconds?: number): string => {
     if (seconds === undefined || isNaN(seconds)) return '';
@@ -39,8 +57,26 @@ export default function InteractionModal({ zone, onClose }: { zone: Zone; onClos
     return undefined;
   };
 
-  const [startTimeStr, setStartTimeStr] = useState<string>(formatSecondsToTime(zone.content.videoStartTime));
-  const [endTimeStr, setEndTimeStr] = useState<string>(formatSecondsToTime(zone.content.videoEndTime));
+  const [startTimeStr, setStartTimeStr] = useState<string>(formatSecondsToTime(initialStartTime));
+  const [endTimeStr, setEndTimeStr] = useState<string>(formatSecondsToTime(initialEndTime));
+
+  // Also update zone content immediately if we auto-populated, so VideoTrimmer sees it
+  useEffect(() => {
+    if (!zone.content.videoUrl && currentPage?.pageVideoUrl && !isNaN(Number(zone.name))) {
+       const seq = Number(zone.name);
+       if (seq > 0) {
+          const interval = currentPage.videoSplitInterval || 8;
+          updateZone(zone.id, {
+             content: {
+                ...zone.content,
+                videoUrl: currentPage.pageVideoUrl,
+                videoStartTime: (seq - 1) * interval,
+                videoEndTime: seq * interval
+             }
+          });
+       }
+    }
+  }, []);
 
   useEffect(() => {
     setName(zone.name);
@@ -48,16 +84,16 @@ export default function InteractionModal({ zone, onClose }: { zone: Zone; onClos
     setShowIcon(zone.showIcon);
     setTypes(zone.interactionTypes || (zone.interactionType !== 'none' ? [zone.interactionType] : []));
     setAudioUrl(zone.content.audioUrl || "");
-    setVideoUrl(zone.content.videoUrl || "");
+    setVideoUrl(zone.content.videoUrl || initialVideoUrl);
     setQuestions(zone.content.questions || (zone.content.question ? [zone.content.question] : []));
     
     // Only update string state if the actual number from store is different (to prevent cursor jumping while typing valid partials)
-    const storeStart = formatSecondsToTime(zone.content.videoStartTime);
-    const storeEnd = formatSecondsToTime(zone.content.videoEndTime);
-    if (parseTimeToSeconds(startTimeStr) !== zone.content.videoStartTime) {
+    const storeStart = formatSecondsToTime(zone.content.videoStartTime || initialStartTime);
+    const storeEnd = formatSecondsToTime(zone.content.videoEndTime || initialEndTime);
+    if (parseTimeToSeconds(startTimeStr) !== (zone.content.videoStartTime || initialStartTime)) {
       setStartTimeStr(storeStart);
     }
-    if (parseTimeToSeconds(endTimeStr) !== zone.content.videoEndTime) {
+    if (parseTimeToSeconds(endTimeStr) !== (zone.content.videoEndTime || initialEndTime)) {
       setEndTimeStr(storeEnd);
     }
   }, [zone]);

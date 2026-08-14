@@ -7,7 +7,7 @@ import { useState } from "react";
 export default function ScienceWorkspace() {
   const { 
     pages, zones, activePageId, 
-    updateZone, removeZone, addZone,
+    updatePage, updateZone, removeZone, addZone,
     drawingMode, draftPolygon 
   } = useBookStore();
   const [zoom, setZoom] = useState(100);
@@ -17,13 +17,14 @@ export default function ScienceWorkspace() {
   const activeZones = zones.filter((z) => z.pageId === activePageId);
 
   const handleZoomIn = () => setZoom(z => Math.min(z + 10, 200));
+
   const handleZoomOut = () => setZoom(z => Math.max(z - 10, 50));
   const handleZoomReset = () => setZoom(100);
 
   return (
     <section className="canvas-workspace">
       {/* Canvas Toolbar */}
-      <div className="canvas-toolbar">
+      <div className="canvas-toolbar" style={{ flexWrap: 'wrap', gap: '15px', height: 'auto', minHeight: '44px', padding: '8px 16px' }}>
         <div className="zoom-controls">
           <button className="tool-btn" onClick={handleZoomOut} title="تصغير الصفحة">
             <i className="fa-solid fa-magnifying-glass-minus"></i>
@@ -48,6 +49,33 @@ export default function ScienceWorkspace() {
             <span className="switch-text"><i className="fa-solid fa-border-top-left"></i> شبكة المحاذاة</span>
           </label>
         </div>
+
+          <div className="canvas-tools-group" style={{ display: 'flex', gap: '10px', alignItems: 'center', background: '#fff', padding: '5px 10px', borderRadius: '8px', border: '3px solid red' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <i className="fa-brands fa-youtube" style={{ color: '#ef4444', fontSize: '20px' }}></i>
+              <input 
+                type="text" 
+                placeholder="رابط فيديو شرح الصفحة"
+                value={activePage?.pageVideoUrl || ''}
+                onChange={e => activePage && updatePage(activePage.id, { pageVideoUrl: e.target.value })}
+                style={{ width: '200px', fontSize: '12px', padding: '4px 8px', borderRadius: '4px', border: '1px solid #cbd5e1' }}
+              />
+            </div>
+            {activePage?.pageVideoUrl && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px', borderRight: '1px solid #cbd5e1', paddingRight: '10px' }}>
+                <span style={{ fontSize: '12px', color: '#64748b' }}>تقسيم كل:</span>
+                <input 
+                  type="number"
+                  min="1"
+                  placeholder="8"
+                  value={activePage.videoSplitInterval || ''}
+                  onChange={e => updatePage(activePage.id, { videoSplitInterval: parseInt(e.target.value) || undefined })}
+                  style={{ width: '50px', fontSize: '12px', padding: '4px', borderRadius: '4px', border: '1px solid #cbd5e1', textAlign: 'center' }}
+                />
+                <span style={{ fontSize: '12px', color: '#64748b' }}>ثواني</span>
+              </div>
+            )}
+          </div>
 
         <div className="canvas-page-info">
           <span className="page-badge-indicator">

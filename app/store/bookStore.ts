@@ -88,6 +88,8 @@ export interface Page {
   order: number;
   lessonId?: string; // Links page to a specific lesson
   questions?: Question[]; // Page-level questions
+  pageVideoUrl?: string; // Master video for the full page
+  videoSplitInterval?: number; // Auto-slicing interval in seconds (e.g., 8, 10)
 }
 
 export interface Lesson {

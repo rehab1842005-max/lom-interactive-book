@@ -72,19 +72,59 @@ export default function StudentViewer({ styles }: { styles: any }) {
     }
   };
 
-  const handleZoneClick = (zone: Zone) => {
-    const interactions = zone.interactionTypes && zone.interactionTypes.length > 0 
-      ? zone.interactionTypes 
-      : (zone.interactionType !== 'none' ? [zone.interactionType] : []);
+  const handleMasterVideoClick = () => {
+    if (!currentPage.pageVideoUrl) return;
+    const masterZone: any = {
+      id: "master-video",
+      pageId: currentPage.id,
+      name: "شرح الصفحة",
+      color: "blue",
+      x: 0, y: 0, width: 0, height: 0,
+      interactionType: 'video',
+      interactionTypes: ['video'],
+      showIcon: false,
+      content: {
+        videoUrl: currentPage.pageVideoUrl
+      }
+    };
+    if (audioRef.current) {
+      audioRef.current.pause();
+      setPlayingAudioId(null);
+    }
+    setActivePopupZone(masterZone);
+  };
 
+  const handleZoneClick = (zone: Zone) => {
+    // Dynamic slicing logic for numbered zones using Master Video
+    let finalZone = { ...zone };
+    if (!zone.content.videoUrl && currentPage.pageVideoUrl && !isNaN(Number(zone.name))) {
+      const seq = Number(zone.name);
+      if (seq > 0) {
+        const interval = currentPage.videoSplitInterval || 8;
+        finalZone = {
+          ...zone,
+          content: {
+            ...zone.content,
+            videoUrl: currentPage.pageVideoUrl,
+            videoStartTime: (seq - 1) * interval,
+            videoEndTime: seq * interval
+          }
+        };
+      }
+    }
+
+    const interactions = finalZone.interactionTypes || [];
+    if (!finalZone.interactionTypes && finalZone.interactionType !== 'none') {
+      interactions.push(finalZone.interactionType);
+    }
     if (interactions.length === 0) return;
 
     // Special cases for single interactions that don't need a modal
     if (interactions.length === 1) {
       const type = interactions[0];
       if (type === 'audio') {
-        if (zone.content.audioUrl) {
-          if (playingAudioId === zone.id && audioRef.current) {
+        if (finalZone.content.audioUrl) {
+          if (playingAudioId === finalZone.id && audioRef.current) {
             audioRef.current.pause();
             setPlayingAudioId(null);
             audioRef.current = null;
@@ -93,9 +133,9 @@ export default function StudentViewer({ styles }: { styles: any }) {
           if (audioRef.current) {
             audioRef.current.pause();
           }
-          const audio = new Audio(zone.content.audioUrl);
+          const audio = new Audio(finalZone.content.audioUrl);
           audioRef.current = audio;
-          setPlayingAudioId(zone.id);
+          setPlayingAudioId(finalZone.id);
           audio.play().then(() => {
             audio.onended = () => setPlayingAudioId(null);
           }).catch(e => {
@@ -106,8 +146,8 @@ export default function StudentViewer({ styles }: { styles: any }) {
         return;
       }
       if (type === 'link') {
-        if (zone.content.linkUrl) {
-          window.open(zone.content.linkUrl, "_blank");
+        if (finalZone.content.linkUrl) {
+          window.open(finalZone.content.linkUrl, "_blank");
         }
         return;
       }
@@ -118,11 +158,46 @@ export default function StudentViewer({ styles }: { styles: any }) {
       audioRef.current.pause();
       setPlayingAudioId(null);
     }
-    setActivePopupZone(zone);
+    setActivePopupZone(finalZone);
   };
 
   return (
     <div className={styles.viewerContainer} style={{ paddingBottom: '100px' }}>
+      
+      <AnimatePresence>
+        {currentPage.pageVideoUrl && (
+          <motion.button 
+            initial={{ y: -50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            onClick={handleMasterVideoClick}
+            style={{
+              position: 'fixed',
+              top: 'clamp(20px, 4vw, 30px)',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              background: '#ef4444',
+              color: 'white',
+              border: 'none',
+              borderRadius: '25px',
+              padding: 'clamp(8px, 2vw, 12px) clamp(16px, 4vw, 25px)',
+              fontSize: 'clamp(0.9rem, 3vw, 1.1rem)',
+              fontWeight: 'bold',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              boxShadow: '0 4px 15px rgba(239, 68, 68, 0.4)',
+              cursor: 'pointer',
+              zIndex: 99,
+              whiteSpace: 'nowrap'
+            }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <i className="fa-brands fa-youtube" style={{ fontSize: '1.2rem' }}></i> شرح الصفحة
+          </motion.button>
+        )}
+      </AnimatePresence>
+
       <AnimatePresence mode="wait">
         <motion.div
           key={currentPage.id}
