@@ -464,26 +464,32 @@ body {
 }
 
 /* 3D Transparent Glass Zone (For Student Mode) */
-/* Pure Invisible 3D Button (Flat but interactive) */
+/* Pure Invisible 3D Button (Inset 3D thickness so it never covers artwork below it) */
 .invisible-btn-3d {
   background: transparent; 
   border-radius: 12px; 
   border: none; 
-  box-shadow: none; 
+  /* INSET shadow creates a 20px solid block on the inside bottom edge */
+  box-shadow: inset 0 -20px 0 rgba(255, 107, 157, 0.4); 
   cursor: pointer;
   transition: all 0.1s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .invisible-btn-3d:hover {
   background: transparent;
-  box-shadow: none; 
+  box-shadow: inset 0 -20px 0 rgba(255, 107, 157, 0.55); 
 }
 
 .invisible-btn-3d:active {
-  transform: scale(0.98) !important; 
-  backdrop-filter: brightness(0.85);
+  transform: translateY(20px) !important; /* Moves down exactly the depth of the thickness */
   background: transparent;
-  box-shadow: none; 
+  box-shadow: inset 0 0px 0 rgba(255, 107, 157, 0.4); /* Thickness disappears into the page */
+}
+
+/* Hide the label when the button is pressed because the 3D thickness disappears */
+.invisible-btn-3d:active + .zone-bottom-label,
+.invisible-btn-3d:active ~ .zone-bottom-label {
+  opacity: 0;
 }
 
 .video-pill-3d {
