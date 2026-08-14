@@ -469,10 +469,10 @@ body {
   background: transparent; /* Completely transparent face */
   border-radius: 12px; 
   border: none; /* No white borders */
-  /* Only a dark 3D edge underneath to give the physical volume */
+  /* Extra thick 3D edge underneath to make it very prominent (بارز جداً) */
   box-shadow: 
-    0 6px 0 rgba(0, 0, 0, 0.2), /* The physical thickness */
-    0 8px 12px rgba(0, 0, 0, 0.25); /* The drop shadow */
+    0 12px 0 rgba(0, 0, 0, 0.25), /* Much thicker physical bottom */
+    0 16px 24px rgba(0, 0, 0, 0.3); /* Larger drop shadow */
   cursor: pointer;
   transition: all 0.1s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
@@ -480,16 +480,16 @@ body {
 .invisible-btn-3d:hover {
   background: transparent; /* No hover color change to preserve art */
   box-shadow: 
-    0 6px 0 rgba(0, 0, 0, 0.25),
-    0 10px 15px rgba(0, 0, 0, 0.3);
+    0 12px 0 rgba(0, 0, 0, 0.3),
+    0 20px 30px rgba(0, 0, 0, 0.35);
 }
 
 .invisible-btn-3d:active {
-  transform: translateY(6px) !important; /* Moves down physically */
+  transform: translateY(12px) !important; /* Moves down the full 12px depth */
   background: transparent;
   box-shadow: 
-    0 0px 0 rgba(0, 0, 0, 0.2), /* Thickness disappears into the page */
-    0 2px 4px rgba(0, 0, 0, 0.2);
+    0 0px 0 rgba(0, 0, 0, 0.25), /* Thickness disappears into the page */
+    0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .panel-header {
