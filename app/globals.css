@@ -465,34 +465,36 @@ body {
 
 /* 3D Transparent Glass Zone (For Student Mode) */
 .glass-zone-3d {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.2); /* More visible background */
   border-radius: 12px;
   box-shadow: 
-    0 6px 0 rgba(0, 0, 0, 0.15), /* 3D thickness */
-    0 8px 10px rgba(0, 0, 0, 0.1), /* Drop shadow */
-    inset 0 2px 4px rgba(255, 255, 255, 0.3), /* Top highlight */
-    inset 0 -2px 4px rgba(0, 0, 0, 0.05); /* Bottom inner shadow */
-  border: 1px solid rgba(255, 255, 255, 0.2);
+    0 8px 0 rgba(0, 0, 0, 0.3), /* Thicker, darker 3D bottom edge */
+    0 12px 15px rgba(0, 0, 0, 0.2), /* Stronger drop shadow */
+    inset 0 2px 4px rgba(255, 255, 255, 0.6), /* Stronger top highlight */
+    inset 0 -2px 4px rgba(0, 0, 0, 0.1); /* Bottom inner shadow */
+  border: 2px solid rgba(255, 255, 255, 0.5); /* Thicker, more visible border */
+  backdrop-filter: blur(4px); /* Add blur for a frosted glass look */
+  -webkit-backdrop-filter: blur(4px);
   transition: all 0.05s ease-out;
   cursor: pointer;
 }
 
 .glass-zone-3d:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.3); /* Brighter on hover */
   box-shadow: 
-    0 6px 0 rgba(0, 0, 0, 0.15),
-    0 10px 15px rgba(0, 0, 0, 0.15),
-    inset 0 2px 4px rgba(255, 255, 255, 0.4),
-    inset 0 -2px 4px rgba(0, 0, 0, 0.05);
+    0 8px 0 rgba(0, 0, 0, 0.35),
+    0 15px 20px rgba(0, 0, 0, 0.25),
+    inset 0 3px 6px rgba(255, 255, 255, 0.8),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .glass-zone-3d:active {
-  transform: translateY(6px) !important;
+  transform: translateY(8px) !important; /* Move down full thickness */
   box-shadow: 
-    0 0px 0 rgba(0, 0, 0, 0.15),
-    0 1px 2px rgba(0, 0, 0, 0.1),
-    inset 0 3px 6px rgba(0, 0, 0, 0.1),
-    inset 0 -1px 2px rgba(255, 255, 255, 0.2);
+    0 0px 0 rgba(0, 0, 0, 0.3), /* Thickness disappears */
+    0 2px 4px rgba(0, 0, 0, 0.2),
+    inset 0 4px 8px rgba(0, 0, 0, 0.2), /* Invert shadow for press */
+    inset 0 -1px 2px rgba(255, 255, 255, 0.4);
 }
 
 .panel-header {
