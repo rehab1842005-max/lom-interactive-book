@@ -96,27 +96,30 @@ export default function StudentViewer({ styles }: { styles: any }) {
 
   const handleZoneClick = (zone: Zone) => {
     // Dynamic slicing logic for numbered zones using Master Video
-    let finalZone = { ...zone };
-    if (!zone.content.videoUrl && currentPage.pageVideoUrl && !isNaN(Number(zone.name))) {
+    let finalZone = JSON.parse(JSON.stringify(zone)); // Deep copy
+    
+    if (!finalZone.interactionTypes) {
+      finalZone.interactionTypes = finalZone.interactionType !== 'none' ? [finalZone.interactionType] : [];
+    }
+
+    const content = finalZone.content || {};
+    if (!content.videoUrl && currentPage.pageVideoUrl && !isNaN(Number(zone.name))) {
       const seq = Number(zone.name);
       if (seq > 0) {
         const interval = currentPage.videoSplitInterval || 8;
-        finalZone = {
-          ...zone,
-          content: {
-            ...zone.content,
-            videoUrl: currentPage.pageVideoUrl,
-            videoStartTime: (seq - 1) * interval,
-            videoEndTime: seq * interval
-          }
+        finalZone.content = {
+          ...content,
+          videoUrl: currentPage.pageVideoUrl,
+          videoStartTime: (seq - 1) * interval,
+          videoEndTime: seq * interval
         };
+        if (!finalZone.interactionTypes.includes('video')) {
+          finalZone.interactionTypes.push('video');
+        }
       }
     }
 
-    const interactions = finalZone.interactionTypes || [];
-    if (!finalZone.interactionTypes && finalZone.interactionType !== 'none') {
-      interactions.push(finalZone.interactionType);
-    }
+    const interactions = finalZone.interactionTypes;
     if (interactions.length === 0) return;
 
     // Special cases for single interactions that don't need a modal
