@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Page, Question } from "../store/bookStore";
+import { Page, Question, useBookStore } from "../store/bookStore";
 import QuestionEngine from "./QuestionEngine";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaTimes, FaStar } from "react-icons/fa";
@@ -12,9 +12,12 @@ interface PageQuizModalProps {
 }
 
 export default function PageQuizModal({ page, onClose }: PageQuizModalProps) {
-  const allQs = page.questions || [];
+  const { zones } = useBookStore();
+  const pageZoneQs = zones.filter(z => z.pageId === page.id).flatMap(z => z.content?.questions || (z.content?.question ? [z.content.question] : []));
+  const allQs = (page.questions && page.questions.length > 0) ? page.questions : pageZoneQs;
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [showFinalScore, setShowFinalScore] = useState(false);
+  const [score, setScore] = useState(0);
 
   // If there are no questions for some reason, just show a message.
   if (allQs.length === 0) {
@@ -77,7 +80,13 @@ export default function PageQuizModal({ page, onClose }: PageQuizModalProps) {
                 <FaStar /> <FaStar /> <FaStar />
               </div>
               <h2 style={{ color: 'var(--primary-color)', fontSize: '28px', marginBottom: '10px' }}>ممتاز يا بطل! 🌟</h2>
-              <p style={{ fontSize: '18px', color: '#4b5563', marginBottom: '30px' }}>لقد أتممت أسئلة هذه الصفحة بنجاح!</p>
+              <p style={{ fontSize: '20px', color: '#4b5563', marginBottom: '30px', fontWeight: 'bold' }}>
+                لقد أتممت أسئلة هذه الصفحة بنجاح!
+                <br /><br />
+                <span style={{ fontSize: '24px', color: 'var(--color-pink)' }}>
+                  نتيجتك: {score} من {allQs.length}
+                </span>
+              </p>
               
               <button 
                 onClick={onClose}
@@ -105,21 +114,26 @@ export default function PageQuizModal({ page, onClose }: PageQuizModalProps) {
                 </div>
               </div>
               
-              {allQs[currentQuestionIndex] && (
-                <QuestionEngine 
-                  key={currentQuestionIndex} 
-                  question={allQs[currentQuestionIndex]} 
-                  onComplete={() => {
-                    setTimeout(() => {
-                      if (currentQuestionIndex < allQs.length - 1) {
-                        setCurrentQuestionIndex(currentQuestionIndex + 1);
-                      } else {
-                        setShowFinalScore(true);
+              {allQs[currentQuestionIndex] ? (
+                  <QuestionEngine 
+                    key={currentQuestionIndex} // force remount for new question
+                    question={allQs[currentQuestionIndex]} 
+                    forceSingleAttempt={true}
+                    onComplete={(success?: boolean) => {
+                      if (success) {
+                        setScore(s => s + 1);
                       }
-                    }, 1500);
-                  }} 
-                />
-              )}
+                      // Move to next question after a short delay
+                      setTimeout(() => {
+                        if (currentQuestionIndex < allQs.length - 1) {
+                          setCurrentQuestionIndex(currentQuestionIndex + 1);
+                        } else {
+                          setShowFinalScore(true);
+                        }
+                      }, 1000);
+                    }} 
+                  />
+                ) : null}
             </div>
           )}
         </div>

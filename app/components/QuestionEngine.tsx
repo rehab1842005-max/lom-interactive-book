@@ -6,13 +6,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FaCheck, FaTimes, FaRedo, FaInfoCircle } from "react-icons/fa";
 import confetti from "canvas-confetti";
 
-export default function QuestionEngine({ question, onComplete }: { question: Question, onComplete: () => void }) {
+export default function QuestionEngine({ question, onComplete, forceSingleAttempt }: { question: Question, onComplete: (success?: boolean) => void, forceSingleAttempt?: boolean }) {
   const [selectedAnswer, setSelectedAnswer] = useState<string | string[]>("");
   const [attempts, setAttempts] = useState(0);
   const [status, setStatus] = useState<'idle' | 'success' | 'error' | 'revealed' | 'essay_submitted'>('idle');
   const [feedbackText, setFeedbackText] = useState("");
 
-  const maxAttempts = question.maxAttempts || 1;
+  const maxAttempts = forceSingleAttempt ? 1 : (question.maxAttempts || 1);
   const isMultiSelect = question.type === 'multiselect';
 
   // Initialize answer based on type
@@ -147,7 +147,7 @@ export default function QuestionEngine({ question, onComplete }: { question: Que
       playSound('success');
       
       // Fireworks Confetti Effect!
-      const duration = 3 * 1000;
+      const duration = 2 * 1000;
       const end = Date.now() + duration;
       const colors = ['#26ccff', '#a25afd', '#ff5e7e', '#88ff5a', '#fcff42', '#ffa62d', '#ff36ff'];
 
@@ -176,17 +176,18 @@ export default function QuestionEngine({ question, onComplete }: { question: Que
 
       setStatus('success');
       setFeedbackText(question.successMessage || 'إجابة صحيحة! أحسنت 👏');
-      setTimeout(onComplete, 4500); // Wait longer so they enjoy the fireworks!
+      setTimeout(() => onComplete(true), 2000);
     } else {
       playSound('error');
       if (currentAttempts >= maxAttempts) {
         if (question.showAnswer) {
           setStatus('revealed');
           setFeedbackText(`لقد استنفدت المحاولات. الإجابة الصحيحة هي: ${Array.isArray(question.correctAnswer) ? question.correctAnswer.join(" و ") : question.correctAnswer}`);
+          setTimeout(() => onComplete(false), 2500);
         } else {
           setStatus('error');
           setFeedbackText(`لقد استنفدت المحاولات المسموحة (${maxAttempts}).`);
-          setTimeout(onComplete, 3500);
+          setTimeout(() => onComplete(false), 1500);
         }
       } else {
         setStatus('error');
@@ -206,7 +207,9 @@ export default function QuestionEngine({ question, onComplete }: { question: Que
       <div style={{ textAlign: "center", padding: "2rem" }}>
         <h3 style={{ color: "var(--color-purple)" }}>سؤال غير مكتمل</h3>
         <p>الرجاء ضبط إعدادات السؤال من وضع المعلم.</p>
-        <button onClick={onComplete} style={{ marginTop: "1rem", padding: "8px 20px", borderRadius: "20px", background: "var(--color-purple)", color: "white", border: "none", cursor: "pointer" }}>إغلاق</button>
+        <button onClick={() => onComplete(false)} style={{ marginTop: "1rem", padding: "8px 20px", background: "var(--color-pink)", color: "white", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "bold" }}>
+          تخطي السؤال
+        </button>
       </div>
     );
   }
@@ -227,11 +230,11 @@ export default function QuestionEngine({ question, onComplete }: { question: Que
     >
       
       {/* Header Info */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: "2rem", borderBottom: "3px solid var(--color-light-pink)", paddingBottom: "15px" }}>
-        <h3 style={{ color: "#2d004d", fontSize: "2.2rem", margin: 0, fontWeight: "900", lineHeight: "1.4", textShadow: "0px 1px 2px rgba(0,0,0,0.1)" }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: "1rem", borderBottom: "2px solid var(--color-light-pink)", paddingBottom: "10px" }}>
+        <h3 style={{ color: "#2d004d", fontSize: "1.4rem", margin: 0, fontWeight: "bold", lineHeight: "1.4" }}>
           {question.title || "سؤال بدون عنوان"}
         </h3>
-        <span style={{ background: 'var(--color-light-pink)', color: 'var(--color-purple)', padding: '5px 12px', borderRadius: '20px', fontWeight: 'bold', fontSize: '16px', flexShrink: 0, marginRight: '15px' }}>
+        <span style={{ background: 'var(--color-light-pink)', color: 'var(--color-purple)', padding: '4px 12px', borderRadius: '20px', fontWeight: 'bold', fontSize: '14px', flexShrink: 0, marginRight: '15px' }}>
           {question.points} نقاط
         </span>
       </div>
@@ -393,7 +396,7 @@ export default function QuestionEngine({ question, onComplete }: { question: Que
 
         {(status === 'revealed' || (status === 'error' && attempts >= maxAttempts)) && (
           <button 
-            onClick={onComplete}
+            onClick={() => onComplete(false)}
             style={{ 
               background: "var(--color-purple)", color: "white", border: "none", padding: "12px 40px", borderRadius: "25px", fontSize: "1.2rem", cursor: "pointer", fontWeight: "bold"
             }}
@@ -404,7 +407,7 @@ export default function QuestionEngine({ question, onComplete }: { question: Que
 
         {status === 'idle' && (
           <button 
-            onClick={onComplete}
+            onClick={() => onComplete(false)}
             style={{ 
               background: "transparent", color: "var(--text-muted)", border: "1px solid var(--border-color)", padding: "12px 30px", borderRadius: "25px", fontSize: "1.2rem", cursor: "pointer"
             }}

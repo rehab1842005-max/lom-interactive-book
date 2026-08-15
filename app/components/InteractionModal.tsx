@@ -11,7 +11,7 @@ export default function InteractionModal({ zone, onClose }: { zone: Zone; onClos
 
   const [name, setName] = useState(zone.name);
   const [color, setColor] = useState(zone.color);
-  const [showIcon, setShowIcon] = useState(zone.showIcon);
+  const [showIcon, setShowIcon] = useState(zone.showIcon ?? false);
   const [types, setTypes] = useState<InteractionType[]>(zone.interactionTypes || (zone.interactionType !== 'none' ? [zone.interactionType] : []));
   const [audioUrl, setAudioUrl] = useState(zone.content.audioUrl || "");
   const [questions, setQuestions] = useState<any[]>(zone.content.questions || (zone.content.question ? [zone.content.question] : []));
@@ -108,20 +108,25 @@ export default function InteractionModal({ zone, onClose }: { zone: Zone; onClos
 
   const handleSave = () => {
     try {
+      const currentZoneInStore = useBookStore.getState().zones.find(z => z.id === zone.id);
       updateZone(zone.id, {
         name,
         color,
         showIcon,
         interactionType: types[0] || 'none', // Legacy support
         interactionTypes: types,
-        // Do not overwrite content.audioUrl and videoUrl here because they are auto-saved in onChange, 
-        // and overwriting them here with useState could wipe them if the user edited them in the sidebar.
-        content: zone.content,
+        content: {
+          ...(currentZoneInStore?.content || zone.content),
+          videoUrl: videoUrl || currentZoneInStore?.content.videoUrl || zone.content.videoUrl,
+          audioUrl: audioUrl || currentZoneInStore?.content.audioUrl || zone.content.audioUrl,
+          videoStartTime: parseTimeToSeconds(startTimeStr) !== undefined ? parseTimeToSeconds(startTimeStr) : (currentZoneInStore?.content.videoStartTime || zone.content.videoStartTime),
+          videoEndTime: parseTimeToSeconds(endTimeStr) !== undefined ? parseTimeToSeconds(endTimeStr) : (currentZoneInStore?.content.videoEndTime || zone.content.videoEndTime),
+        },
       });
       onClose();
     } catch (error) {
       console.error(error);
-      alert("حدث خطأ أثناء الحفظ! مساحة التخزين ممتلئة. يرجى مسح بعض المناطق أو استخدام رابط يوتيوب بدلاً من رفع الفيديو مباشرة.");
+      alert("حدث خطأ أثناء الحفظ! مساحة التخزين ممتلئة.");
       onClose();
     }
   };
@@ -385,14 +390,18 @@ export default function InteractionModal({ zone, onClose }: { zone: Zone; onClos
             }
             
             if (editingQuestionIndex === -1) {
-              // Add new
               allQs.push(updatedQ as any);
             } else {
-              // Update existing
               allQs[editingQuestionIndex] = updatedQ as any;
             }
+
+            const newInteractions = new Set(types);
+            newInteractions.add('question');
+            const newTypes = Array.from(newInteractions);
+            setTypes(newTypes);
             
             updateZone(zone.id, { 
+              interactionTypes: newTypes,
               content: { 
                 ...zone.content, 
                 questions: allQs,

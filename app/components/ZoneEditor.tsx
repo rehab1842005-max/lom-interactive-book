@@ -137,14 +137,7 @@ export default function ZoneEditor({ zone }: { zone: Zone }) {
               pointerEvents: 'none',
               zIndex: 60 
             }}>
-              {isVideo && (
-                <div style={{ position: 'absolute', top: '-75px', left: '-50px', display: 'flex', flexDirection: 'column', alignItems: 'center', pointerEvents: 'none', zIndex: 61 }}>
-                  <span style={{ fontFamily: 'var(--font-arabic)', color: '#ff4fa3', fontWeight: 'bold', fontSize: '18px', textShadow: '2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff', background: 'rgba(255,255,255,0.8)', padding: '2px 8px', borderRadius: '12px' }}>فيديو</span>
-                  <svg width="40" height="40" viewBox="0 0 100 100" style={{ transform: 'rotate(-10deg)', marginTop: '2px' }}>
-                    <path d="M 80 10 Q 40 20 20 80 M 20 80 L 10 55 M 20 80 L 45 70" stroke="#ff4fa3" strokeWidth="12" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </div>
-              )}
+
               {zone.showIcon && (
                 <div style={{ pointerEvents: 'auto', fontSize: "24px", color: zone.color, cursor: 'pointer' }}>
                   {getIcon()}

@@ -3,31 +3,65 @@ import { persist, StateStorage, createJSONStorage } from 'zustand/middleware';
 import { v4 as uuidv4 } from 'uuid';
 import { get, set, del } from 'idb-keyval';
 
-// Custom storage object using idb-keyval for unlimited storage
+// Single authoritative storage engine using IndexedDB (Unlimited storage quota)
 const idbStorage: StateStorage = {
   getItem: async (name: string): Promise<string | null> => {
-    const value = await get(name);
-    if (value) return value;
-    // Fallback/Migrate from localStorage
-    const localValue = localStorage.getItem(name);
-    if (localValue) {
-      await set(name, localValue);
-      return localValue;
+    if (typeof window === 'undefined') return null;
+    
+    // 1. IndexedDB is our primary, authoritative database
+    try {
+      const idbVal = await get(name);
+      if (idbVal) {
+        if (typeof idbVal === 'string' && idbVal.trim().startsWith('{')) {
+          return idbVal;
+        }
+        if (typeof idbVal === 'object') {
+          return JSON.stringify(idbVal);
+        }
+      }
+    } catch (e) {
+      console.warn("IndexedDB read failed:", e);
     }
+    
+    // 2. Only check legacy localStorage if IndexedDB was completely empty
+    try {
+      const localVal = localStorage.getItem(name);
+      if (localVal && localVal.trim().startsWith('{')) {
+        // Migrate to IndexedDB once, then remove from localStorage to stop future stale overwrites
+        set(name, localVal).catch(() => {});
+        localStorage.removeItem(name);
+        return localVal;
+      }
+    } catch (e) {}
+
     return null;
   },
+
   setItem: async (name: string, value: string): Promise<void> => {
+    if (typeof window === 'undefined') return;
+    
+    // Save directly to IndexedDB
     try {
       await set(name, value);
-      localStorage.removeItem(name); // Free up quota
     } catch (e: any) {
-      console.error("IDB Set Error:", e);
-      alert("تحذير هام: مساحة تخزين المتصفح ممتلئة! المتصفح يرفض حفظ أي تعديلات جديدة. الصور التي ستضيفينها الآن ستختفي عند التحديث. يرجى مسح بعض الصور القديمة من الدرس الأول.");
+      console.error("Critical IDB Write Error:", e);
     }
+    
+    // Permanently remove the localStorage copy so stale localStorage never poisons reloads
+    try {
+      localStorage.removeItem(name);
+    } catch (e) {}
   },
+
   removeItem: async (name: string): Promise<void> => {
-    await del(name);
-    localStorage.removeItem(name);
+    try {
+      await del(name);
+    } catch (e) {}
+    try {
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem(name);
+      }
+    } catch (e) {}
   },
 };
 
@@ -136,6 +170,7 @@ interface BookState {
   
   addZone: (zone: Omit<Zone, 'id'>) => void;
   updateZone: (id: string, updates: Partial<Zone>) => void;
+  updateMultipleZones: (updatesArray: {id: string, updates: Partial<Zone>}[]) => void;
   removeZone: (id: string) => void;
   
   exportBook: () => string;
@@ -341,6 +376,23 @@ export const useBookStore = create<BookState>()(
         return { zones: state.zones.map(z => z.id === id ? { ...z, ...cleanUpdates } : z) };
       }),
 
+      updateMultipleZones: (updatesArray) => set((state) => {
+        let newZones = [...state.zones];
+        for (const { id, updates } of updatesArray) {
+          const cleanUpdates = { ...updates };
+          if (cleanUpdates.content) {
+            if (cleanUpdates.content.videoUrl && cleanUpdates.content.videoUrl.startsWith('data:video') && cleanUpdates.content.videoUrl.length > 500000) {
+              cleanUpdates.content.videoUrl = '';
+            }
+            if (cleanUpdates.content.audioUrl && cleanUpdates.content.audioUrl.startsWith('data:audio') && cleanUpdates.content.audioUrl.length > 500000) {
+              cleanUpdates.content.audioUrl = '';
+            }
+          }
+          newZones = newZones.map(z => z.id === id ? { ...z, ...cleanUpdates } : z);
+        }
+        return { zones: newZones };
+      }),
+
       removeZone: (id) => set((state) => ({
         zones: state.zones.filter(z => z.id !== id)
       })),
@@ -369,9 +421,15 @@ export const useBookStore = create<BookState>()(
     {
       name: 'interactive-book-storage',
       storage: createJSONStorage(() => idbStorage),
-      partialize: (state) => Object.fromEntries(
-        Object.entries(state).filter(([key]) => !['drawingMode', 'draftPolygon'].includes(key))
-      ),
+      partialize: (state) => ({
+        curriculum: state.curriculum,
+        activeGrade: state.activeGrade,
+        activeLessonId: state.activeLessonId,
+        pages: state.pages,
+        zones: state.zones,
+        activePageId: state.activePageId,
+        selectedZoneId: state.selectedZoneId,
+      }),
     }
   )
 );

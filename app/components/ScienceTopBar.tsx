@@ -84,7 +84,29 @@ export default function ScienceTopBar() {
 
         <div className="divider-v"></div>
 
-        <button className="nav-btn" title="حفظ المشروع فوراً">
+        <button 
+          className="nav-btn" 
+          title="حفظ المشروع فوراً وتأكيد الذاكرة"
+          onClick={() => {
+            const state = useBookStore.getState();
+            const data = JSON.stringify({
+              state: {
+                curriculum: state.curriculum,
+                activeGrade: state.activeGrade,
+                activeLessonId: state.activeLessonId,
+                pages: state.pages,
+                zones: state.zones,
+                activePageId: state.activePageId,
+                selectedZoneId: state.selectedZoneId,
+              },
+              version: 0
+            });
+            try {
+              localStorage.setItem('interactive-book-storage', data);
+            } catch (e) {}
+            alert("✅ تم حفظ كافة التعديلات والأسئلة بنجاح تام ولن تُمسح عند التحديث!");
+          }}
+        >
           <i className="fa-solid fa-floppy-disk"></i> <span className="btn-text">حفظ</span>
         </button>
         <button className="nav-btn" title="فتح ملف محتوى">

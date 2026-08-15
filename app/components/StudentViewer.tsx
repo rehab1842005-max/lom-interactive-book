@@ -81,10 +81,11 @@ export default function StudentViewer({ styles }: { styles: any }) {
       color: "blue",
       x: 0, y: 0, width: 0, height: 0,
       interactionType: 'video',
-      interactionTypes: ['video'],
+      interactionTypes: ['video', ...(currentPage.questions && currentPage.questions.length > 0 ? ['question'] : [])],
       showIcon: false,
       content: {
-        videoUrl: currentPage.pageVideoUrl
+        videoUrl: currentPage.pageVideoUrl,
+        questions: currentPage.questions || []
       }
     };
     if (audioRef.current) {
@@ -97,25 +98,38 @@ export default function StudentViewer({ styles }: { styles: any }) {
   const handleZoneClick = (zone: Zone) => {
     // Dynamic slicing logic for numbered zones using Master Video
     let finalZone = JSON.parse(JSON.stringify(zone)); // Deep copy
+    finalZone.pageId = zone.pageId || currentPage.id;
     
     if (!finalZone.interactionTypes) {
       finalZone.interactionTypes = finalZone.interactionType !== 'none' ? [finalZone.interactionType] : [];
     }
 
     const content = finalZone.content || {};
-    if (!content.videoUrl && currentPage.pageVideoUrl && !isNaN(Number(zone.name))) {
-      const seq = Number(zone.name);
-      if (seq > 0) {
-        const interval = currentPage.videoSplitInterval || 8;
-        finalZone.content = {
-          ...content,
-          videoUrl: currentPage.pageVideoUrl,
-          videoStartTime: (seq - 1) * interval,
-          videoEndTime: seq * interval
-        };
-        if (!finalZone.interactionTypes.includes('video')) {
-          finalZone.interactionTypes.push('video');
-        }
+    const zoneNumMatch = zone.name ? zone.name.match(/\d+/) : null;
+    const seq = zoneNumMatch ? parseInt(zoneNumMatch[0], 10) : (!isNaN(Number(zone.name)) ? Number(zone.name) : null);
+    
+    if (!content.videoUrl && currentPage.pageVideoUrl && seq !== null && seq > 0) {
+      const interval = currentPage.videoSplitInterval || 8;
+      finalZone.content = {
+        ...content,
+        videoUrl: currentPage.pageVideoUrl,
+        videoStartTime: (seq - 1) * interval,
+        videoEndTime: seq * interval
+      };
+      if (!finalZone.interactionTypes.includes('video')) {
+        finalZone.interactionTypes.push('video');
+      }
+    }
+
+    const storeZones = useBookStore.getState().zones;
+    const freshZone = storeZones.find(z => z.id === zone.id);
+    if (freshZone?.content?.questions && freshZone.content.questions.length > 0) {
+      finalZone.content = {
+        ...finalZone.content,
+        questions: freshZone.content.questions
+      };
+      if (!finalZone.interactionTypes.includes('question')) {
+        finalZone.interactionTypes.push('question');
       }
     }
 
@@ -282,6 +296,8 @@ export default function StudentViewer({ styles }: { styles: any }) {
                           فيديو
                         </div>
                       )}
+
+
                     </>
                   );
                 })()}
@@ -295,87 +311,95 @@ export default function StudentViewer({ styles }: { styles: any }) {
 
       {/* Premium Floating Action Dock */}
       <AnimatePresence>
-        {(currentPage.pageVideoUrl || (pages[currentIndex]?.questions && pages[currentIndex].questions!.length > 0)) && (
-          <motion.div
-            initial={{ y: 50, opacity: 0, x: '-50%' }}
-            animate={{ y: 0, opacity: 1, x: '-50%' }}
-            exit={{ y: 50, opacity: 0, x: '-50%' }}
-            style={{
-              position: 'fixed',
-              bottom: '15px',
-              left: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '6px',
-              padding: '6px 12px',
-              background: 'rgba(255, 255, 255, 0.85)',
-              backdropFilter: 'blur(15px)',
-              WebkitBackdropFilter: 'blur(15px)',
-              border: '1px solid rgba(255, 79, 163, 0.2)',
-              borderRadius: '25px',
-              boxShadow: '0 8px 20px rgba(255, 79, 163, 0.15), 0 4px 10px rgba(0,0,0,0.05)',
-              zIndex: 100,
-            }}
-          >
-            {/* Video Button inside Dock */}
-            {currentPage.pageVideoUrl && (
-              <motion.button 
-                onClick={handleMasterVideoClick}
-                style={{
-                  background: 'transparent',
-                  color: 'var(--color-pink)',
-                  border: 'none',
-                  padding: '2px 6px',
-                  fontSize: '0.85rem',
-                  fontWeight: 'bold',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  cursor: 'pointer',
-                  borderRadius: '15px',
-                  transition: 'background 0.2s',
-                }}
-                whileHover={{ backgroundColor: 'rgba(255, 79, 163, 0.1)' }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <i className="fa-brands fa-youtube" style={{ fontSize: '1rem' }}></i> 
-                <span>شرح الصفحة</span>
-              </motion.button>
-            )}
+        {(() => {
+          const hasPageVideo = !!currentPage.pageVideoUrl;
+          const pageQuestionsCount = currentPage.questions?.length || allPages.find(p => p.questions && p.questions.length > 0)?.questions?.length || 0;
+          const hasAnyQuestions = pageQuestionsCount > 0;
 
-            {/* Divider if both exist */}
-            {currentPage.pageVideoUrl && (pages[currentIndex]?.questions && pages[currentIndex].questions!.length > 0) && (
-              <div style={{ width: '1px', height: '16px', background: 'rgba(255, 79, 163, 0.2)' }} />
-            )}
+          if (!hasPageVideo && !hasAnyQuestions) return null;
 
-            {/* Quiz Button inside Dock */}
-            {pages[currentIndex]?.questions && pages[currentIndex].questions!.length > 0 && (
-              <motion.button 
-                onClick={() => setShowPageQuiz(true)}
-                style={{
-                  background: 'transparent',
-                  color: 'var(--color-pink)',
-                  border: 'none',
-                  padding: '2px 6px',
-                  fontSize: '0.85rem',
-                  fontWeight: 'bold',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  cursor: 'pointer',
-                  borderRadius: '15px',
-                  transition: 'background 0.2s',
-                }}
-                whileHover={{ backgroundColor: 'rgba(255, 79, 163, 0.1)' }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <span>اختبر نفسك</span>
-                <FaClipboardCheck style={{ fontSize: '1rem' }} />
-              </motion.button>
-            )}
-          </motion.div>
-        )}
+          return (
+            <motion.div
+              initial={{ y: 50, opacity: 0, x: '-50%' }}
+              animate={{ y: 0, opacity: 1, x: '-50%' }}
+              exit={{ y: 50, opacity: 0, x: '-50%' }}
+              style={{
+                position: 'fixed',
+                bottom: '15px',
+                left: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                padding: '6px 14px',
+                background: 'rgba(255, 255, 255, 0.92)',
+                backdropFilter: 'blur(15px)',
+                WebkitBackdropFilter: 'blur(15px)',
+                border: '2px solid rgba(255, 79, 163, 0.3)',
+                borderRadius: '30px',
+                boxShadow: '0 10px 25px rgba(255, 79, 163, 0.25), 0 4px 10px rgba(0,0,0,0.08)',
+                zIndex: 100,
+              }}
+            >
+              {/* Video Button inside Dock */}
+              {hasPageVideo && (
+                <motion.button 
+                  onClick={handleMasterVideoClick}
+                  style={{
+                    background: 'transparent',
+                    color: 'var(--color-pink)',
+                    border: 'none',
+                    padding: '4px 10px',
+                    fontSize: '0.9rem',
+                    fontWeight: 'bold',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    cursor: 'pointer',
+                    borderRadius: '20px',
+                    transition: 'background 0.2s',
+                  }}
+                  whileHover={{ backgroundColor: 'rgba(255, 79, 163, 0.12)' }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <i className="fa-brands fa-youtube" style={{ fontSize: '1.1rem', color: '#ef4444' }}></i> 
+                  <span>شرح الصفحة</span>
+                </motion.button>
+              )}
+
+              {/* Divider if both exist */}
+              {hasPageVideo && hasAnyQuestions && (
+                <div style={{ width: '2px', height: '18px', background: 'rgba(255, 79, 163, 0.3)' }} />
+              )}
+
+              {/* Quiz Button inside Dock */}
+              {hasAnyQuestions && (
+                <motion.button 
+                  onClick={() => setShowPageQuiz(true)}
+                  style={{
+                    background: 'linear-gradient(135deg, #ff4fa3 0%, #db2777 100%)',
+                    color: 'white',
+                    border: 'none',
+                    padding: '6px 16px',
+                    fontSize: '0.9rem',
+                    fontWeight: 'bold',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    cursor: 'pointer',
+                    borderRadius: '20px',
+                    boxShadow: '0 3px 10px rgba(219, 39, 119, 0.35)'
+                  }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <FaClipboardCheck style={{ fontSize: '1rem' }} />
+                  <span>اختبر نفسك ({pageQuestionsCount})</span>
+                </motion.button>
+              )}
+            </motion.div>
+          );
+        })()}
       </AnimatePresence>
 
       {/* Right (Previous) Navigation Button */}
@@ -417,6 +441,23 @@ export default function StudentViewer({ styles }: { styles: any }) {
       >
         <FaChevronLeft />
       </button>
+
+      {/* Top Bar with version number */}
+      <div style={{ position: "absolute", top: "10px", left: "10px", zIndex: 100, display: "flex", alignItems: "center", gap: "10px", pointerEvents: "none" }}>
+        <span style={{ 
+          background: "rgba(255, 255, 255, 0.9)", 
+          padding: "4px 10px", 
+          borderRadius: "8px", 
+          fontSize: "0.85rem", 
+          fontWeight: "bold", 
+          color: "#db2777",
+          border: "1px solid #fbcfe8",
+          boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+          pointerEvents: "auto"
+        }}>
+          v2.0 ✨
+        </span>
+      </div>
 
       {/* Educational Journey Modal */}
       <AnimatePresence>

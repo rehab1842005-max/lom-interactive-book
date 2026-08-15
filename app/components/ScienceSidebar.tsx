@@ -5,9 +5,10 @@ import { useBookStore } from "../store/bookStore";
 import { useDropzone } from "react-dropzone";
 import { storage } from "../../lib/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { FaEdit } from "react-icons/fa";
+import { FaEdit, FaMagic } from "react-icons/fa";
 import QuestionBuilderModal from "./QuestionBuilderModal";
 import PageQuestionsModal from "./PageQuestionsModal";
+import SmartImporterModal from "./SmartImporterModal";
 
 
 
@@ -360,6 +361,7 @@ export default function ScienceSidebar() {
   const [editingQuestionIndex, setEditingQuestionIndex] = useState<number | null>(null);
   const [editingGrade, setEditingGrade] = useState<number>(4);
   const [editingPageQuestionsId, setEditingPageQuestionsId] = useState<string | null>(null);
+  const [showSmartImporter, setShowSmartImporter] = useState(false);
   const { currentAdmin, logout } = useAdminStore();
   
   useEffect(() => {
@@ -798,6 +800,23 @@ export default function ScienceSidebar() {
                 <div className="type-icon" style={{ background: "var(--color-pink)" }}><i className="fa-solid fa-pen-clip"></i></div>
                 <div className="type-info"><h4>رسم يدوي (بالقلم)</h4><p>لرسم الأشكال المتعرجة كالأعضاء بالماوس</p></div>
               </button>
+              <button 
+                className="hotspot-type-card" 
+                style={{ 
+                  gridColumn: "1 / -1", 
+                  background: "linear-gradient(135deg, rgba(142, 68, 173, 0.08) 0%, rgba(255, 79, 163, 0.12) 100%)",
+                  border: "1.5px solid #e9d5ff"
+                }} 
+                onClick={() => setShowSmartImporter(true)}
+              >
+                <div className="type-icon" style={{ background: "linear-gradient(135deg, #8E44AD, #FF4FA3)", color: "white" }}>
+                  <FaMagic />
+                </div>
+                <div className="type-info">
+                  <h4 style={{ color: "#7c3aed" }}>استيراد بالذكاء الاصطناعي ✨</h4>
+                  <p>لصق وتوزيع الأسئلة تلقائياً على كل المقاطع</p>
+                </div>
+              </button>
             </div>
           </div>
         )}
@@ -966,7 +985,11 @@ export default function ScienceSidebar() {
                             allQs[editingQuestionIndex] = updatedQ as any;
                           }
                           
+                          const newInteractions = new Set(selectedZone.interactionTypes || []);
+                          newInteractions.add('question');
+
                           updateZone(selectedZone.id, { 
+                            interactionTypes: Array.from(newInteractions),
                             content: { 
                               ...selectedZone.content, 
                               questions: allQs,
@@ -1020,6 +1043,13 @@ export default function ScienceSidebar() {
         <PageQuestionsModal
           pageId={editingPageQuestionsId}
           onClose={() => setEditingPageQuestionsId(null)}
+        />
+      )}
+
+      {showSmartImporter && activePageId && (
+        <SmartImporterModal 
+          pageId={activePageId}
+          onClose={() => setShowSmartImporter(false)}
         />
       )}
     </aside>
