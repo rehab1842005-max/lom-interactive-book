@@ -910,7 +910,7 @@ export default function ScienceSidebar() {
                     </label>
                   </div>
                 )}
-                {selectedZone.interactionType === 'question' && (
+                {(selectedZone.interactionType === 'question' || selectedZone.interactionTypes?.includes('question') || (selectedZone.content?.questions && selectedZone.content.questions.length > 0)) && (
                   <div style={{ background: 'var(--primary-light)', padding: '15px', borderRadius: '8px', display: 'flex', flexDirection: 'column', gap: '15px', textAlign: 'center' }}>
                     <h4 style={{ color: 'var(--primary-color)' }}><i className="fa-solid fa-clipboard-question"></i> إعدادات الأسئلة (اختبار)</h4>
                     
