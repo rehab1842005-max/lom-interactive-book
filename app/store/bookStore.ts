@@ -3,12 +3,20 @@ import { persist, StateStorage, createJSONStorage } from 'zustand/middleware';
 import { v4 as uuidv4 } from 'uuid';
 import { get, set, del } from 'idb-keyval';
 
-// Single authoritative storage engine using IndexedDB (Unlimited storage quota)
+// High-reliability dual storage engine (Synchronous localStorage + IndexedDB backup)
 const idbStorage: StateStorage = {
   getItem: async (name: string): Promise<string | null> => {
     if (typeof window === 'undefined') return null;
     
-    // 1. IndexedDB is our primary, authoritative database
+    // 1. Read synchronous localStorage first (instant & reliable across page navigation)
+    try {
+      const localVal = localStorage.getItem(name);
+      if (localVal && localVal.trim().startsWith('{')) {
+        return localVal;
+      }
+    } catch (e) {}
+    
+    // 2. Fallback to IndexedDB
     try {
       const idbVal = await get(name);
       if (idbVal) {
@@ -19,48 +27,31 @@ const idbStorage: StateStorage = {
           return JSON.stringify(idbVal);
         }
       }
-    } catch (e) {
-      console.warn("IndexedDB read failed:", e);
-    }
-    
-    // 2. Only check legacy localStorage if IndexedDB was completely empty
-    try {
-      const localVal = localStorage.getItem(name);
-      if (localVal && localVal.trim().startsWith('{')) {
-        // Migrate to IndexedDB once, then remove from localStorage to stop future stale overwrites
-        set(name, localVal).catch(() => {});
-        localStorage.removeItem(name);
-        return localVal;
-      }
     } catch (e) {}
-
+    
     return null;
   },
 
   setItem: async (name: string, value: string): Promise<void> => {
     if (typeof window === 'undefined') return;
     
-    // Save directly to IndexedDB
+    // 1. Save synchronously to localStorage (zero loss on instant navigation)
+    try {
+      localStorage.setItem(name, value);
+    } catch (e) {}
+    
+    // 2. Save asynchronously to IndexedDB
     try {
       await set(name, value);
-    } catch (e: any) {
-      console.error("Critical IDB Write Error:", e);
-    }
-    
-    // Permanently remove the localStorage copy so stale localStorage never poisons reloads
-    try {
-      localStorage.removeItem(name);
     } catch (e) {}
   },
 
   removeItem: async (name: string): Promise<void> => {
     try {
-      await del(name);
+      localStorage.removeItem(name);
     } catch (e) {}
     try {
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem(name);
-      }
+      await del(name);
     } catch (e) {}
   },
 };
@@ -449,6 +440,9 @@ export const saveCurrentStoreToDb = async () => {
     },
     version: 0
   });
+  try {
+    localStorage.setItem('interactive-book-storage', data);
+  } catch (e) {}
   try {
     await set('interactive-book-storage', data);
   } catch (e) {
