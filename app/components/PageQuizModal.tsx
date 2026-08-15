@@ -17,7 +17,9 @@ export default function PageQuizModal({ page, onClose }: PageQuizModalProps) {
   const pageZoneQs = zones.filter(z => z.pageId === page.id).flatMap(z => z.content?.questions || (z.content?.question ? [z.content.question] : []));
   const allQs = (page.questions && page.questions.length > 0) 
     ? page.questions 
-    : (currentLessonPages.find(p => p.questions && p.questions.length > 0)?.questions || pageZoneQs.length > 0 ? pageZoneQs : (pages.find(p => p.questions && p.questions.length > 0)?.questions || []));
+    : (currentLessonPages.find(p => p.questions && p.questions.length > 0)?.questions 
+       || pages.find(p => p.questions && p.questions.length > 0)?.questions 
+       || (pageZoneQs.length > 0 ? pageZoneQs : []));
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [showFinalScore, setShowFinalScore] = useState(false);
   const [score, setScore] = useState(0);

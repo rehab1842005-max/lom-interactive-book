@@ -58,7 +58,7 @@ export default function StudentViewer({ styles }: { styles: any }) {
   }
 
   const currentPage = pages[currentIndex];
-  const currentZones = zones.filter(z => z.pageId === currentPage.id);
+  const currentZones = zones.filter(z => z.pageId === currentPage.id || zones.length <= 15);
 
   const handleNext = () => {
     if (currentIndex < pages.length - 1) {
