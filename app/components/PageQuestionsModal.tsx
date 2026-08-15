@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import { useBookStore, Question } from "../store/bookStore";
-import { FaTimes, FaPlus, FaTrash, FaEdit } from "react-icons/fa";
+import { FaTimes, FaPlus, FaTrash, FaEdit, FaMagic } from "react-icons/fa";
 import QuestionBuilderModal from "./QuestionBuilderModal";
+import SmartImporterModal from "./SmartImporterModal";
 
 export default function PageQuestionsModal({
   pageId,
@@ -18,6 +19,7 @@ export default function PageQuestionsModal({
   const questions = page?.questions || [];
 
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [showSmartImporter, setShowSmartImporter] = useState(false);
 
   if (!page) return null;
 
@@ -73,15 +75,26 @@ export default function PageQuestionsModal({
               <p style={{ color: '#555' }}>
                 أضف أسئلة تظهر للطالب عند ضغطه على زر "اختبر نفسك" في هذه الصفحة.
               </p>
-              <button
-                onClick={() => setEditingIndex(questions.length)}
-                style={{
-                  background: 'var(--primary-color)', color: 'white', border: 'none',
-                  padding: '8px 15px', borderRadius: '8px', cursor: 'pointer', display: 'flex', gap: '5px', alignItems: 'center'
-                }}
-              >
-                <FaPlus /> إضافة سؤال
-              </button>
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button
+                  onClick={() => setShowSmartImporter(true)}
+                  style={{
+                    background: 'var(--color-pink)', color: 'white', border: 'none',
+                    padding: '8px 15px', borderRadius: '8px', cursor: 'pointer', display: 'flex', gap: '5px', alignItems: 'center'
+                  }}
+                >
+                  <FaMagic /> استيراد ذكي
+                </button>
+                <button
+                  onClick={() => setEditingIndex(questions.length)}
+                  style={{
+                    background: 'var(--primary-color)', color: 'white', border: 'none',
+                    padding: '8px 15px', borderRadius: '8px', cursor: 'pointer', display: 'flex', gap: '5px', alignItems: 'center'
+                  }}
+                >
+                  <FaPlus /> إضافة سؤال
+                </button>
+              </div>
             </div>
 
             {questions.length === 0 ? (
@@ -116,6 +129,13 @@ export default function PageQuestionsModal({
           </div>
         )}
       </div>
+
+      {showSmartImporter && (
+        <SmartImporterModal
+          pageId={pageId}
+          onClose={() => setShowSmartImporter(false)}
+        />
+      )}
     </div>,
     document.body
   );

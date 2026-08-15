@@ -272,6 +272,21 @@ export default function SmartImporterModal({
         <p style={{ color: '#666', marginBottom: '15px' }}>
           انسخي الأسئلة التي قمتِ بتحضيرها والصقيها هنا. سيقوم النظام تلقائياً بتوزيعها على المربعات الصحيحة (1، 2، 3...) واختبار الصفحة.
         </p>
+
+        <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
+          <button 
+            onClick={() => setText("المقطع 1\nصح أم غلط\nالسؤال الأول هنا\n✅ صح\nالسؤال الثاني هنا\n❌ غلط\n\nالمقطع 2\nاختيار من متعدد\nالسؤال الثالث هنا\nأ) إجابة أولى\nب) إجابة ثانية ✅\nج) إجابة ثالثة")}
+            style={{ padding: '6px 12px', background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', color: '#475569' }}
+          >
+            قالب: أسئلة المربعات
+          </button>
+          <button 
+            onClick={() => setText("اختبار الصفحة\nصح أم غلط\nالسؤال الأول هنا\n✅ صح\n\nاختيار من متعدد\nالسؤال الثاني هنا\nأ) إجابة أولى\nب) إجابة ثانية ✅\nج) إجابة ثالثة")}
+            style={{ padding: '6px 12px', background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', color: '#475569' }}
+          >
+            قالب: أسئلة اختبر نفسك
+          </button>
+        </div>
         
         <textarea
           value={text}
