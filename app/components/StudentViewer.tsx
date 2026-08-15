@@ -367,6 +367,7 @@ export default function StudentViewer({ styles }: { styles: any }) {
                     cursor: 'pointer',
                     borderRadius: '20px',
                     transition: 'background 0.2s',
+                    whiteSpace: 'nowrap'
                   }}
                   whileHover={{ backgroundColor: 'rgba(255, 79, 163, 0.12)' }}
                   whileTap={{ scale: 0.95 }}
@@ -397,7 +398,8 @@ export default function StudentViewer({ styles }: { styles: any }) {
                     gap: '6px',
                     cursor: 'pointer',
                     borderRadius: '20px',
-                    boxShadow: '0 3px 10px rgba(219, 39, 119, 0.35)'
+                    boxShadow: '0 3px 10px rgba(219, 39, 119, 0.35)',
+                    whiteSpace: 'nowrap'
                   }}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
