@@ -452,7 +452,7 @@ export default function StudentViewer({ styles }: { styles: any }) {
       </button>
 
       {/* Top Bar with version number */}
-      <div style={{ position: "absolute", top: "10px", left: "10px", zIndex: 100, display: "flex", alignItems: "center", gap: "10px", pointerEvents: "none" }}>
+      <div style={{ position: "absolute", top: "10px", left: "10px", zIndex: 100, display: "flex", flexDirection: "column", gap: "10px", pointerEvents: "none" }}>
         <span style={{ 
           background: "rgba(255, 255, 255, 0.9)", 
           padding: "4px 10px", 
@@ -466,6 +466,8 @@ export default function StudentViewer({ styles }: { styles: any }) {
         }}>
           v2.0 ✨
         </span>
+        
+
       </div>
 
       {/* Educational Journey Modal */}

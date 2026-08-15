@@ -38,7 +38,9 @@ const idbStorage: StateStorage = {
     // 1. Save synchronously to localStorage (zero loss on instant navigation)
     try {
       localStorage.setItem(name, value);
-    } catch (e) {}
+    } catch (e) {
+      try { localStorage.removeItem(name); } catch(ex) {}
+    }
     
     // 2. Save asynchronously to IndexedDB
     try {
@@ -442,7 +444,9 @@ export const saveCurrentStoreToDb = async () => {
   });
   try {
     localStorage.setItem('interactive-book-storage', data);
-  } catch (e) {}
+  } catch (e) {
+    try { localStorage.removeItem('interactive-book-storage'); } catch(ex) {}
+  }
   try {
     await set('interactive-book-storage', data);
   } catch (e) {

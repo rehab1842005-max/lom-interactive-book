@@ -243,40 +243,65 @@ export default function SmartImporterModal({
       }
       
       // Atomic state update in Zustand
-      useBookStore.setState((state) => {
-        const newZones = state.zones.map(z => {
-          const matchingUpdate = zoneUpdates.find(u => u.id === z.id);
-          return matchingUpdate ? { ...z, ...matchingUpdate.updates } : z;
-        });
+      // FALLBACK: If user didn't use any zone dividers (### 1) but they DO have squares drawn,
+      // assign all the parsed page questions to their first square automatically!
+      if (Object.keys(zoneQuestionsMap).length === 0 && pageQuestions.length > 0 && visualZones.length > 0) {
+        const targetZone = visualZones[0];
+        const interactions = new Set(targetZone.interactionTypes || []);
+        interactions.add('question');
         
-        const newPages = state.pages.map(p => {
-          if (p.id === targetPageId || (activeLessonId && p.lessonId === activeLessonId) || state.pages.length === 1) {
-            return { ...p, questions: finalPageQuestions };
+        zoneUpdates.push({
+          id: targetZone.id,
+          updates: {
+            interactionTypes: Array.from(interactions),
+            content: {
+              ...targetZone.content,
+              questions: [...pageQuestions],
+              question: undefined
+            }
           }
-          return p;
         });
+        appliedZones = 1;
+        // Move them out of page questions so they don't duplicate
+        pageQuestions = [];
+      }
 
-        return {
-          zones: newZones,
-          pages: newPages
-        };
-      });
-      
-      await saveCurrentStoreToDb();
-      if ((window as any).forceFirebaseSync) {
-        try {
-          await (window as any).forceFirebaseSync();
-        } catch (e) {}
+      if (zoneUpdates.length > 0) {
+        alert("Debug: We are updating " + zoneUpdates.length + " zones. The first zone has " + (zoneUpdates[0].updates.content?.questions?.length || 0) + " questions. Target Zone ID: " + zoneUpdates[0].id);
+        updateMultipleZones(zoneUpdates);
+      } else {
+        alert("Debug: zoneUpdates is empty! Parsed pageQuestions=" + pageQuestions.length + " zoneQuestionsMapKeys=" + Object.keys(zoneQuestionsMap).length);
       }
       
-      setStatus(`✅ تم بنجاح! تم ربط الأسئلة بـ ${appliedZones} مربعات، وتحديث اختبار الصفحة الشامل (${finalPageQuestions.length} أسئلة).`);
+      if (pageQuestions.length > 0) {
+        const targetPage = useBookStore.getState().pages.find(p => p.id === targetPageId);
+        if (targetPage) {
+          updatePage(targetPageId, { questions: pageQuestions });
+        }
+      }
+      
+      setStatus("جاري الحفظ محلياً...");
+      // Let Zustand persist handle IndexedDB identically to Manual Add
+      
+      if ((window as any).forceFirebaseSync) {
+        try {
+          setStatus("جاري الرفع والسحابة (Firebase)... يرجى الانتظار");
+          await (window as any).forceFirebaseSync();
+        } catch (e) {
+          console.error("Firebase sync failed:", e);
+        }
+      }
+      
+      setStatus(`✅ تم بنجاح! تم ربط الأسئلة بـ ${appliedZones} مربعات، وتحديث اختبار الصفحة الشامل (${pageQuestions.length} أسئلة).`);
+      
       setTimeout(() => {
         onClose();
-      }, 1800);
+      }, 2000);
       
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
       setStatus("حدث خطأ في التحليل، يرجى التأكد من التنسيق.");
+      alert(`حدث خطأ أثناء الحفظ:\n${e.message || String(e)}\n\nيرجى تحديث الصفحة (Refresh) والمحاولة مرة أخرى.`);
     }
   };
 
