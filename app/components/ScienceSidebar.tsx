@@ -800,6 +800,23 @@ export default function ScienceSidebar() {
                 <div className="type-icon" style={{ background: "var(--color-pink)" }}><i className="fa-solid fa-pen-clip"></i></div>
                 <div className="type-info"><h4>رسم يدوي (بالقلم)</h4><p>لرسم الأشكال المتعرجة كالأعضاء بالماوس</p></div>
               </button>
+              <button 
+                className="hotspot-type-card" 
+                style={{ 
+                  gridColumn: "1 / -1", 
+                  background: "linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%)",
+                  border: "1.5px solid #f472b6"
+                }} 
+                onClick={() => setShowSmartImporter(true)}
+              >
+                <div className="type-icon" style={{ background: "linear-gradient(135deg, #ec4899, #db2777)", color: "white" }}>
+                  <FaMagic />
+                </div>
+                <div className="type-info">
+                  <h4 style={{ color: "#be185d" }}>منظم الأسئلة التلقائي 🪄</h4>
+                  <p>لصق وتوزيع الأسئلة تلقائياً على كل المربعات</p>
+                </div>
+              </button>
             </div>
           </div>
         )}
