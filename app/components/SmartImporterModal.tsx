@@ -242,19 +242,25 @@ export default function SmartImporterModal({
         }
       }
       
-      if (zoneUpdates.length > 0) {
-        updateMultipleZones(zoneUpdates);
-      }
+      // Atomic state update in Zustand
+      useBookStore.setState((state) => {
+        const newZones = state.zones.map(z => {
+          const matchingUpdate = zoneUpdates.find(u => u.id === z.id);
+          return matchingUpdate ? { ...z, ...matchingUpdate.updates } : z;
+        });
+        
+        const newPages = state.pages.map(p => {
+          if (p.id === targetPageId || (activeLessonId && p.lessonId === activeLessonId) || state.pages.length === 1) {
+            return { ...p, questions: finalPageQuestions };
+          }
+          return p;
+        });
 
-      // Save comprehensive page questions for the whole page quiz across the lesson/page
-      const finalPageQuestions = pageQuestions.length > 0 ? pageQuestions : (allParsedQuestions.length <= 15 ? allParsedQuestions : allParsedQuestions.slice(0, 10));
-      
-      const pagesToUpdate = currentPages.filter(p => p.id === targetPageId || (activeLessonId && p.lessonId === activeLessonId));
-      if (pagesToUpdate.length > 0) {
-        pagesToUpdate.forEach(p => updatePage(p.id, { questions: finalPageQuestions }));
-      } else {
-        currentPages.forEach(p => updatePage(p.id, { questions: finalPageQuestions }));
-      }
+        return {
+          zones: newZones,
+          pages: newPages
+        };
+      });
       
       await saveCurrentStoreToDb();
       if ((window as any).forceFirebaseSync) {
@@ -263,10 +269,10 @@ export default function SmartImporterModal({
         } catch (e) {}
       }
       
-      setStatus(`تم استيراد الأسئلة بنجاح! تم توزيع الأسئلة على ${appliedZones} مربعات، وتحديث اختبار الصفحة (${finalPageQuestions.length} أسئلة).`);
+      setStatus(`✅ تم بنجاح! تم ربط الأسئلة بـ ${appliedZones} مربعات، وتحديث اختبار الصفحة الشامل (${finalPageQuestions.length} أسئلة).`);
       setTimeout(() => {
         onClose();
-      }, 1500);
+      }, 1800);
       
     } catch (e) {
       console.error(e);
