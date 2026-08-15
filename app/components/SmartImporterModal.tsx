@@ -233,6 +233,11 @@ export default function SmartImporterModal({
       }
       
       await saveCurrentStoreToDb();
+      if ((window as any).forceFirebaseSync) {
+        try {
+          await (window as any).forceFirebaseSync();
+        } catch (e) {}
+      }
       
       setStatus(`تم استيراد الأسئلة بنجاح! تم توزيع الأسئلة على ${appliedZones} مربعات، وتحديث اختبار الصفحة (${finalPageQuestions.length} أسئلة).`);
       setTimeout(() => {

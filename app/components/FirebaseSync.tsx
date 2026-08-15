@@ -41,9 +41,25 @@ export default function FirebaseSync() {
 
         isUpdatingFromFirebase.current = true;
         
+        const localZones = localState.zones || [];
+        const remoteZones = data.zones || [];
+        const mergedZones = remoteZones.map((rz: any) => {
+          const lz = localZones.find(z => z.id === rz.id);
+          if (lz?.content?.questions?.length > 0 && (!rz.content?.questions || rz.content.questions.length === 0)) {
+            return {
+              ...rz,
+              content: {
+                ...rz.content,
+                questions: lz.content.questions
+              }
+            };
+          }
+          return rz;
+        });
+
         useBookStore.setState({
           curriculum: data.curriculum || {},
-          zones: data.zones || []
+          zones: mergedZones.length > 0 ? mergedZones : localZones
         });
         
         setTimeout(() => {
@@ -60,9 +76,19 @@ export default function FirebaseSync() {
         if (snap.exists()) {
           const lessonPages = snap.data().pages || [];
           const currentState = useBookStore.getState();
+          
+          // Preserve local page questions if remote has none
+          const cleanLessonPages = lessonPages.map((rp: any) => {
+            const lp = currentState.pages.find(p => p.id === rp.id);
+            if (lp?.questions && lp.questions.length > 0 && (!rp.questions || rp.questions.length === 0)) {
+              return { ...rp, questions: lp.questions };
+            }
+            return rp;
+          });
+
           // Merge remote pages for this lesson with local pages for other lessons
           const otherPages = currentState.pages.filter(p => p.lessonId !== lessonId);
-          const newPages = [...otherPages, ...lessonPages];
+          const newPages = [...otherPages, ...cleanLessonPages];
           
           // Only update if there's an actual change to avoid infinite loops
           if (JSON.stringify(currentState.pages) !== JSON.stringify(newPages)) {
