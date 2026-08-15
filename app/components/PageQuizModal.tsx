@@ -13,13 +13,14 @@ interface PageQuizModalProps {
 
 export default function PageQuizModal({ page, onClose }: PageQuizModalProps) {
   const { pages, zones } = useBookStore();
-  const currentLessonPages = pages.filter(p => p.lessonId === page.lessonId);
-  const pageZoneQs = zones.filter(z => z.pageId === page.id).flatMap(z => z.content?.questions || (z.content?.question ? [z.content.question] : []));
-  const allQs = (page.questions && page.questions.length > 0) 
-    ? page.questions 
-    : (currentLessonPages.find(p => p.questions && p.questions.length > 0)?.questions 
-       || pages.find(p => p.questions && p.questions.length > 0)?.questions 
-       || (pageZoneQs.length > 0 ? pageZoneQs : []));
+  const currentZones = zones.filter(z => z.pageId === page.id || zones.length <= 15);
+  const directPageQuestions = page.questions || [];
+  const zoneQuestions = currentZones.flatMap(z => z.content?.questions || (z.content?.question ? [z.content.question] : []));
+  const allLessonQuestions = pages.filter(p => p.lessonId === page.lessonId).flatMap(p => p.questions || []);
+  
+  const allQs = directPageQuestions.length > 0 
+    ? directPageQuestions 
+    : (zoneQuestions.length > 0 ? zoneQuestions : (allLessonQuestions.length > 0 ? allLessonQuestions : (pages.find(p => p.questions && p.questions.length > 0)?.questions || [])));
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [showFinalScore, setShowFinalScore] = useState(false);
   const [score, setScore] = useState(0);

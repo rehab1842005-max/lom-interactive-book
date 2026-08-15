@@ -313,12 +313,16 @@ export default function StudentViewer({ styles }: { styles: any }) {
       <AnimatePresence>
         {(() => {
           const hasPageVideo = !!currentPage.pageVideoUrl;
-          const currentLessonPages = allPages.filter(p => p.lessonId === currentPage.lessonId);
-          const pageQuestions = (currentPage.questions && currentPage.questions.length > 0) 
-            ? currentPage.questions 
-            : (currentLessonPages.find(p => p.questions && p.questions.length > 0)?.questions || allPages.find(p => p.questions && p.questions.length > 0)?.questions || pages.find(p => p.questions && p.questions.length > 0)?.questions || []);
           
-          const pageQuestionsCount = pageQuestions.length;
+          const directPageQuestions = currentPage.questions || [];
+          const zoneQuestions = currentZones.flatMap(z => z.content?.questions || (z.content?.question ? [z.content.question] : []));
+          const allLessonQuestions = allPages.filter(p => p.lessonId === currentPage.lessonId).flatMap(p => p.questions || []);
+          
+          const finalQuizQuestions = directPageQuestions.length > 0 
+            ? directPageQuestions 
+            : (zoneQuestions.length > 0 ? zoneQuestions : (allLessonQuestions.length > 0 ? allLessonQuestions : []));
+          
+          const pageQuestionsCount = finalQuizQuestions.length;
           const hasAnyQuestions = pageQuestionsCount > 0;
 
           if (!hasPageVideo && !hasAnyQuestions) return null;
