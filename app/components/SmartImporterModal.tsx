@@ -69,6 +69,11 @@ export default function SmartImporterModal({
         let line = lines[i].trim();
         if (!line) continue;
 
+        // Ignore generic headers
+        if (line.includes('أسئلة كل جزئية') || line.includes('أسئلة الجزئية')) {
+          continue;
+        }
+
         // 1. Check for targets
         if (line.includes('اختبار الصفحة') || line.includes('اختبار شامل') || line.includes('اختبار الدرس')) {
           saveCurrentQuestion();
@@ -82,20 +87,18 @@ export default function SmartImporterModal({
         }
         
         // Match zone headers ONLY when not in page quiz mode, or when explicitly preceded by ### or 'المقطع'
-        const isExplicitZoneHeader = line.includes('المقطع') || line.includes('مقطع') || line.includes('المربع') || line.includes('مربع') || (line.startsWith('#') && !line.includes('اختبار'));
+        const isExplicitZoneHeader = line.includes('المقطع') || line.includes('مقطع') || line.includes('المربع') || line.includes('مربع') || (line.startsWith('#') && !line.includes('اختبار') && !line.includes('أسئلة'));
         
-        if (isExplicitZoneHeader || currentTarget !== 'page') {
+        if (isExplicitZoneHeader || (currentTarget !== 'page' && (line.startsWith('###') || line.startsWith('##')))) {
           const arabicWordMap: Record<string, string> = { 'الأول': '1', 'الاول': '1', 'الثاني': '2', 'الثالث': '3', 'الرابع': '4', 'الخامس': '5', 'السادس': '6', 'السابع': '7', 'الثامن': '8', 'التاسع': '9', 'العاشر': '10' };
           let matchedSeq: string | null = null;
           
           const zoneMatch = line.match(/(?:###|##|#|\*{1,2})?\s*(?:المقطع|مقطع|المربع|مربع|المنطقة|منطقة|س|فقرة)?\s*(\d+)\s*(?:[—\-:\.\)]|\*{1,2}|$)/i);
-          if (zoneMatch && isExplicitZoneHeader) {
-            matchedSeq = zoneMatch[1];
-          } else if (zoneMatch && currentTarget !== 'page' && !line.match(/^\*\*?\d+\.?\*\*?/) && !line.match(/^\d+[\.\)]/)) {
+          if (zoneMatch) {
             matchedSeq = zoneMatch[1];
           } else {
             for (const [word, num] of Object.entries(arabicWordMap)) {
-              if (line.includes(word) && (line.includes('المقطع') || line.includes('مقطع') || line.includes('المربع') || line.includes('مربع') || line.startsWith('#'))) {
+              if (line.includes(word)) {
                 matchedSeq = num;
                 break;
               }
@@ -137,7 +140,7 @@ export default function SmartImporterModal({
             let cleanTitle = line.replace(/^\*\*?\d+\.?\*\*?\s*/, '').replace(/\*+/g, '').trim();
             cleanTitle = cleanTitle.replace(/^(?:س\s*\d+|\d+)[\.\-:\)]\s*/, '').trim();
             
-            if (cleanTitle) {
+            if (cleanTitle && !cleanTitle.startsWith('#')) {
               currentQ = {
                 type: currentMode,
                 title: cleanTitle,
@@ -172,6 +175,22 @@ export default function SmartImporterModal({
         return m ? parseInt(m[0], 10) : null;
       };
 
+      const nameKeywordsMap: Record<string, string[]> = {
+        '1': ['ماذا يوجد', 'حولنا', '1'],
+        '2': ['إنسان', 'انسان', '2'],
+        '3': ['حيوان', 'حيوانات', '3'],
+        '4': ['نبات', 'نباتات', '4'],
+        '5': ['أشياء غير حية', 'غير حية', '5'],
+        '6': ['صخور', 'صخرة', '6'],
+        '7': ['ماء', 'مياه', '7'],
+        '8': ['هواء', '8'],
+        '9': ['خصائص الكائنات', 'خصائص', '9'],
+        '10': ['تغذية', 'غذاء', '10'],
+        '11': ['نمو', '11'],
+        '12': ['تنفس', '12'],
+        '13': ['تعريف', 'نهائي', '13']
+      };
+
       // Apply parsed data to zones
       let appliedZones = 0;
       const { updateMultipleZones, updatePage, pages: currentPages, zones: freshZones, activeLessonId } = useBookStore.getState();
@@ -190,7 +209,12 @@ export default function SmartImporterModal({
         seqIndex++;
         const targetSeqNum = parseInt(seq, 10);
         
-        let targetZone = zonesToUse.find(z => extractNum(z.name) === targetSeqNum);
+        let targetZone = zonesToUse.find(z => {
+          if (extractNum(z.name) === targetSeqNum) return true;
+          const keywords = nameKeywordsMap[seq] || [];
+          return keywords.some(kw => z.name?.toLowerCase().includes(kw.toLowerCase()));
+        });
+
         if (!targetZone && visualZones[seqIndex - 1]) {
           targetZone = visualZones[seqIndex - 1];
         }
@@ -205,7 +229,7 @@ export default function SmartImporterModal({
           zoneUpdates.push({
             id: targetZone.id,
             updates: { 
-              name: `${targetSeqNum || seqIndex}`,
+              name: targetZone.name || `${targetSeqNum || seqIndex}`,
               interactionTypes: Array.from(interactions),
               content: {
                 ...targetZone.content,
