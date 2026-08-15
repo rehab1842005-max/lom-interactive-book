@@ -223,10 +223,14 @@ export default function SmartImporterModal({
         updateMultipleZones(zoneUpdates);
       }
 
-      // Save comprehensive page questions for the whole page quiz
+      // Save comprehensive page questions for the whole page quiz across the lesson/page
       const finalPageQuestions = pageQuestions.length > 0 ? pageQuestions : (allParsedQuestions.length <= 15 ? allParsedQuestions : allParsedQuestions.slice(0, 10));
-      if (targetPageId) {
-        updatePage(targetPageId, { questions: finalPageQuestions });
+      
+      const pagesToUpdate = currentPages.filter(p => p.id === targetPageId || (activeLessonId && p.lessonId === activeLessonId));
+      if (pagesToUpdate.length > 0) {
+        pagesToUpdate.forEach(p => updatePage(p.id, { questions: finalPageQuestions }));
+      } else {
+        currentPages.forEach(p => updatePage(p.id, { questions: finalPageQuestions }));
       }
       
       setStatus(`تم استيراد الأسئلة بنجاح! تم توزيع الأسئلة على ${appliedZones} مربعات، وتحديث اختبار الصفحة (${finalPageQuestions.length} أسئلة).`);

@@ -313,7 +313,12 @@ export default function StudentViewer({ styles }: { styles: any }) {
       <AnimatePresence>
         {(() => {
           const hasPageVideo = !!currentPage.pageVideoUrl;
-          const pageQuestionsCount = currentPage.questions?.length || allPages.find(p => p.questions && p.questions.length > 0)?.questions?.length || 0;
+          const currentLessonPages = allPages.filter(p => p.lessonId === currentPage.lessonId);
+          const pageQuestions = (currentPage.questions && currentPage.questions.length > 0) 
+            ? currentPage.questions 
+            : (currentLessonPages.find(p => p.questions && p.questions.length > 0)?.questions || allPages.find(p => p.questions && p.questions.length > 0)?.questions || pages.find(p => p.questions && p.questions.length > 0)?.questions || []);
+          
+          const pageQuestionsCount = pageQuestions.length;
           const hasAnyQuestions = pageQuestionsCount > 0;
 
           if (!hasPageVideo && !hasAnyQuestions) return null;
