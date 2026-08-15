@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { createPortal } from "react-dom";
-import { useBookStore, Question } from "../store/bookStore";
+import { useBookStore, Question, saveCurrentStoreToDb } from "../store/bookStore";
 import { FaTimes, FaMagic, FaCheckCircle } from "react-icons/fa";
 
 export default function SmartImporterModal({ 
@@ -16,7 +16,7 @@ export default function SmartImporterModal({
   const { zones, updateZone, pages, updatePage } = useBookStore();
   const [status, setStatus] = useState("");
   
-  const handleImport = () => {
+  const handleImport = async () => {
     if (!text.trim()) return;
     setStatus("جاري تحليل وتوزيع الأسئلة...");
     
@@ -231,6 +231,8 @@ export default function SmartImporterModal({
       } else {
         currentPages.forEach(p => updatePage(p.id, { questions: finalPageQuestions }));
       }
+      
+      await saveCurrentStoreToDb();
       
       setStatus(`تم استيراد الأسئلة بنجاح! تم توزيع الأسئلة على ${appliedZones} مربعات، وتحديث اختبار الصفحة (${finalPageQuestions.length} أسئلة).`);
       setTimeout(() => {

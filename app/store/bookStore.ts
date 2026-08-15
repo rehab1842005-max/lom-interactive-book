@@ -433,3 +433,25 @@ export const useBookStore = create<BookState>()(
     }
   )
 );
+
+export const saveCurrentStoreToDb = async () => {
+  if (typeof window === 'undefined') return;
+  const state = useBookStore.getState();
+  const data = JSON.stringify({
+    state: {
+      curriculum: state.curriculum,
+      activeGrade: state.activeGrade,
+      activeLessonId: state.activeLessonId,
+      pages: state.pages,
+      zones: state.zones,
+      activePageId: state.activePageId,
+      selectedZoneId: state.selectedZoneId,
+    },
+    version: 0
+  });
+  try {
+    await set('interactive-book-storage', data);
+  } catch (e) {
+    console.error("Failed to save to IndexedDB:", e);
+  }
+};

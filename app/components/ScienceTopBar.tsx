@@ -87,23 +87,9 @@ export default function ScienceTopBar() {
         <button 
           className="nav-btn" 
           title="حفظ المشروع فوراً وتأكيد الذاكرة"
-          onClick={() => {
-            const state = useBookStore.getState();
-            const data = JSON.stringify({
-              state: {
-                curriculum: state.curriculum,
-                activeGrade: state.activeGrade,
-                activeLessonId: state.activeLessonId,
-                pages: state.pages,
-                zones: state.zones,
-                activePageId: state.activePageId,
-                selectedZoneId: state.selectedZoneId,
-              },
-              version: 0
-            });
-            try {
-              localStorage.setItem('interactive-book-storage', data);
-            } catch (e) {}
+          onClick={async () => {
+            const { saveCurrentStoreToDb } = await import("../store/bookStore");
+            await saveCurrentStoreToDb();
             alert("✅ تم حفظ كافة التعديلات والأسئلة بنجاح تام ولن تُمسح عند التحديث!");
           }}
         >
