@@ -728,9 +728,7 @@ export default function ScienceSidebar() {
 
         {activeTab === 'pages-tab' && (
           <div className="tab-panel active">
-            <div style={{ padding: '10px', background: 'red', color: 'white', marginBottom: '10px' }}>
-              DEBUG activeLessonId: {activeLessonId || 'NULL'}
-            </div>
+
             <div className="panel-header">
               <h3><i className="fa-solid fa-layer-group"></i> صفحات الدرس ({currentLessonPages.length})</h3>
             </div>
