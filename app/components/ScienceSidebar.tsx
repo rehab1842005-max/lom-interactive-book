@@ -1021,27 +1021,54 @@ export default function ScienceSidebar() {
         
         {currentAdmin?.permissions?.manageAdmins && activeTab === 'admins-tab' && <AdminsManager />}
 
-        {['media-tab', 'quiz-tab'].includes(activeTab) && (
+        {activeTab === 'quiz-tab' && (
           <div className="tab-panel active">
             <div className="panel-header">
-              <h3><i className="fa-solid fa-hammer"></i> جاري التطوير</h3>
+              <h3><i className="fa-solid fa-circle-question"></i> إدارة أسئلة الصفحة</h3>
             </div>
             
-            <div style={{ marginTop: '1rem', borderTop: '1px solid var(--border-color)', paddingTop: '1rem' }}>
-              <button 
-                className="btn-primary" 
-                style={{ width: "100%", display: "flex", gap: "10px", alignItems: "center", justifyContent: "center", background: "var(--color-pink)" }}
-                onClick={() => useBookStore.getState().setDrawingMode(true)}
-              >
-                <FaEdit />
-                تحديد حر (رسم بالقلم)
-              </button>
-              <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '5px', textAlign: 'center' }}>
-                اضغط واسحب الماوس لترسم شكل متعرج (مثل الأعضاء)، ثم اضغط إنهاء.
-              </p>
-            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '15px' }}>
+              <div style={{ background: 'linear-gradient(135deg, rgba(142, 68, 173, 0.08) 0%, rgba(255, 79, 163, 0.12) 100%)', padding: '16px', borderRadius: '12px', border: '1.5px solid #fbcfe8' }}>
+                <h4 style={{ margin: '0 0 8px 0', color: '#db2777', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <FaMagic /> منظم الأسئلة التلقائي
+                </h4>
+                <p style={{ margin: '0 0 12px 0', fontSize: '0.85rem', color: '#64748b', lineHeight: '1.5' }}>
+                  الصقي نص الأسئلة الكامل للدرس دفعة واحدة، وسيقوم النظام بتوزيعها على المربعات وحفظ اختبار الصفحة تلقائياً!
+                </p>
+                <button 
+                  className="btn-primary"
+                  style={{ width: '100%', background: 'linear-gradient(135deg, #ff4fa3 0%, #db2777 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '10px', fontSize: '0.95rem' }}
+                  onClick={() => setShowSmartImporter(true)}
+                >
+                  <FaMagic /> لصق وتوزيع الأسئلة الآن
+                </button>
+              </div>
 
-            <p className="panel-hint">يمكنك الآن تعديل تفاصيل الأسئلة من تبويب "الخصائص" عند تحديد منطقة نوعها "سؤال".</p>
+              <div style={{ background: 'var(--bg-surface)', padding: '16px', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+                <h4 style={{ margin: '0 0 8px 0', color: 'var(--color-purple)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <i className="fa-solid fa-clipboard-check"></i> اختبار الصفحة كاملة
+                </h4>
+                <p style={{ margin: '0 0 12px 0', fontSize: '0.85rem', color: '#64748b' }}>
+                  الأسئلة الشاملة التي تظهر في زر (اختبر نفسك) أسفل الصفحة.
+                </p>
+                <button 
+                  className="btn-secondary"
+                  style={{ width: '100%', padding: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+                  onClick={() => setEditingPageQuestionsId(activePageId || pages[0]?.id)}
+                >
+                  <FaEdit /> تعديل أسئلة اختبار الصفحة
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'media-tab' && (
+          <div className="tab-panel active">
+            <div className="panel-header">
+              <h3><i className="fa-solid fa-hammer"></i> مكتبة الوسائط</h3>
+            </div>
+            <p className="panel-hint" style={{ marginTop: '15px' }}>يمكنك رفع الصور ومقاطع الصوت مباشرة من تبويب العناصر.</p>
           </div>
         )}
       </div>

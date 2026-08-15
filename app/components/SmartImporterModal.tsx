@@ -294,16 +294,23 @@ export default function SmartImporterModal({
           placeholder="### 1 — ماذا يوجد حولنا؟&#10;&#10;**صح أم غلط:**&#10;كل ما يوجد حولنا في الطبيعة يعتبر كائنًا حيًا.&#10;❌ غلط&#10;..."
           style={{
             width: '100%',
-            height: '280px',
+            height: '240px',
             padding: '15px',
             borderRadius: '12px',
             border: '2px solid #e2e8f0',
-            fontSize: '15px',
+            fontSize: '14px',
             fontFamily: 'monospace',
             resize: 'vertical',
-            direction: 'rtl'
+            direction: 'rtl',
+            lineHeight: '1.6'
           }}
         />
+
+        {text.trim() && (
+          <div style={{ marginTop: '10px', padding: '10px 14px', borderRadius: '8px', background: '#f8fafc', border: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '13px', color: '#475569' }}>
+            <span>⚡ <strong>جاهز للتوزيع:</strong> اضغطي الزر بالأسفل لتوزيع الأسئلة على كل المربعات وحفظ اختبار الصفحة دفعة واحدة.</span>
+          </div>
+        )}
         
         {status && (
           <div style={{ 
@@ -322,12 +329,28 @@ export default function SmartImporterModal({
           </div>
         )}
         
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '15px', marginTop: '25px' }}>
-          <button onClick={onClose} style={{ padding: '12px 25px', borderRadius: '8px', border: '1px solid #ccc', background: 'transparent', cursor: 'pointer', fontWeight: 'bold' }}>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '15px', marginTop: '20px' }}>
+          <button onClick={onClose} style={{ padding: '10px 20px', borderRadius: '8px', border: '1px solid #ccc', background: 'transparent', cursor: 'pointer', fontWeight: 'bold' }}>
             إلغاء
           </button>
-          <button onClick={handleImport} style={{ padding: '12px 35px', borderRadius: '8px', border: 'none', background: 'var(--color-pink)', color: 'white', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <FaMagic /> تحليل واستيراد
+          <button 
+            onClick={handleImport} 
+            disabled={!text.trim()}
+            style={{ 
+              padding: '12px 30px', 
+              borderRadius: '8px', 
+              border: 'none', 
+              background: text.trim() ? 'linear-gradient(135deg, #ff4fa3 0%, #db2777 100%)' : '#cbd5e1', 
+              color: 'white', 
+              cursor: text.trim() ? 'pointer' : 'not-allowed', 
+              fontWeight: 'bold', 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '8px',
+              boxShadow: text.trim() ? '0 4px 12px rgba(219, 39, 119, 0.35)' : 'none'
+            }}
+          >
+            <FaMagic /> تنظيم وتوزيع وحفظ فوراً 🚀
           </button>
         </div>
       </div>
