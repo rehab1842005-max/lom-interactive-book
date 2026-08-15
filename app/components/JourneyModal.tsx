@@ -14,21 +14,20 @@ interface JourneyModalProps {
 export default function JourneyModal({ zone, onClose }: JourneyModalProps) {
   const { updateZone, pages, zones } = useBookStore();
   
-  // Find the page for this zone with robust fallbacks
+  // Find the page for this zone
   const page = pages.find(p => p.id === zone.pageId) || pages.find(p => p.lessonId === zone.pageId) || pages[0];
   const currentZoneInStore = zones.find(z => z.id === zone.id);
   
-  // Zone-specific questions only (Master Video gets all page questions, numbered zones get their own questions or page fallback)
+  // Specific questions for this zone ONLY
   const zoneQs = (currentZoneInStore?.content?.questions && currentZoneInStore.content.questions.length > 0)
     ? currentZoneInStore.content.questions
     : (Array.isArray(zone.content?.questions) && zone.content.questions.length > 0 
         ? zone.content.questions 
         : (zone.content?.question ? [zone.content.question] : []));
   
-  const pageQs = page?.questions || [];
-  const isZoneSpecific = zoneQs.length > 0;
-  const fallbackQs = pages.find(p => p.questions && p.questions.length > 0)?.questions || zones.find(z => z.content?.questions && z.content.questions.length > 0)?.content?.questions || [];
-  const allQs = isZoneSpecific ? zoneQs : (pageQs.length > 0 ? pageQs : fallbackQs);
+  const isMasterVideo = zone.id === 'master-video';
+  const isZoneSpecific = !isMasterVideo && zoneQs.length > 0;
+  const allQs = isMasterVideo ? (page?.questions || []) : zoneQs;
   
   const hasVideo = zone.interactionTypes?.includes('video') || zone.interactionType === 'video' || !!zone.content?.videoUrl;
   const hasAudio = !!zone.content?.audioUrl;

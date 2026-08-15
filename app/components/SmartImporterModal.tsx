@@ -178,9 +178,10 @@ export default function SmartImporterModal({
       const targetPageId = pageId || currentPages[0]?.id;
       const activePage = currentPages.find(p => p.id === targetPageId);
       
-      const pageZones = freshZones.filter(z => z.pageId === targetPageId || freshZones.length <= 15);
+      const pageZones = freshZones.filter(z => z.pageId === targetPageId);
+      const zonesToUse = pageZones.length > 0 ? pageZones : freshZones;
       // Sort visual zones top to bottom, right to left
-      const visualZones = [...pageZones].sort((a, b) => Math.abs(a.y - b.y) > 25 ? a.y - b.y : b.x - a.x);
+      const visualZones = [...zonesToUse].sort((a, b) => Math.abs(a.y - b.y) > 25 ? a.y - b.y : b.x - a.x);
       
       let seqIndex = 0;
       const zoneUpdates: {id: string, updates: Partial<any>}[] = [];
@@ -189,12 +190,9 @@ export default function SmartImporterModal({
         seqIndex++;
         const targetSeqNum = parseInt(seq, 10);
         
-        let targetZone = pageZones.find(z => extractNum(z.name) === targetSeqNum);
+        let targetZone = zonesToUse.find(z => extractNum(z.name) === targetSeqNum);
         if (!targetZone && visualZones[seqIndex - 1]) {
           targetZone = visualZones[seqIndex - 1];
-        }
-        if (!targetZone && pageZones[seqIndex - 1]) {
-          targetZone = pageZones[seqIndex - 1];
         }
         
         if (targetZone) {
@@ -207,6 +205,7 @@ export default function SmartImporterModal({
           zoneUpdates.push({
             id: targetZone.id,
             updates: { 
+              name: `${targetSeqNum || seqIndex}`,
               interactionTypes: Array.from(interactions),
               content: {
                 ...targetZone.content,
