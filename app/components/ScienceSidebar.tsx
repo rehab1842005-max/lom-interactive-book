@@ -926,25 +926,49 @@ export default function ScienceSidebar() {
                       );
                     })()}
 
-                    <button 
-                      onClick={() => setEditingQuestionIndex(-1)}
-                      style={{ 
-                        background: 'var(--primary-color)', 
-                        color: 'white', 
-                        border: 'none', 
-                        padding: '10px 15px', 
-                        borderRadius: '20px', 
-                        cursor: 'pointer', 
-                        fontWeight: 'bold',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '8px'
-                      }}
-                    >
-                      <i className="fa-solid fa-plus"></i> 
-                      إضافة سؤال جديد
-                    </button>
+                    <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                      <button 
+                        onClick={() => setEditingQuestionIndex(-1)}
+                        style={{ 
+                          background: 'var(--primary-color)', 
+                          color: 'white', 
+                          border: 'none', 
+                          padding: '10px 15px', 
+                          borderRadius: '20px', 
+                          cursor: 'pointer', 
+                          fontWeight: 'bold',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '8px',
+                          flex: 1,
+                          minWidth: '140px'
+                        }}
+                      >
+                        <i className="fa-solid fa-plus"></i> 
+                        سؤال جديد
+                      </button>
+                      <button 
+                        onClick={() => setShowSmartImporter(true)}
+                        style={{ 
+                          background: 'var(--color-pink)', 
+                          color: 'white', 
+                          border: 'none', 
+                          padding: '10px 15px', 
+                          borderRadius: '20px', 
+                          cursor: 'pointer', 
+                          fontWeight: 'bold',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '8px',
+                          flex: 1,
+                          minWidth: '140px'
+                        }}
+                      >
+                        <FaMagic /> استيراد ذكي
+                      </button>
+                    </div>
                     
                     {editingQuestionIndex !== null && (
                       <QuestionBuilderModal 
@@ -1026,6 +1050,13 @@ export default function ScienceSidebar() {
         <PageQuestionsModal
           pageId={editingPageQuestionsId}
           onClose={() => setEditingPageQuestionsId(null)}
+        />
+      )}
+
+      {showSmartImporter && activePageId && (
+        <SmartImporterModal
+          pageId={activePageId}
+          onClose={() => setShowSmartImporter(false)}
         />
       )}
     </aside>
