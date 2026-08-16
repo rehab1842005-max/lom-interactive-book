@@ -8,12 +8,13 @@ import { useBookStore } from "./store/bookStore";
 import { FaChevronDown, FaPlay } from "react-icons/fa";
 
 // Static array of stars to prevent hydration mismatch
-const STAR_DATA = Array.from({ length: 20 }).map((_, i) => ({
+const STAR_DATA = Array.from({ length: 40 }).map((_, i) => ({
   id: i,
   top: `${Math.floor(Math.random() * 100)}%`,
   left: `${Math.floor(Math.random() * 100)}%`,
-  size: Math.floor(Math.random() * 4) + 1,
-  delay: Math.random() * 3
+  size: Math.random() * 1.5 + 0.8, // Size between 0.8rem and 2.3rem
+  delay: Math.random() * 2,
+  char: Math.random() > 0.5 ? '✨' : '🌟'
 }));
 
 export default function Home() {
@@ -87,10 +88,12 @@ export default function Home() {
           <motion.div
             key={star.id}
             className={styles.glowingStar}
-            style={{ top: star.top, left: star.left, width: star.size, height: star.size }}
-            animate={{ opacity: [0.1, 1, 0.1], scale: [0.8, 1.5, 0.8] }}
-            transition={{ duration: 3, repeat: Infinity, delay: star.delay }}
-          />
+            style={{ top: star.top, left: star.left, fontSize: `${star.size}rem` }}
+            animate={{ opacity: [0.3, 1, 0.3], scale: [0.8, 1.2, 0.8] }}
+            transition={{ duration: 2, repeat: Infinity, delay: star.delay }}
+          >
+            {star.char}
+          </motion.div>
         ))}
       </div>
 
