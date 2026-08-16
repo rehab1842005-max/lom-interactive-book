@@ -27,7 +27,7 @@ export default function Home() {
   const [scrolled, setScrolled] = useState(false);
   
   // To prevent hydration errors, we only render random stars after client mount
-  const [stars, setStars] = useState<{id: number, top: string, left: string, size: number, delay: number}[]>([]);
+  const [stars, setStars] = useState<{id: number, top: string, left: string, size: number, delay: number, char: string}[]>([]);
 
   useEffect(() => {
     setIsClient(true);
