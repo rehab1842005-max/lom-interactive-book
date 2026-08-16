@@ -1,52 +1,81 @@
-/* ==========================================================================
-   2026 Home Page / Landing Page Styles (Premium Educational UI)
-   ========================================================================== */
-
 .container {
   min-height: 100vh;
-  background: linear-gradient(180deg, #FFE1F0 0%, #FFF3F8 100%);
-  font-family: 'Cairo', sans-serif;
+  background: radial-gradient(circle at top right, #fdf4ff, #f0fdfa, #eff6ff);
+  font-family: 'Cairo', 'Tajawal', sans-serif;
+  color: #1e293b;
   overflow-x: hidden;
-  position: relative;
+  direction: rtl;
 }
 
-/* --- HEADER --- */
+/* Navbar */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 40px;
+  padding: 1rem 4rem;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 .logo {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
 }
 
 .logoIcon {
-  background: white;
-  width: 50px;
-  height: 50px;
+  width: 45px;
+  height: 45px;
+  background: linear-gradient(135deg, #ec4899, #8b5cf6);
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 15px rgba(255, 79, 163, 0.2);
+  color: white;
+  font-size: 1.5rem;
+  box-shadow: 0 8px 15px rgba(236, 72, 153, 0.3);
 }
 
 .logoText h1 {
-  font-size: 1.5rem;
-  color: #FF4FA3;
+  font-size: 1.4rem;
   margin: 0;
+  background: linear-gradient(to right, #ec4899, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   font-weight: 800;
 }
 
 .logoText p {
-  font-size: 1rem;
-  color: #4A4A4A;
+  font-size: 0.85rem;
   margin: 0;
+  color: #64748b;
   font-weight: 600;
+}
+
+.navLinks {
+  display: flex;
+  gap: 2rem;
+}
+
+.navLinks a {
+  text-decoration: none;
+  color: #475569;
+  font-weight: 700;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+}
+
+.navLinks a:hover {
+  background: rgba(236, 72, 153, 0.1);
+  color: #db2777;
 }
 
 .userProfile {
@@ -54,438 +83,334 @@
   align-items: center;
   gap: 10px;
   background: white;
-  padding: 5px 15px 5px 5px;
+  padding: 6px 16px;
   border-radius: 30px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.userProfile:hover {
+  transform: translateY(-2px);
 }
 
 .avatar {
-  background: #FFD6E8;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
 }
 
 .userProfile span {
-  font-weight: bold;
-  color: #555;
+  font-weight: 700;
+  color: #334155;
 }
 
-/* --- HERO SECTION --- */
+/* Hero Section */
 .hero {
   display: flex;
-  justify-content: center;
   align-items: center;
-  padding: 20px 60px;
+  justify-content: space-between;
+  padding: 4rem 4rem;
   max-width: 1400px;
   margin: 0 auto;
-  gap: 40px;
+  min-height: 80vh;
 }
 
 .heroText {
   flex: 1;
-  max-width: 800px;
-  text-align: center;
+  max-width: 600px;
+  z-index: 2;
 }
 
 .heroTitle {
-  font-size: 4rem;
-  color: #FF4FA3;
-  line-height: 1.2;
-  margin-bottom: 20px;
+  font-size: 3.5rem;
+  line-height: 1.3;
+  margin-bottom: 1.5rem;
+  color: #0f172a;
   font-weight: 900;
 }
 
 .heroTitle span {
-  font-size: 2.2rem;
-  color: #4a4a4a;
+  background: linear-gradient(135deg, #ec4899, #8b5cf6, #3b82f6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .heroSubtitle {
   font-size: 1.2rem;
-  color: #666;
-  line-height: 1.6;
-  margin-bottom: 30px;
+  color: #475569;
+  line-height: 1.8;
+  margin-bottom: 2.5rem;
+  font-weight: 600;
 }
 
-.gradesContainer {
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(10px);
-  padding: 20px;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  margin-bottom: 30px;
-  position: relative;
+.heroButtons {
+  display: flex;
+  gap: 1.5rem;
 }
 
-.gradesBadge {
-  position: absolute;
-  top: -15px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #FF4FA3;
+.primaryBtn {
+  background: linear-gradient(135deg, #ec4899, #8b5cf6);
   color: white;
-  padding: 5px 20px;
-  border-radius: 20px;
-  font-weight: bold;
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  box-shadow: 0 4px 10px rgba(255, 79, 163, 0.3);
-}
-
-.gradesRow {
-  display: flex;
-  justify-content: center;
-  margin-top: 10px;
-  gap: 20px;
-}
-
-.gradeCard {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  padding: 10px;
-  border-radius: 15px;
-  transition: all 0.3s ease;
-  border: 2px solid transparent;
-}
-
-.gradeCard:hover {
-  background: rgba(255, 79, 163, 0.05);
-}
-
-.gradeCardActive {
-  background: white;
-  border-color: #FF4FA3;
-  box-shadow: 0 5px 15px rgba(255, 79, 163, 0.15);
-}
-
-.gradeAvatar {
-  width: 60px;
-  height: 60px;
-  background: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2rem;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-}
-
-.gradeCard span {
-  font-weight: bold;
-  color: #FF4FA3;
-  font-size: 0.9rem;
-}
-
-/* Curriculum Styles */
-.curriculumContainer {
-  margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  overflow: hidden;
-}
-
-.unitBlock {
-  background: white;
-  border-radius: 12px;
-  border: 1px solid #FFD6E8;
-  overflow: hidden;
-}
-
-.unitHeader {
-  padding: 15px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-  background: #FFF0F5;
-  color: #FF4FA3;
-  font-weight: bold;
-  transition: background 0.2s;
-}
-
-.unitHeader:hover {
-  background: #FFE1F0;
-}
-
-.lessonsList {
-  display: flex;
-  flex-direction: column;
-  background: white;
-}
-
-.lessonItem {
-  padding: 12px 20px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  color: #4a4a4a;
-  border-bottom: 1px solid #f0f0f0;
-  transition: background 0.2s;
-}
-
-.lessonItem:hover {
-  background: #fdfdfd;
-  color: #FF4FA3;
-}
-
-.lessonItem:last-child {
-  border-bottom: none;
-}
-
-.exploreBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  background: linear-gradient(90deg, #FF4FA3, #FF85C2);
-  color: white;
-  padding: 15px 40px;
+  border: none;
+  padding: 1rem 2.5rem;
+  font-size: 1.2rem;
+  font-weight: 800;
   border-radius: 30px;
-  font-size: 1.4rem;
-  font-weight: bold;
-  text-decoration: none;
-  box-shadow: 0 8px 20px rgba(255, 79, 163, 0.4);
-  transition: transform 0.2s;
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(236, 72, 153, 0.4);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
-.exploreBtn:hover {
+.primaryBtn::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: rotate(45deg);
+  transition: all 0.3s ease;
+}
+
+.primaryBtn:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 15px 35px rgba(236, 72, 153, 0.5);
+}
+
+.secondaryBtn {
+  background: white;
+  color: #8b5cf6;
+  border: 2px solid #8b5cf6;
+  padding: 1rem 2.5rem;
+  font-size: 1.2rem;
+  font-weight: 800;
+  border-radius: 30px;
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(139, 92, 246, 0.15);
+  transition: all 0.3s ease;
+}
+
+.secondaryBtn:hover {
+  background: rgba(139, 92, 246, 0.05);
   transform: translateY(-3px);
 }
 
-/* --- HERO GRAPHIC (3D BOOK SIMULATION) --- */
-.heroGraphic {
-  flex: 1.2;
+/* 3D Visual Scene */
+.heroVisual {
+  flex: 1;
   position: relative;
-  perspective: 1000px;
-  max-width: 650px;
-  margin-right: auto;
+  height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bookContainer {
+  position: relative;
+  font-size: 10rem;
+  filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.15));
+  z-index: 2;
+}
+
+.floatingElements {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.floatingItem {
+  position: absolute;
+  font-size: 3rem;
+  filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.2));
+}
+
+.glowBall {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(236, 72, 153, 0.2) 0%, rgba(255,255,255,0) 70%);
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
+
+/* Subjects Section */
+.sectionTitle {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: #1e293b;
+  margin-bottom: 3rem;
+}
+
+.subjectsSection {
+  padding: 4rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.subjectsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.subjectCard {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 24px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.subjectCard:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.subjectIcon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 0.15));
+}
+
+.subjectCard h3 {
+  font-size: 1.5rem;
+  color: #0f172a;
+  margin-bottom: 0.5rem;
+  font-weight: 800;
+}
+
+.subjectCard p {
+  color: #64748b;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+/* Features Sections */
+.featureSection {
+  padding: 4rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 4rem;
+}
+
+.featureSection.reverse {
+  flex-direction: row-reverse;
+}
+
+.featureText {
+  flex: 1;
+}
+
+.featureText h2 {
+  font-size: 2.8rem;
+  color: #0f172a;
+  font-weight: 900;
+  margin-bottom: 1rem;
+}
+
+.featureText p {
+  font-size: 1.2rem;
+  color: #475569;
+  line-height: 1.8;
+  margin-bottom: 2rem;
+}
+
+.featureVisual {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 30px;
+  padding: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+  position: relative;
+}
+
+.playIcon {
+  position: absolute;
+  font-size: 4rem;
+  color: #ec4899;
+  background: white;
+  border-radius: 50%;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(236, 72, 153, 0.3);
+  cursor: pointer;
+  z-index: 10;
 }
 
 .book3D {
-  display: flex;
-  background: #FF4FA3;
-  padding: 15px;
-  border-radius: 30px;
-  box-shadow: 0 30px 60px rgba(255, 79, 163, 0.3), inset 0 0 20px rgba(0,0,0,0.1);
-  transform: rotateY(-5deg) rotateX(5deg);
-  position: relative;
+  font-size: 12rem;
+  filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.1));
 }
 
-.bookPageLeft, .bookPageRight {
-  flex: 1;
-  background: white;
-  border-radius: 20px;
-  min-height: 450px;
-  position: relative;
-  padding: 30px;
-  box-shadow: inset 0 0 30px rgba(0,0,0,0.02);
+.brain3D {
+  font-size: 10rem;
+  filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.15));
 }
 
-.bookPageLeft {
-  margin-left: 5px;
-  background: linear-gradient(180deg, #fff, #fefefe);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.audioBadge, .quizBadge {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  background: #FF4FA3;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 5px 15px rgba(255, 79, 163, 0.4);
-}
-
-.quizBadge {
-  right: 20px;
-  left: auto;
-}
-
-.anatomyPlaceholder {
-  width: 250px;
-  height: 350px;
-  background: #FFF0F5;
-  border-radius: 20px;
-  border: 2px dashed #FFD6E8;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-}
-
-.quizTitle {
-  color: #FF4FA3;
+/* Footer / Action Area */
+.startAction {
   text-align: center;
-  font-size: 1.5rem;
-  margin-top: 20px;
+  padding: 6rem 2rem;
+  background: linear-gradient(to bottom, transparent, rgba(236, 72, 153, 0.05));
 }
 
-.quizQuestion {
-  text-align: center;
-  font-weight: bold;
-  font-size: 1.1rem;
-  color: #333;
-  margin-bottom: 30px;
-}
-
-.quizOptions {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.quizOption, .quizOptionCorrect {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  padding: 10px 15px;
-  border-radius: 12px;
-  border: 2px solid #EEE;
-  background: #FAFAFA;
-}
-
-.quizOptionCorrect {
-  border-color: #FF4FA3;
-  background: #FFF0F5;
-}
-
-.radio {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  border: 2px solid #ccc;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-}
-
-.quizOptionCorrect .radio {
-  background: #FF4FA3;
-  border-color: #FF4FA3;
-}
-
-.checkBtn {
-  width: 100%;
-  background: #FF4FA3;
-  color: white;
-  border: none;
-  padding: 15px;
-  border-radius: 12px;
-  font-size: 1.1rem;
-  font-weight: bold;
-  margin-top: 20px;
-  cursor: pointer;
-}
-
-.quizFooter {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-  color: #888;
-  font-weight: bold;
-}
-
-/* Side Tabs for Book */
-.bookTabs {
-  position: absolute;
-  left: -60px;
-  top: 50px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.bookTab {
-  background: #FF4FA3;
-  color: white;
-  padding: 15px 10px;
-  border-radius: 15px 0 0 15px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-  font-weight: bold;
-  font-size: 0.9rem;
-  box-shadow: -5px 0 15px rgba(255, 79, 163, 0.3);
-}
-
-/* Responsive Overrides */
+/* Responsive */
 @media (max-width: 1024px) {
   .hero {
     flex-direction: column;
-    padding: 20px;
     text-align: center;
-    gap: 30px;
+    padding: 2rem;
   }
-  .heroText {
-    margin-bottom: 20px;
-  }
-  .bookTabs {
-    right: 0;
-    top: -50px;
-    flex-direction: row;
+  
+  .heroButtons {
     justify-content: center;
-    width: 100%;
   }
-  .bookTab {
-    border-radius: 15px 15px 0 0;
-    padding: 10px 15px;
+  
+  .featureSection {
+    flex-direction: column !important;
+    text-align: center;
+    padding: 2rem;
+  }
+  
+  .header {
+    padding: 1rem 2rem;
+  }
+  
+  .navLinks {
+    display: none;
   }
 }
 
 @media (max-width: 768px) {
-  .header {
-    flex-direction: column;
-    gap: 15px;
-    padding: 15px 20px;
-  }
   .heroTitle {
     font-size: 2.5rem;
   }
-  .heroTitle span {
-    font-size: 1.5rem;
+  .bookContainer {
+    font-size: 7rem;
   }
-  .gradesRow {
-    flex-wrap: wrap;
-    justify-content: center;
+  .floatingItem {
+    font-size: 2rem;
   }
-  .book3D {
-    transform: none; /* Disable 3D rotation on mobile */
-    flex-direction: column;
-    padding: 10px;
-  }
-  .bookPageLeft {
-    margin-left: 0;
-    margin-bottom: 10px;
-  }
-  .anatomyPlaceholder {
-    width: 100%;
-    height: 250px;
-  }
-}
-
-@media (max-width: 480px) {
-  .heroTitle { font-size: 2rem; }
-  .bookPageLeft, .bookPageRight { min-height: auto; padding: 20px; }
-  .quizTitle { font-size: 1.2rem; }
-  .quizQuestion { font-size: 1rem; }
 }

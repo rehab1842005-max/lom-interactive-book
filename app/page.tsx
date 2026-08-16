@@ -1,157 +1,190 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import Link from "next/link";
-import { FaPlay, FaVolumeUp, FaQuestionCircle, FaStar, FaBook, FaUpload, FaChevronDown, FaChevronUp } from "react-icons/fa";
-import { MdOutlineNotes } from "react-icons/md";
+import { FaPlay, FaUserAlt } from "react-icons/fa";
 import { useRouter } from "next/navigation";
-import { useBookStore } from "./store/bookStore";
 import styles from "./page.module.css";
 
 export default function Home() {
   const router = useRouter();
-  const { curriculum, setActiveLesson } = useBookStore();
-  const [customImage, setCustomImage] = useState<string | null>(null);
-  const [selectedGrade, setSelectedGrade] = useState<number | null>(null);
-  const [expandedUnit, setExpandedUnit] = useState<string | null>(null);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem('homeCustomImage');
-    if (saved) setCustomImage(saved);
+    setIsClient(true);
   }, []);
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        const result = ev.target?.result as string;
-        setCustomImage(result);
-        localStorage.setItem('homeCustomImage', result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleLessonSelect = () => {
-    router.push('/student');
-  };
+  if (!isClient) return null;
 
   return (
     <main className={styles.container}>
-      {/* --- HEADER --- */}
+      {/* Navigation Bar */}
       <header className={styles.header}>
         <div className={styles.logo}>
           <div className={styles.logoIcon}>
-            <FaBook size={28} color="#FF4FA3" />
+            🔬
           </div>
           <div className={styles.logoText}>
-            <h1>Rehab Elsibai</h1>
-            <p>رحاب السباعي</p>
+            <h1>رحاب السباعي</h1>
+            <p>العلوم أسهل لما نفهمها ونكتشفها</p>
           </div>
         </div>
+        
+        <nav className={styles.navLinks}>
+          <Link href="#">الرئيسية</Link>
+          <Link href="#subjects">الدروس</Link>
+          <Link href="#interactive">الملزمة التفاعلية</Link>
+          <Link href="#videos">الفيديوهات</Link>
+          <Link href="#quiz">الاختبارات</Link>
+        </nav>
+
         <div className={styles.userProfile}>
-          <div className={styles.avatar}>👧🏽</div>
-          <span>مرحباً بك</span>
+          <FaUserAlt color="#8b5cf6" />
+          <span>ملف الطالب</span>
         </div>
       </header>
 
-      {/* --- HERO SECTION --- */}
+      {/* Hero Section */}
       <section className={styles.hero}>
         <div className={styles.heroText}>
           <motion.h2 
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 30 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 0.8 }}
             className={styles.heroTitle}
           >
-            أهلاً بك
-            <br />
-            <span>في عالم الكتب التفاعلية</span>
+            اكتشف عالم العلوم بطريقة مختلفة! <span>🔬</span>
           </motion.h2>
+          
           <motion.p 
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+            initial={{ opacity: 0, y: 30 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 0.8, delay: 0.2 }}
             className={styles.heroSubtitle}
           >
-            تعلم بطريقة ممتعة وتفاعلية من خلال الكتب التي تجمع بين الصوت، الفيديو، والأسئلة الذكية
+            تعلّم، شاهد، جرّب، واختبر نفسك من خلال دروس العلوم التفاعلية. رحلتك في عالم الاكتشاف تبدأ هنا.
           </motion.p>
           
-          <div className={styles.gradesContainer}>
-            <div className={styles.gradesBadge}><FaStar color="#FFD700" /> اختر الصف للبدء <FaStar color="#FFD700" /></div>
-            <div className={styles.gradesRow}>
-              <div className={`${styles.gradeCard} ${selectedGrade === 4 ? styles.gradeCardActive : ''}`} onClick={() => setSelectedGrade(4)}>
-                <div className={styles.gradeAvatar}>👦🏻</div>
-                <span>الرابع الابتدائي</span>
-              </div>
-              <div className={`${styles.gradeCard} ${selectedGrade === 5 ? styles.gradeCardActive : ''}`} onClick={() => setSelectedGrade(5)}>
-                <div className={styles.gradeAvatar}>👧🏻</div>
-                <span>الخامس الابتدائي</span>
-              </div>
-              <div className={`${styles.gradeCard} ${selectedGrade === 6 ? styles.gradeCardActive : ''}`} onClick={() => setSelectedGrade(6)}>
-                <div className={styles.gradeAvatar}>👦🏽</div>
-                <span>السادس الابتدائي</span>
-              </div>
-            </div>
-
-            <AnimatePresence>
-              {selectedGrade && curriculum[selectedGrade] && curriculum[selectedGrade].length > 0 ? (
-                <motion.div 
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className={styles.curriculumContainer}
-                >
-                  {curriculum[selectedGrade].map(unit => (
-                    <div key={unit.id} className={styles.unitBlock}>
-                      <div 
-                        className={styles.unitHeader} 
-                        onClick={() => setExpandedUnit(expandedUnit === unit.id ? null : unit.id)}
-                      >
-                        <span>{unit.title}</span>
-                        {expandedUnit === unit.id ? <FaChevronUp /> : <FaChevronDown />}
-                      </div>
-                      
-                      <AnimatePresence>
-                        {expandedUnit === unit.id && (
-                          <motion.div 
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            exit={{ opacity: 0, height: 0 }}
-                            className={styles.lessonsList}
-                          >
-                            {unit.lessons.map(lesson => (
-                              <div 
-                                key={lesson.id} 
-                                className={styles.lessonItem} 
-                                onClick={() => {
-                                  setActiveLesson(lesson.id);
-                                  router.push('/student');
-                                }}
-                              >
-                                <FaPlay size={12} color="#FF4FA3" />
-                                <span>{lesson.title}</span>
-                              </div>
-                            ))}
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  ))}
-                </motion.div>
-              ) : selectedGrade ? (
-                <motion.div 
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className={styles.curriculumContainer}
-                  style={{ padding: '20px', textAlign: 'center', color: '#888' }}
-                >
-                  لم يتم إضافة مناهج لهذا الصف بعد. (من فضلك أضفها من شاشة المعلم)
-                </motion.div>
-              ) : null}
-            </AnimatePresence>
-          </div>
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className={styles.heroButtons}
+          >
+            <button className={styles.primaryBtn} onClick={() => router.push('/student')}>
+              ابدأ التعلم الآن
+            </button>
+            <button className={styles.secondaryBtn} onClick={() => {
+              document.getElementById('subjects')?.scrollIntoView({ behavior: 'smooth' });
+            }}>
+              استكشف الدروس
+            </button>
+          </motion.div>
         </div>
 
+        <div className={styles.heroVisual}>
+          <div className={styles.glowBall}></div>
+          <motion.div 
+            className={styles.bookContainer}
+            animate={{ y: [0, -20, 0] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          >
+            📖
+          </motion.div>
+          
+          <div className={styles.floatingElements}>
+            <motion.div className={styles.floatingItem} style={{ top: '10%', left: '20%' }} animate={{ y: [0, -15, 0], rotate: [0, 10, 0] }} transition={{ duration: 3, repeat: Infinity, delay: 0.5 }}>🌍</motion.div>
+            <motion.div className={styles.floatingItem} style={{ top: '20%', right: '15%' }} animate={{ y: [0, -25, 0], rotate: [0, -10, 0] }} transition={{ duration: 4, repeat: Infinity, delay: 1 }}>🔬</motion.div>
+            <motion.div className={styles.floatingItem} style={{ bottom: '20%', left: '10%' }} animate={{ y: [0, -10, 0], rotate: [0, 5, 0] }} transition={{ duration: 2.5, repeat: Infinity, delay: 0.2 }}>🌱</motion.div>
+            <motion.div className={styles.floatingItem} style={{ bottom: '15%', right: '25%' }} animate={{ y: [0, -20, 0], rotate: [0, 15, 0] }} transition={{ duration: 3.5, repeat: Infinity, delay: 1.5 }}>⚛️</motion.div>
+            <motion.div className={styles.floatingItem} style={{ top: '50%', left: '5%' }} animate={{ y: [0, -15, 0], scale: [1, 1.1, 1] }} transition={{ duration: 3, repeat: Infinity, delay: 0.8 }}>🦠</motion.div>
+            <motion.div className={styles.floatingItem} style={{ top: '40%', right: '5%' }} animate={{ y: [0, -20, 0], scale: [1, 1.2, 1] }} transition={{ duration: 4, repeat: Infinity, delay: 1.2 }}>🧪</motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Subjects Section */}
+      <section id="subjects" className={styles.subjectsSection}>
+        <h2 className={styles.sectionTitle}>اختار درسَك وابدأ المغامرة</h2>
+        <div className={styles.subjectsGrid}>
+          <div className={styles.subjectCard} onClick={() => router.push('/student')}>
+            <div className={styles.subjectIcon}>🧬</div>
+            <h3>الأحياء</h3>
+            <p>اكتشف عالم الكائنات الحية</p>
+          </div>
+          <div className={styles.subjectCard} onClick={() => router.push('/student')}>
+            <div className={styles.subjectIcon}>⚗️</div>
+            <h3>الكيمياء</h3>
+            <p>افهم المادة والتفاعلات</p>
+          </div>
+          <div className={styles.subjectCard} onClick={() => router.push('/student')}>
+            <div className={styles.subjectIcon}>🌍</div>
+            <h3>علوم الأرض</h3>
+            <p>اكتشف كوكبنا</p>
+          </div>
+          <div className={styles.subjectCard} onClick={() => router.push('/student')}>
+            <div className={styles.subjectIcon}>⚡</div>
+            <h3>الفيزياء</h3>
+            <p>افهم الحركة والطاقة</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Interactive Book Section */}
+      <section id="interactive" className={styles.featureSection}>
+        <div className={styles.featureText}>
+          <h2>الملزمة بتتكلم! 📖</h2>
+          <p>اضغط على المعلومة واسمع شرحها وشاهد الفيديو التفاعلي مباشرة من داخل الملزمة دون عناء البحث.</p>
+          <button className={styles.primaryBtn} onClick={() => router.push('/student')}>افتح الملزمة</button>
+        </div>
+        <div className={styles.featureVisual}>
+          <div className={styles.book3D}>📚</div>
+          <motion.div 
+            className={styles.playIcon}
+            animate={{ scale: [1, 1.1, 1] }}
+            transition={{ duration: 2, repeat: Infinity }}
+            onClick={() => router.push('/student')}
+          >
+            <FaPlay />
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Quiz Section */}
+      <section id="quiz" className={`${styles.featureSection} ${styles.reverse}`}>
+        <div className={styles.featureText}>
+          <h2>اختبر نفسك 🧠</h2>
+          <p>أسئلة تفاعلية ذكية تقيس مدى فهمك للدرس، مع تصحيح فوري وتقييم مستواك لمساعدتك على التفوق.</p>
+          <button className={styles.secondaryBtn} onClick={() => router.push('/student')}>ابدأ الاختبار</button>
+        </div>
+        <div className={styles.featureVisual}>
+          <div className={styles.brain3D}>🧠</div>
+          <motion.div 
+            className={styles.floatingItem} 
+            style={{ top: '10%', right: '10%', fontSize: '4rem' }}
+            animate={{ y: [0, -10, 0] }}
+            transition={{ duration: 2.5, repeat: Infinity }}
+          >
+            ✨
+          </motion.div>
+          <motion.div 
+            className={styles.floatingItem} 
+            style={{ bottom: '15%', left: '15%', fontSize: '3rem' }}
+            animate={{ y: [0, -15, 0] }}
+            transition={{ duration: 3, repeat: Infinity, delay: 1 }}
+          >
+            💡
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Action Footer */}
+      <section className={styles.startAction}>
+        <h2 className={styles.sectionTitle} style={{ marginBottom: '1.5rem' }}>هل أنت مستعد لبدء التعلم؟</h2>
+        <button className={styles.primaryBtn} onClick={() => router.push('/student')} style={{ padding: '1.2rem 4rem', fontSize: '1.5rem' }}>
+          دخول كطالب
+        </button>
       </section>
     </main>
   );
