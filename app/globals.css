@@ -568,7 +568,7 @@ body {
 .thumb-preview-box {
     width: 50px;
     height: 65px;
-    background: var(--bg-surface);
+    background: transparent;
     border: 1px solid var(--border-color);
     border-radius: var(--radius-sm);
     overflow: hidden;
