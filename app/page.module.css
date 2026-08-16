@@ -24,10 +24,9 @@
   background: transparent;
 }
 .navScrolled {
-  background: rgba(253, 251, 251, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 4px 20px rgba(236, 72, 153, 0.05);
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
 }
 .navBrand {
   font-size: 2rem;
@@ -57,28 +56,75 @@
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  padding-bottom: 4rem;
+  padding: 2rem;
+  background: transparent;
 }
+
+.heroBackgroundOrb {
+  position: absolute;
+  width: 60vw;
+  height: 60vw;
+  background: radial-gradient(circle, rgba(236,72,153,0.1) 0%, rgba(253,251,251,0) 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  border-radius: 50%;
+  filter: blur(40px);
+  animation: pulseOrb 8s infinite alternate;
+}
+@keyframes pulseOrb {
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+  100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.4; }
+}
+
+.heroGrid {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: 
+    linear-gradient(rgba(236,72,153,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(236,72,153,0.03) 1px, transparent 1px);
+  background-size: 30px 30px;
+  z-index: 0;
+  opacity: 0.5;
+}
+
 .heroTitle {
-  font-size: clamp(4rem, 12vw, 10rem);
+  font-size: clamp(4rem, 10vw, 8rem);
   font-weight: 900;
-  color: #db2777; /* Premium Pink */
-  text-shadow: 0 0 50px rgba(219, 39, 119, 0.2); /* Soft Glow */
+  background: linear-gradient(45deg, #ec4899, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   margin: 0;
-  line-height: 1;
+  line-height: 1.2;
 }
 .heroSubtitle {
-  font-size: 2.5rem;
-  font-weight: 800;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-weight: 700;
   color: #4b5563;
-  margin-top: 1rem;
+  margin: 0;
 }
 .heroTagline {
-  font-size: 1.8rem;
+  font-size: clamp(1rem, 2vw, 1.5rem);
   color: #9ca3af;
-  margin-top: 0.5rem;
+  margin: 0;
   letter-spacing: 2px;
 }
+
+.heroCta {
+  margin-top: 1rem;
+  padding: 1rem 2rem;
+  background: linear-gradient(45deg, #ec4899, #8b5cf6);
+  color: white;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.2rem;
+  box-shadow: 0px 4px 15px rgba(236,72,153,0.2);
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
 .heroScrollHint {
   position: absolute;
   bottom: 2rem;
@@ -393,6 +439,28 @@
 
 /* ================= RESPONSIVE (MOBILE) ================= */
 @media (max-width: 768px) {
+  .navbar {
+    padding: 1rem;
+  }
+  .navLinks {
+    gap: 1rem;
+    font-size: 1rem;
+    width: 100%;
+    justify-content: center;
+  }
+  .heroBackgroundOrb {
+    width: 100vw;
+    height: 100vw;
+  }
+  .bookMockup {
+    width: 90vw;
+    height: 60vh;
+  }
+  .scene1Container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    text-align: center;
+  }
   .heroTitle {
     font-size: clamp(2.5rem, 10vw, 10rem);
   }
@@ -406,24 +474,6 @@
     font-size: clamp(1.5rem, 6vw, 5rem);
     width: 90%;
     line-height: 1.4;
-  }
-  .navbar {
-    padding: 1rem;
-    flex-direction: column;
-    gap: 0.5rem;
-    background: rgba(253, 251, 251, 0.95);
-  }
-  .navLinks {
-    gap: 1rem;
-    font-size: 0.85rem;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  .scene1Container {
-    padding-left: 1rem;
-    padding-right: 1rem;
-    text-align: center;
-    justify-content: center;
   }
   .scene2Container, .scene4Container, .scene5Container {
     padding-left: 1rem;

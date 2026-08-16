@@ -79,10 +79,27 @@ export default function Home() {
 
       {/* ================= 1. HERO SCENE ================= */}
       <section ref={heroRef} className={styles.scene1Container}>
-        <motion.div style={{ x: heroExitX, opacity: heroOpacity, textAlign: 'center', zIndex: 10, marginTop: '10vh' }}>
-          <h1 className={styles.heroTitle}>رحاب السباعي</h1>
+        {/* Decorative Background Elements */}
+        <div className={styles.heroBackgroundOrb}></div>
+        <div className={styles.heroGrid}></div>
+
+        <motion.div 
+          style={{ x: heroExitX, opacity: heroOpacity, textAlign: 'center', zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem' }}
+        >
+          <div className={styles.titleWrapper}>
+            <h1 className={styles.heroTitle}>رحاب السباعي</h1>
+          </div>
           <p className={styles.heroSubtitle}>منصة العلوم التفاعلية</p>
           <p className={styles.heroTagline}>تعلّم • اكتشف • جرّب</p>
+          
+          <motion.a 
+            href="#grades"
+            className={styles.heroCta}
+            whileHover={{ scale: 1.05, boxShadow: '0px 10px 20px rgba(236,72,153,0.3)' }}
+            whileTap={{ scale: 0.95 }}
+          >
+            ابدأ رحلتك الآن 🚀
+          </motion.a>
         </motion.div>
 
         <motion.div 
