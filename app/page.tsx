@@ -7,6 +7,15 @@ import styles from "./page.module.css";
 import { useBookStore } from "./store/bookStore";
 import { FaChevronDown, FaPlay } from "react-icons/fa";
 
+// Static array of stars to prevent hydration mismatch
+const STAR_DATA = Array.from({ length: 20 }).map((_, i) => ({
+  id: i,
+  top: `${Math.floor(Math.random() * 100)}%`,
+  left: `${Math.floor(Math.random() * 100)}%`,
+  size: Math.floor(Math.random() * 4) + 1,
+  delay: Math.random() * 3
+}));
+
 export default function Home() {
   const router = useRouter();
   const [isClient, setIsClient] = useState(false);
@@ -15,9 +24,13 @@ export default function Home() {
 
   // Navbar Scroll State
   const [scrolled, setScrolled] = useState(false);
+  
+  // To prevent hydration errors, we only render random stars after client mount
+  const [stars, setStars] = useState<{id: number, top: string, left: string, size: number, delay: number}[]>([]);
 
   useEffect(() => {
     setIsClient(true);
+    setStars(STAR_DATA);
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -68,6 +81,19 @@ export default function Home() {
   return (
     <main className={styles.container}>
       
+      {/* 🌟 Starry Background */}
+      <div className={styles.starryBackground}>
+        {stars.map((star) => (
+          <motion.div
+            key={star.id}
+            className={styles.glowingStar}
+            style={{ top: star.top, left: star.left, width: star.size, height: star.size }}
+            animate={{ opacity: [0.1, 1, 0.1], scale: [0.8, 1.5, 0.8] }}
+            transition={{ duration: 3, repeat: Infinity, delay: star.delay }}
+          />
+        ))}
+      </div>
+
       {/* NAVBAR */}
       <nav className={`${styles.navbar} ${scrolled ? styles.navScrolled : ''}`}>
         <div className={styles.navLinks}>
