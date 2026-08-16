@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "maxReleases": 2,
     "source": ".",
     "ignore": [
       "firebase.json",

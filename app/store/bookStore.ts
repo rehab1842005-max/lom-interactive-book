@@ -131,6 +131,16 @@ export interface Unit {
   lessons: Lesson[];
 }
 
+export interface Experiment {
+  id: string;
+  emoji1: string;
+  emoji2: string;
+  resultEmoji: string;
+  text: string;
+  linkedLessonId?: string;
+}
+
+
 export type Curriculum = {
   [grade: number]: Unit[];
 };
@@ -141,6 +151,7 @@ interface BookState {
   activeLessonId: string | null;
   pages: Page[];
   zones: Zone[];
+  experiments: Experiment[];
   activePageId: string | null;
   selectedZoneId: string | null;
   
@@ -186,6 +197,12 @@ export const useBookStore = create<BookState>()(
       activeLessonId: null,
       pages: [],
       zones: [],
+      experiments: [
+        { id: '1', emoji1: '🕯️', emoji2: '🫧', resultEmoji: '🔥', text: 'الأكسجين يساعد على الاحتراق' },
+        { id: '2', emoji1: '🧊', emoji2: '🔥', resultEmoji: '💧', text: 'الحرارة تحول الصلب لسائل' },
+        { id: '3', emoji1: '🧲', emoji2: '📎', resultEmoji: '⚡', text: 'المغناطيس يجذب المعادن' },
+        { id: '4', emoji1: '🌱', emoji2: '💧', resultEmoji: '🌿', text: 'الماء ضروري لنمو النبات' }
+      ],
       activePageId: null,
       selectedZoneId: null,
       drawingMode: false,
@@ -420,6 +437,7 @@ export const useBookStore = create<BookState>()(
         activeLessonId: state.activeLessonId,
         pages: state.pages,
         zones: state.zones,
+        experiments: state.experiments,
         activePageId: state.activePageId,
         selectedZoneId: state.selectedZoneId,
       }),
@@ -437,6 +455,7 @@ export const saveCurrentStoreToDb = async () => {
       activeLessonId: state.activeLessonId,
       pages: state.pages,
       zones: state.zones,
+      experiments: state.experiments,
       activePageId: state.activePageId,
       selectedZoneId: state.selectedZoneId,
     },

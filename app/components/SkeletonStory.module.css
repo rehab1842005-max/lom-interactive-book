@@ -1,0 +1,154 @@
+.storyContainer {
+  height: 800vh;
+  position: relative;
+  width: 100%;
+  background: #f8fafc;
+}
+
+.stickyStage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background: radial-gradient(circle at center, #ffffff 0%, #f1f5f9 100%);
+}
+
+/* Typography */
+.textWrapper {
+  position: absolute;
+  top: 15%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.storyText {
+  position: absolute;
+  font-size: 3rem;
+  font-weight: 900;
+  color: #1e293b;
+  text-align: center;
+  width: 80%;
+  max-width: 800px;
+  background: linear-gradient(135deg, #0f172a, #334155);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.05));
+}
+
+.subText {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #64748b;
+  margin-top: 1rem;
+  -webkit-text-fill-color: initial;
+  background: none;
+}
+
+.highlight {
+  color: #ec4899;
+  -webkit-text-fill-color: initial;
+}
+
+/* Anatomy Layout */
+.anatomyArea {
+  position: relative;
+  width: 400px;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 5rem;
+  z-index: 5;
+}
+
+.bonePart {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  will-change: transform, opacity;
+  filter: drop-shadow(0 15px 25px rgba(0,0,0,0.1));
+}
+
+.skull {
+  font-size: 6rem;
+  top: 0;
+  z-index: 4;
+}
+
+.ribcage {
+  font-size: 7rem;
+  top: 80px;
+  z-index: 3;
+}
+
+.spine {
+  font-size: 5rem;
+  top: 180px;
+  z-index: 2;
+}
+
+.armLeft {
+  font-size: 5rem;
+  top: 80px;
+  left: 60px;
+  transform: scaleX(-1);
+  z-index: 1;
+}
+
+.armRight {
+  font-size: 5rem;
+  top: 80px;
+  right: 60px;
+  z-index: 1;
+}
+
+.legLeft {
+  font-size: 5rem;
+  top: 250px;
+  left: 100px;
+  z-index: 1;
+}
+
+.legRight {
+  font-size: 5rem;
+  top: 250px;
+  right: 100px;
+  z-index: 1;
+}
+
+.jelly {
+  font-size: 10rem;
+  top: 100px;
+  z-index: 5;
+}
+
+/* Indicators */
+.indicator {
+  position: absolute;
+  background: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ec4899;
+  box-shadow: 0 4px 10px rgba(236, 72, 153, 0.2);
+  white-space: nowrap;
+}
+
+.indSkull { top: -20px; right: -50px; }
+.indRibs { top: 100px; left: -80px; }
+.indSpine { top: 200px; right: -60px; }
+.indArms { top: 120px; right: -100px; }
+
+@media (max-width: 768px) {
+  .storyText { font-size: 2rem; }
+  .anatomyArea { transform: scale(0.7); }
+}

@@ -1,0 +1,80 @@
+.labContainer {
+  height: 150vh;
+  position: relative;
+  width: 100%;
+}
+
+.stickyStage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.experimentArea {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.initialState {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  width: 100%;
+}
+
+.particle {
+  font-size: 4rem;
+  filter: drop-shadow(0 15px 20px rgba(0,0,0,0.15));
+  z-index: 1;
+}
+
+.centerItem {
+  font-size: 7rem;
+  filter: drop-shadow(0 25px 35px rgba(0,0,0,0.2));
+  z-index: 2;
+}
+
+.resultState {
+  position: absolute;
+  font-size: 8rem;
+  filter: drop-shadow(0 10px 40px rgba(236, 72, 153, 0.4));
+  z-index: 3;
+}
+
+.explanationText {
+  margin-top: 4rem;
+  font-size: 3rem;
+  font-weight: 900;
+  color: #111827;
+  text-align: center;
+  background: linear-gradient(135deg, #ec4899, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 5px 10px rgba(236, 72, 153, 0.2));
+}
+
+@media (max-width: 768px) {
+  .explanationText {
+    font-size: 2rem;
+  }
+  .centerItem {
+    font-size: 5rem;
+  }
+  .resultState {
+    font-size: 6rem;
+  }
+  .particle {
+    font-size: 2.5rem;
+  }
+}
