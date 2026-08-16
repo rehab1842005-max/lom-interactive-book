@@ -8,14 +8,17 @@ import { useBookStore } from "./store/bookStore";
 import { FaChevronDown, FaPlay } from "react-icons/fa";
 
 // Static array of stars to prevent hydration mismatch
-const STAR_DATA = Array.from({ length: 40 }).map((_, i) => ({
-  id: i,
-  top: `${Math.floor(Math.random() * 100)}%`,
-  left: `${Math.floor(Math.random() * 100)}%`,
-  size: Math.random() * 1.5 + 0.8, // Size between 0.8rem and 2.3rem
-  delay: Math.random() * 2,
-  char: Math.random() > 0.5 ? '✨' : '🌟'
-}));
+const STAR_DATA = Array.from({ length: 80 }).map((_, i) => {
+  const isBig = Math.random() > 0.85; // 15% are big flare stars
+  return {
+    id: i,
+    top: `${Math.floor(Math.random() * 100)}%`,
+    left: `${Math.floor(Math.random() * 100)}%`,
+    type: isBig ? 'big' : 'small',
+    size: isBig ? Math.random() * 1.5 + 0.5 : Math.random() * 0.8 + 0.2,
+    delay: Math.random() * 5
+  };
+});
 
 export default function Home() {
   const router = useRouter();
@@ -27,7 +30,7 @@ export default function Home() {
   const [scrolled, setScrolled] = useState(false);
   
   // To prevent hydration errors, we only render random stars after client mount
-  const [stars, setStars] = useState<{id: number, top: string, left: string, size: number, delay: number, char: string}[]>([]);
+  const [stars, setStars] = useState<{id: number, top: string, left: string, size: number, delay: number, type: string}[]>([]);
 
   useEffect(() => {
     setIsClient(true);
@@ -87,13 +90,11 @@ export default function Home() {
         {stars.map((star) => (
           <motion.div
             key={star.id}
-            className={styles.glowingStar}
-            style={{ top: star.top, left: star.left, fontSize: `${star.size}rem` }}
-            animate={{ opacity: [0.3, 1, 0.3], scale: [0.8, 1.2, 0.8] }}
-            transition={{ duration: 2, repeat: Infinity, delay: star.delay }}
-          >
-            {star.char}
-          </motion.div>
+            className={star.type === 'big' ? styles.flareStar : styles.tinyStar}
+            style={{ top: star.top, left: star.left, transform: `scale(${star.size})` }}
+            animate={{ opacity: star.type === 'big' ? [0.2, 1, 0.2] : [0.1, 0.8, 0.1] }}
+            transition={{ duration: star.type === 'big' ? 3 : 2, repeat: Infinity, delay: star.delay }}
+          />
         ))}
       </div>
 

@@ -19,11 +19,38 @@
   z-index: 0;
   pointer-events: none;
 }
-.glowingStar {
+.tinyStar {
   position: absolute;
-  color: white;
-  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 1)) drop-shadow(0 0 20px rgba(236, 72, 153, 0.8));
-  user-select: none;
+  width: 2px;
+  height: 2px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 0 4px rgba(255,255,255,0.8);
+}
+.flareStar {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 0 15px 5px rgba(255,255,255,0.9), 0 0 30px 10px rgba(236,72,153,0.3);
+}
+.flareStar::before, .flareStar::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.flareStar::before {
+  width: 80px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent);
+}
+.flareStar::after {
+  width: 1px;
+  height: 80px;
+  background: linear-gradient(180deg, transparent, rgba(255,255,255,0.9), transparent);
 }
 
 /* ================= NAVBAR ================= */
