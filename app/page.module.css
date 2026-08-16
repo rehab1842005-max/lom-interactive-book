@@ -21,19 +21,19 @@
 }
 .tinyStar {
   position: absolute;
-  width: 2px;
-  height: 2px;
-  background: white;
-  border-radius: 50%;
-  box-shadow: 0 0 4px rgba(255,255,255,0.8);
-}
-.flareStar {
-  position: absolute;
   width: 4px;
   height: 4px;
   background: white;
   border-radius: 50%;
-  box-shadow: 0 0 15px 5px rgba(255,255,255,0.9), 0 0 30px 10px rgba(236,72,153,0.3);
+  box-shadow: 0 0 10px 3px rgba(255,255,255,1), 0 0 15px 5px rgba(219,39,119,0.5);
+}
+.flareStar {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 0 25px 12px rgba(255,255,255,1), 0 0 50px 20px rgba(219,39,119,0.8);
 }
 .flareStar::before, .flareStar::after {
   content: '';
@@ -43,14 +43,14 @@
   transform: translate(-50%, -50%);
 }
 .flareStar::before {
-  width: 80px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent);
+  width: 140px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,1), transparent);
 }
 .flareStar::after {
-  width: 1px;
-  height: 80px;
-  background: linear-gradient(180deg, transparent, rgba(255,255,255,0.9), transparent);
+  width: 2px;
+  height: 140px;
+  background: linear-gradient(180deg, transparent, rgba(255,255,255,1), transparent);
 }
 
 /* ================= NAVBAR ================= */

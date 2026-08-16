@@ -15,7 +15,7 @@ const STAR_DATA = Array.from({ length: 80 }).map((_, i) => {
     top: `${Math.floor(Math.random() * 100)}%`,
     left: `${Math.floor(Math.random() * 100)}%`,
     type: isBig ? 'big' : 'small',
-    size: isBig ? Math.random() * 1.5 + 0.5 : Math.random() * 0.8 + 0.2,
+    size: isBig ? Math.random() * 2 + 1.5 : Math.random() * 1 + 0.5, // Much bigger sizes
     delay: Math.random() * 5
   };
 });
