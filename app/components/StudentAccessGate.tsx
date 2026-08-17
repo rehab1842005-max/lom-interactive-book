@@ -20,6 +20,7 @@ export default function StudentAccessGate({ lessonId, grade, unitId, onAccessGra
   
   const [studentId, setStudentId] = useState<string | null>(null);
   const [status, setStatus] = useState<'checking' | 'free' | 'unregistered' | 'pending' | 'approved' | 'blocked'>('checking');
+  const [isGlobalChecked, setIsGlobalChecked] = useState(false);
   
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -32,12 +33,14 @@ export default function StudentAccessGate({ lessonId, grade, unitId, onAccessGra
         setStatus('free');
         onAccessGranted();
       }
+      setIsGlobalChecked(true);
     });
     return () => unsub();
   }, [onAccessGranted]);
 
   // Check if lesson is free
   useEffect(() => {
+    if (!isGlobalChecked) return; // Wait for global check first to avoid flashing "unregistered" screen
     if (status === 'free') return; // Already granted by global access
 
     let isFree = false;
@@ -62,7 +65,7 @@ export default function StudentAccessGate({ lessonId, grade, unitId, onAccessGra
     } else {
       setStudentId(localId);
     }
-  }, [lessonId, grade, unitId, curriculum, onAccessGranted]);
+  }, [lessonId, grade, unitId, curriculum, onAccessGranted, isGlobalChecked, status]);
 
   // Listen to Firebase status if registered
   useEffect(() => {
