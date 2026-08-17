@@ -153,7 +153,7 @@ export default function StudentAccessGate({ lessonId, grade, unitId, onAccessGra
           <FaUserClock size={60} color="#f59e0b" style={{ marginBottom: '20px' }} />
           <h2 style={{ color: '#f59e0b', marginBottom: '15px' }}>طلبك قيد المراجعة</h2>
           <p style={{ color: '#666', lineHeight: '1.6', marginBottom: '25px' }}>
-            يرجى الانتظار لحين موافقة المعلمة. بمجرد الموافقة، سيفتح الدرس تلقائياً ولن تحتاج لتحديث الصفحة.
+            يرجى الانتظار لحين موافقة أ. رحاب السباعي. بمجرد الموافقة، سيفتح الدرس تلقائياً ولن تحتاج لتحديث الصفحة.
           </p>
           <button onClick={onCancel} className="btn-secondary" style={{ width: '100%', padding: '10px', borderRadius: '8px' }}>العودة للرئيسية</button>
         </div>
@@ -180,9 +180,9 @@ export default function StudentAccessGate({ lessonId, grade, unitId, onAccessGra
     <div style={overlayStyle}>
       <div style={cardStyle}>
         <FaLock size={50} color="var(--primary-color)" style={{ marginBottom: '20px' }} />
-        <h2 style={{ color: 'var(--primary-color)', marginBottom: '15px' }}>هذا المحتوى حصري لطلاب المعلمة</h2>
+        <h2 style={{ color: 'var(--primary-color)', marginBottom: '15px' }}>هذا المحتوى حصري لطلاب أ. رحاب السباعي</h2>
         <p style={{ color: '#666', lineHeight: '1.6', marginBottom: '25px', fontSize: '14px' }}>
-          للوصول إلى هذه الدروس، يرجى إدخال بياناتك لإرسال طلب دخول للمعلمة.
+          للوصول إلى هذه الدروس، يرجى إدخال بياناتك لإرسال طلب دخول لـ أ. رحاب السباعي.
         </p>
         
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>

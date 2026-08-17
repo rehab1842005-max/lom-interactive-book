@@ -25,8 +25,8 @@ export default function StudentViewer({ styles }: { styles: any }) {
     return (
       <div className={styles.viewerContainer}>
         <div style={{ textAlign: "center", color: "var(--color-text-muted)", padding: "20px" }}>
-          <h2>المعلمة لم تضع صوراً في هذا الدرس بعد</h2>
-          <p>يرجى العودة في وقت لاحق عندما تقوم المعلمة بإضافة المحتوى.</p>
+          <h2>أ. رحاب السباعي لم تضع صوراً في هذا الدرس بعد</h2>
+          <p>يرجى العودة في وقت لاحق عندما تقوم أ. رحاب السباعي بإضافة المحتوى.</p>
         </div>
       </div>
     );
