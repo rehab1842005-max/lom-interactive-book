@@ -26,32 +26,7 @@ export default function StudentViewer({ styles }: { styles: any }) {
       <div className={styles.viewerContainer}>
         <div style={{ textAlign: "center", color: "var(--color-text-muted)", padding: "20px" }}>
           <h2>المعلمة لم تضع صوراً في هذا الدرس بعد</h2>
-          <p>يرجى العودة لوضع المعلم وإضافة صفحات للكتاب.</p>
-          <div style={{ marginTop: "20px", fontSize: "12px", color: "red", border: "1px solid red", padding: "10px", display: "inline-block", textAlign: "left", direction: "ltr" }}>
-            <p><strong>معلومات فنية للمطور:</strong></p>
-            <p>activeLessonId: {activeLessonId || 'NULL'}</p>
-            <p>allPages count: {allPages.length}</p>
-            <hr />
-            <p><strong>All Pages Data:</strong></p>
-            {allPages.map((p, i) => (
-              <p key={p.id}>Page {i+1}: lessonId = {p.lessonId || 'undefined'}</p>
-            ))}
-            <hr />
-            <p><strong>Curriculum:</strong></p>
-            {Object.entries(curriculum).map(([grade, units]) => (
-              <div key={grade}>
-                <p>Grade: {grade}</p>
-                {units.map(u => (
-                  <div key={u.id} style={{ paddingLeft: '10px' }}>
-                    <p>Unit: {u.title} (ID: {u.id})</p>
-                    {u.lessons.map(l => (
-                      <p key={l.id} style={{ paddingLeft: '20px' }}>Lesson: {l.title} (ID: {l.id})</p>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            ))}
-          </div>
+          <p>يرجى العودة في وقت لاحق عندما تقوم المعلمة بإضافة المحتوى.</p>
         </div>
       </div>
     );
