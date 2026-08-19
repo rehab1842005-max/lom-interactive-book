@@ -154,17 +154,17 @@ export default function StudentViewer({ styles }: { styles: any }) {
   };
 
   return (
-    <div className={styles.viewerContainer} style={{ overflowY: 'auto', height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: '#fdf2f8', paddingBottom: '80px' }}>
+    <div className={styles.viewerContainer} style={{ overflowY: 'auto', height: '100%', display: 'flex', flexDirection: 'column', backgroundColor: '#fdf2f8', paddingBottom: '80px' }}>
       
       {/* Lesson Title Header */}
       {lessonTitle && (
-        <div style={{ width: '100%', maxWidth: '800px', padding: '20px', textAlign: 'center', backgroundColor: 'var(--color-pink)', color: 'white', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px', marginBottom: '20px', boxShadow: '0 4px 15px rgba(255, 79, 163, 0.4)' }}>
+        <div style={{ width: '100%', maxWidth: '800px', margin: '0 auto', padding: '20px', textAlign: 'center', backgroundColor: 'var(--color-pink)', color: 'white', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px', marginBottom: '20px', boxShadow: '0 4px 15px rgba(255, 79, 163, 0.4)' }}>
           <h1 style={{ margin: 0, fontSize: '1.8rem', fontWeight: 'bold' }}>{lessonTitle}</h1>
         </div>
       )}
 
       {/* Pages Container - Vertical Scroll */}
-      <div style={{ width: '100%', maxWidth: '800px', display: 'flex', flexDirection: 'column', gap: '40px' }}>
+      <div style={{ width: '100%', maxWidth: '800px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '40px' }}>
         {sortedPages.map((page, idx) => {
           const currentZones = zones.filter(z => z.pageId === page.id || zones.length <= 15);
           
