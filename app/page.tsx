@@ -316,6 +316,8 @@ export default function Home() {
                               className={styles.lessonItem}
                               onClick={() => {
                                 setActiveGrade(grade);
+                                useBookStore.getState().setActiveLessonId?.(lesson.id) || 
+                                useBookStore.setState({ activeLessonId: lesson.id });
                                 router.push('/student');
                               }}
                             >
