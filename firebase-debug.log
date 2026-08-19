@@ -1,0 +1,90 @@
+[debug] [2026-08-19T04:19:59.873Z] ----------------------------------------------------------------------
+[debug] [2026-08-19T04:19:59.876Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\rehab\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\firebase-tools\lib\bin\firebase.js deploy --only hosting
+[debug] [2026-08-19T04:19:59.877Z] CLI Version:   15.27.0
+[debug] [2026-08-19T04:19:59.877Z] Platform:      win32
+[debug] [2026-08-19T04:19:59.877Z] Node Version:  v24.18.1
+[debug] [2026-08-19T04:19:59.877Z] Detected Agent: antigravity
+[debug] [2026-08-19T04:19:59.877Z] Time:          Wed Aug 19 2026 07:19:59 GMT+0300 (Eastern European Summer Time)
+[debug] [2026-08-19T04:19:59.878Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-08-19T04:19:59.908Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2026-08-19T04:20:45.573Z] Object "/hosting" in "firebase.json" has unknown property: {"additionalProperty":"maxReleases"}
+[debug] [2026-08-19T04:20:45.573Z] Field "/hosting" in "firebase.json" is possibly invalid: must be array
+[debug] [2026-08-19T04:20:45.573Z] Field "/hosting" in "firebase.json" is possibly invalid: must match a schema in anyOf
+[debug] [2026-08-19T04:20:45.585Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-08-19T04:20:45.586Z] > authorizing via signed-in user (rehab1842005@gmail.com)
+[debug] [2026-08-19T04:20:45.586Z] [iam] checking project rehab-science-book for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2026-08-19T04:20:45.588Z] Checked if tokens are valid: false, expires at: 1786935098271
+[debug] [2026-08-19T04:20:45.588Z] Checked if tokens are valid: false, expires at: 1786935098271
+[debug] [2026-08-19T04:20:45.588Z] > refreshing access token with scopes: []
+[debug] [2026-08-19T04:20:45.590Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-08-19T04:20:45.590Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-08-19T04:20:45.853Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-08-19T04:20:45.854Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-08-19T04:20:45.875Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/rehab-science-book:testIamPermissions [none]
+[debug] [2026-08-19T04:20:45.875Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/rehab-science-book:testIamPermissions  x-goog-user-project=rehab-science-book
+[debug] [2026-08-19T04:20:45.875Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/rehab-science-book:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-08-19T04:20:46.024Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2026-08-19T04:20:46.024Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[debug] [2026-08-19T04:20:46.694Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/rehab-science-book:testIamPermissions 200
+[debug] [2026-08-19T04:20:46.694Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/rehab-science-book:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-08-19T04:20:46.695Z] Checked if tokens are valid: true, expires at: 1787116844854
+[debug] [2026-08-19T04:20:46.695Z] Checked if tokens are valid: true, expires at: 1787116844854
+[debug] [2026-08-19T04:20:46.695Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/rehab-science-book [none]
+[debug] [2026-08-19T04:20:47.143Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/rehab-science-book 200
+[debug] [2026-08-19T04:20:47.143Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/rehab-science-book {"projectId":"rehab-science-book","projectNumber":"179446131110","displayName":"rehab-science-book","name":"projects/rehab-science-book","resources":{"hostingSite":"rehab-science-book"},"state":"ACTIVE","labels":{"firebase":"enabled"},"etag":"1_2e6d9418-45d2-4826-a825-8d8650b9d896"}
+[debug] [2026-08-19T04:20:52.234Z] Checked if tokens are valid: true, expires at: 1787116844854
+[debug] [2026-08-19T04:20:52.234Z] Checked if tokens are valid: true, expires at: 1787116844854
+[debug] [2026-08-19T04:20:52.234Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/rehab-science-book/sites pageToken=&pageSize=10
+[debug] [2026-08-19T04:20:53.571Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/rehab-science-book/sites 200
+[debug] [2026-08-19T04:20:53.571Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/rehab-science-book/sites {"sites":[{"name":"projects/rehab-science-book/sites/rehab-science-book","defaultUrl":"https://rehab-science-book.web.app","appId":"1:179446131110:web:0df1812dfca237ccae8767","type":"DEFAULT_SITE"}]}
+[debug] [2026-08-19T04:20:53.572Z] Checked if tokens are valid: true, expires at: 1787116844854
+[debug] [2026-08-19T04:20:53.572Z] Checked if tokens are valid: true, expires at: 1787116844854
+[debug] [2026-08-19T04:20:53.572Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:179446131110:web:0df1812dfca237ccae8767/config [none]
+[debug] [2026-08-19T04:20:54.736Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:179446131110:web:0df1812dfca237ccae8767/config 200
+[debug] [2026-08-19T04:20:54.737Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:179446131110:web:0df1812dfca237ccae8767/config {"projectId":"rehab-science-book","appId":"1:179446131110:web:0df1812dfca237ccae8767","storageBucket":"rehab-science-book.firebasestorage.app","apiKey":"AIzaSyBl-P5Gcz1E0YMm_tJRGn3wi_E5OGBz_-Q","authDomain":"rehab-science-book.firebaseapp.com","messagingSenderId":"179446131110","measurementId":"G-N5DJWTSWG3","projectNumber":"179446131110","version":"2"}
+[info] 
+   Thank you for trying our early preview of Next.js support on Firebase Hosting.
+   During the preview, support is best-effort and breaking changes can be expected. Proceed with caution.
+   The integration is known to work with Next.js version 12 - 16.0. You may encounter errors.
+
+   Documentation: https://firebase.google.com/docs/hosting/frameworks/nextjs
+   File a bug: https://github.com/firebase/firebase-tools/issues/new?template=bug_report.md
+   Submit a feature request: https://github.com/firebase/firebase-tools/issues/new?template=feature_request.md
+
+   We'd love to learn from you. Express your interest in helping us shape the future of Firebase Hosting: https://goo.gle/41enW5X
+
+[debug] [2026-08-19T04:21:05.655Z] Checked if tokens are valid: true, expires at: 1787116844854
+[debug] [2026-08-19T04:21:05.655Z] Checked if tokens are valid: true, expires at: 1787116844854
+[debug] [2026-08-19T04:21:05.655Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/rehab-science-book/sites/rehab-science-book [none]
+[debug] [2026-08-19T04:21:06.828Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/rehab-science-book/sites/rehab-science-book 200
+[debug] [2026-08-19T04:21:06.828Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/rehab-science-book/sites/rehab-science-book {"name":"projects/rehab-science-book/sites/rehab-science-book","defaultUrl":"https://rehab-science-book.web.app","appId":"1:179446131110:web:0df1812dfca237ccae8767","type":"DEFAULT_SITE"}
+[info] ▲ Next.js 16.2.12 (Turbopack)
+
+[info] 
+
+[info]   Creating an optimized production build ...
+
+[info] ✓ Compiled successfully in 28.0s
+
+[info]   Running TypeScript ...
+
+[info] Failed to type check.
+
+
+[info] ./app/page.tsx:319:57
+Type error: Property 'setActiveLessonId' does not exist on type 'BookState'. Did you mean 'setActiveLesson'?
+
+  317 |                               onClick={() => {
+  318 |                                 setActiveGrade(grade);
+> 319 |                                 useBookStore.getState().setActiveLessonId?.(lesson.id) || 
+      |                                                         ^
+  320 |                                 useBookStore.setState({ activeLessonId: lesson.id });
+  321 |                                 router.push('/student');
+  322 |                               }}
+
+[info] Next.js build worker exited with code: 1 and signal: null
+
+[debug] [2026-08-19T04:22:08.856Z] Error: ENOENT: no such file or directory, open 'C:\Users\rehab\Downloads\3lom\.next\export-marker.json'
+[error] 
+[error] Error: An unexpected error has occurred.
