@@ -679,38 +679,47 @@ export default function ScienceSidebar() {
 
                   <div style={{ paddingRight: '15px', borderRight: '2px solid #FF4FA3', display: 'flex', flexDirection: 'column', gap: '5px' }}>
                     {unit.lessons.map(lesson => (
-                      <div key={lesson.id} style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
-                        <button 
-                          onClick={() => updateLesson(editingGrade, unit.id, lesson.id, { isFree: !lesson.isFree })}
-                          style={{ 
-                            background: 'none', 
-                            border: 'none', 
-                            cursor: 'pointer', 
-                            fontSize: '16px',
-                            color: lesson.isFree ? '#4ade80' : '#f43f5e',
-                            padding: '0 5px'
-                          }}
-                          title={lesson.isFree ? 'الدرس مجاني للجميع (اضغط للإغلاق)' : 'الدرس يحتاج موافقة (اضغط للفتح)'}
-                        >
-                          {lesson.isFree ? '🔓' : '🔒'}
-                        </button>
+                      <div key={lesson.id} style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '8px', background: '#f8fafc', padding: '8px', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
+                        <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
+                          <button 
+                            onClick={() => updateLesson(editingGrade, unit.id, lesson.id, { isFree: !lesson.isFree })}
+                            style={{ 
+                              background: 'none', 
+                              border: 'none', 
+                              cursor: 'pointer', 
+                              fontSize: '16px',
+                              color: lesson.isFree ? '#4ade80' : '#f43f5e',
+                              padding: '0 5px'
+                            }}
+                            title={lesson.isFree ? 'الدرس مجاني للجميع (اضغط للإغلاق)' : 'الدرس يحتاج موافقة (اضغط للفتح)'}
+                          >
+                            {lesson.isFree ? '🔓' : '🔒'}
+                          </button>
+                          <input 
+                            type="text" 
+                            value={lesson.title} 
+                            onChange={(e) => updateLesson(editingGrade, unit.id, lesson.id, { title: e.target.value })}
+                            style={{ flex: 1, padding: '4px', border: '1px solid #ddd', borderRadius: '4px', fontSize: '13px' }}
+                          />
+                          <button 
+                            onClick={() => {
+                              setActiveLesson(lesson.id);
+                              setActiveTab('pages-tab');
+                            }}
+                            style={{ background: activeLessonId === lesson.id ? '#4caf50' : '#2196F3', color: 'white', border: 'none', borderRadius: '4px', padding: '4px 8px', cursor: 'pointer', fontSize: '12px' }}
+                            title="تعديل محتوى الدرس"
+                          >
+                            <i className="fa-solid fa-pen-to-square"></i> المحتوى
+                          </button>
+                          <button onClick={() => removeLesson(editingGrade, unit.id, lesson.id)} style={{ background: 'transparent', color: '#ff4d4f', border: 'none', cursor: 'pointer' }}><i className="fa-solid fa-times"></i></button>
+                        </div>
                         <input 
                           type="text" 
-                          value={lesson.title} 
-                          onChange={(e) => updateLesson(editingGrade, unit.id, lesson.id, { title: e.target.value })}
-                          style={{ flex: 1, padding: '4px', border: '1px solid #ddd', borderRadius: '4px', fontSize: '13px' }}
+                          placeholder="رابط يوتيوب لشرح الدرس بالكامل (اختياري)"
+                          value={lesson.lessonVideoUrl || ''}
+                          onChange={(e) => updateLesson(editingGrade, unit.id, lesson.id, { lessonVideoUrl: e.target.value })}
+                          style={{ width: '100%', padding: '4px', border: '1px solid #ddd', borderRadius: '4px', fontSize: '11px', color: '#666' }}
                         />
-                        <button 
-                          onClick={() => {
-                            setActiveLesson(lesson.id);
-                            setActiveTab('pages-tab');
-                          }}
-                          style={{ background: activeLessonId === lesson.id ? '#4caf50' : '#2196F3', color: 'white', border: 'none', borderRadius: '4px', padding: '4px 8px', cursor: 'pointer', fontSize: '12px' }}
-                          title="تعديل محتوى الدرس"
-                        >
-                          <i className="fa-solid fa-pen-to-square"></i> المحتوى
-                        </button>
-                        <button onClick={() => removeLesson(editingGrade, unit.id, lesson.id)} style={{ background: 'transparent', color: '#ff4d4f', border: 'none', cursor: 'pointer' }}><i className="fa-solid fa-times"></i></button>
                       </div>
                     ))}
                     <button onClick={() => addLesson(editingGrade, unit.id, 'درس جديد')} style={{ background: 'transparent', color: '#FF4FA3', border: '1px dashed #FF4FA3', borderRadius: '4px', padding: '4px', marginTop: '5px', cursor: 'pointer', fontSize: '12px' }}>

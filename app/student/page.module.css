@@ -23,8 +23,9 @@
 .viewerContainer {
   flex: 1;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
   padding: 0;
   padding-bottom: 160px; /* Space for the floating navigation and quiz button */
   overflow-y: auto;

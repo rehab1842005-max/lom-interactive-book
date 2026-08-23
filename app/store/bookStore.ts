@@ -123,6 +123,7 @@ export interface Lesson {
   id: string;
   title: string;
   isFree?: boolean; // If true, accessible without approval
+  lessonVideoUrl?: string; // Optional video for the entire lesson
 }
 
 export interface Unit {

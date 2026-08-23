@@ -21,18 +21,21 @@ export default function StudentViewer({ styles }: { styles: any }) {
   
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const lessonTitle = useMemo(() => {
-    let title = "";
+  const lessonData = useMemo(() => {
+    let result = null;
     if (activeLessonId) {
       Object.values(curriculum).forEach((units: any) => {
         units.forEach((u: any) => {
           const l = u.lessons.find((x: any) => x.id === activeLessonId);
-          if (l) title = l.title;
+          if (l) result = l;
         });
       });
     }
-    return title;
+    return result;
   }, [curriculum, activeLessonId]);
+
+  const lessonTitle = lessonData?.title || "";
+  const lessonVideoUrl = lessonData?.lessonVideoUrl || "";
 
   const sortedPages = [...pages].sort((a, b) => (a.order || 0) - (b.order || 0));
 
@@ -46,6 +49,29 @@ export default function StudentViewer({ styles }: { styles: any }) {
       </div>
     );
   }
+
+  const handleLessonVideoClick = () => {
+    if (!lessonVideoUrl) return;
+    const masterZone: any = {
+      id: "lesson-master-video",
+      pageId: "lesson",
+      name: "شرح الدرس كاملاً",
+      color: "blue",
+      x: 0, y: 0, width: 0, height: 0,
+      interactionType: 'video',
+      interactionTypes: ['video'],
+      showIcon: false,
+      content: {
+        videoUrl: lessonVideoUrl,
+        questions: []
+      }
+    };
+    if (audioRef.current) {
+      audioRef.current.pause();
+      setPlayingAudioId(null);
+    }
+    setActivePopupZone(masterZone);
+  };
 
   const handleMasterVideoClick = (page: any) => {
     if (!page.pageVideoUrl) return;
@@ -160,6 +186,31 @@ export default function StudentViewer({ styles }: { styles: any }) {
       {lessonTitle && (
         <div style={{ width: '100%', maxWidth: '800px', margin: '0 auto', padding: '20px', textAlign: 'center', backgroundColor: 'var(--color-pink)', color: 'white', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px', marginBottom: '20px', boxShadow: '0 4px 15px rgba(255, 79, 163, 0.4)' }}>
           <h1 style={{ margin: 0, fontSize: '1.8rem', fontWeight: 'bold' }}>{lessonTitle}</h1>
+          {lessonVideoUrl && (
+            <motion.button 
+              onClick={handleLessonVideoClick}
+              style={{
+                marginTop: '15px',
+                background: 'white',
+                color: 'var(--color-pink)',
+                border: 'none',
+                padding: '8px 20px',
+                fontSize: '1rem',
+                fontWeight: 'bold',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                cursor: 'pointer',
+                borderRadius: '30px',
+                boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
+              }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <i className="fa-brands fa-youtube" style={{ fontSize: '1.2rem', color: '#ef4444' }}></i> 
+              <span>شرح الدرس كاملاً</span>
+            </motion.button>
+          )}
         </div>
       )}
 
