@@ -22,7 +22,7 @@ export default function StudentViewer({ styles }: { styles: any }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const lessonData = useMemo(() => {
-    let result = null;
+    let result: any = null;
     if (activeLessonId) {
       Object.values(curriculum).forEach((units: any) => {
         units.forEach((u: any) => {
