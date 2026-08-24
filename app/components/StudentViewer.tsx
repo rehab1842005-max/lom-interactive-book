@@ -228,6 +228,45 @@ export default function StudentViewer({ styles }: { styles: any }) {
               className={styles.pageWrapper}
               style={{ containerType: 'inline-size', position: 'relative', width: '100%', boxShadow: '0 8px 30px rgba(0,0,0,0.1)', borderRadius: '12px', overflow: 'hidden', backgroundColor: 'white' }}
             >
+              {/* Action Dock ABOVE the Page (Video) */}
+              {!!page.pageVideoUrl && (
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '12px',
+                    background: 'rgba(255, 255, 255, 0.95)',
+                    borderBottom: '1px solid rgba(255, 79, 163, 0.1)',
+                    width: '100%'
+                  }}
+                >
+                  <motion.button 
+                    onClick={() => handleMasterVideoClick(page)}
+                    style={{
+                      background: 'transparent',
+                      color: 'var(--color-pink)',
+                      border: 'none',
+                      padding: '6px 14px',
+                      fontSize: '0.9rem',
+                      fontWeight: 'bold',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      cursor: 'pointer',
+                      borderRadius: '20px',
+                      transition: 'background 0.2s',
+                      whiteSpace: 'nowrap'
+                    }}
+                    whileHover={{ backgroundColor: 'rgba(255, 79, 163, 0.12)' }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <i className="fa-brands fa-youtube" style={{ fontSize: '1.1rem', color: '#ef4444' }}></i> 
+                    <span>شرح الصفحة</span>
+                  </motion.button>
+                </div>
+              )}
+
               {/* Page Image & Zones */}
               <div style={{ position: 'relative', width: '100%', lineHeight: 0 }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -342,10 +381,8 @@ export default function StudentViewer({ styles }: { styles: any }) {
                 })}
               </div>
 
-              {/* Action Dock BELOW the Page */}
+              {/* Action Dock BELOW the Page (Quiz) */}
               {(() => {
-                const hasPageVideo = !!page.pageVideoUrl;
-                
                 const directPageQuestions = page.questions || [];
                 const pageZones = currentZones.filter(z => z.pageId === page.id);
                 const zoneQuestions = pageZones.flatMap(z => z.content?.questions || (z.content?.question ? [z.content.question] : []));
@@ -357,7 +394,7 @@ export default function StudentViewer({ styles }: { styles: any }) {
                 const pageQuestionsCount = finalQuizQuestions.length;
                 const hasAnyQuestions = pageQuestionsCount > 0;
 
-                if (!hasPageVideo && !hasAnyQuestions) return null;
+                if (!hasAnyQuestions) return null;
 
                 return (
                   <div
@@ -372,64 +409,30 @@ export default function StudentViewer({ styles }: { styles: any }) {
                       width: '100%'
                     }}
                   >
-                    {/* Video Button */}
-                    {hasPageVideo && (
-                      <motion.button 
-                        onClick={() => handleMasterVideoClick(page)}
-                        style={{
-                          background: 'transparent',
-                          color: 'var(--color-pink)',
-                          border: 'none',
-                          padding: '6px 14px',
-                          fontSize: '0.9rem',
-                          fontWeight: 'bold',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px',
-                          cursor: 'pointer',
-                          borderRadius: '20px',
-                          transition: 'background 0.2s',
-                          whiteSpace: 'nowrap'
-                        }}
-                        whileHover={{ backgroundColor: 'rgba(255, 79, 163, 0.12)' }}
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        <i className="fa-brands fa-youtube" style={{ fontSize: '1.1rem', color: '#ef4444' }}></i> 
-                        <span>شرح الصفحة</span>
-                      </motion.button>
-                    )}
-
-                    {/* Divider if both exist */}
-                    {hasPageVideo && hasAnyQuestions && (
-                      <div style={{ width: '2px', height: '18px', background: 'rgba(255, 79, 163, 0.3)' }} />
-                    )}
-
                     {/* Quiz Button */}
-                    {hasAnyQuestions && (
-                      <motion.button 
-                        onClick={() => setShowPageQuiz(page.id)}
-                        style={{
-                          background: 'linear-gradient(135deg, #ff4fa3 0%, #db2777 100%)',
-                          color: 'white',
-                          border: 'none',
-                          padding: '8px 18px',
-                          fontSize: '0.95rem',
-                          fontWeight: 'bold',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px',
-                          cursor: 'pointer',
-                          borderRadius: '20px',
-                          boxShadow: '0 3px 10px rgba(219, 39, 119, 0.35)',
-                          whiteSpace: 'nowrap'
-                        }}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        <FaClipboardCheck style={{ fontSize: '1.1rem' }} />
-                        <span>اختبر نفسك ({pageQuestionsCount})</span>
-                      </motion.button>
-                    )}
+                    <motion.button 
+                      onClick={() => setShowPageQuiz(page.id)}
+                      style={{
+                        background: 'linear-gradient(135deg, #ff4fa3 0%, #db2777 100%)',
+                        color: 'white',
+                        border: 'none',
+                        padding: '8px 18px',
+                        fontSize: '0.95rem',
+                        fontWeight: 'bold',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        cursor: 'pointer',
+                        borderRadius: '20px',
+                        boxShadow: '0 3px 10px rgba(219, 39, 119, 0.35)',
+                        whiteSpace: 'nowrap'
+                      }}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <FaClipboardCheck style={{ fontSize: '1.1rem' }} />
+                      <span>اختبر نفسك ({pageQuestionsCount})</span>
+                    </motion.button>
                   </div>
                 );
               })()}
