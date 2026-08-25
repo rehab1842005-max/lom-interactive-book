@@ -204,6 +204,10 @@ interface BookState {
   addDraftPoint: (point: {x: number, y: number}) => void;
   finishDraftPolygon: (pageId: string) => void;
   clearDraftPolygon: () => void;
+  
+  addGame: (game: Game) => void;
+  updateGame: (id: string, updates: Partial<Game>) => void;
+  deleteGame: (id: string) => void;
 }
 
 export const useBookStore = create<BookState>()(
