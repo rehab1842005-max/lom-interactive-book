@@ -168,7 +168,7 @@ export default function MillionaireGame({ game, onComplete }: { game: Game, onCo
                   overflow: 'hidden'
                 }}
               >
-                <span style={{ color: '#fbbf24', fontWeight: 'bold', marginEnd: '15px', paddingLeft: '15px', borderLeft: '1px solid rgba(255,255,255,0.2)' }}>
+                <span style={{ color: '#fbbf24', fontWeight: 'bold', marginRight: '15px', paddingLeft: '15px', borderLeft: '1px solid rgba(255,255,255,0.2)' }}>
                   {letters[idx]}:
                 </span>
                 <span style={{ flex: 1, textAlign: 'center' }}>{ans}</span>

@@ -214,6 +214,7 @@ export const useBookStore = create<BookState>()(
       activeLessonId: null,
       pages: [],
       zones: [],
+      games: [],
       experiments: [
         { id: '1', emoji1: '🕯️', emoji2: '🫧', resultEmoji: '🔥', text: 'الأكسجين يساعد على الاحتراق' },
         { id: '2', emoji1: '🧊', emoji2: '🔥', resultEmoji: '💧', text: 'الحرارة تحول الصلب لسائل' },
@@ -443,7 +444,11 @@ export const useBookStore = create<BookState>()(
         } catch (e) {
           console.error("Failed to import book data", e);
         }
-      }
+      },
+      
+      addGame: (game) => set((state) => ({ games: [...(state.games || []), game] })),
+      updateGame: (id, updates) => set((state) => ({ games: (state.games || []).map(g => g.id === id ? { ...g, ...updates } : g) })),
+      deleteGame: (id) => set((state) => ({ games: (state.games || []).filter(g => g.id !== id) }))
     }),
     {
       name: 'interactive-book-storage',
@@ -454,6 +459,7 @@ export const useBookStore = create<BookState>()(
         activeLessonId: state.activeLessonId,
         pages: state.pages,
         zones: state.zones,
+        games: state.games,
         experiments: state.experiments,
         activePageId: state.activePageId,
         selectedZoneId: state.selectedZoneId,
@@ -472,6 +478,7 @@ export const saveCurrentStoreToDb = async () => {
       activeLessonId: state.activeLessonId,
       pages: state.pages,
       zones: state.zones,
+      games: state.games,
       experiments: state.experiments,
       activePageId: state.activePageId,
       selectedZoneId: state.selectedZoneId,
