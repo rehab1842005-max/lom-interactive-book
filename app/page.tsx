@@ -104,6 +104,9 @@ export default function Home() {
           <a href="#">الرئيسية</a>
           <a href="#grades">الصفوف الدراسية</a>
           <a href="#book">الملزمة التفاعلية</a>
+          <a href="/games" style={{ display: 'flex', alignItems: 'center', gap: '5px', background: 'rgba(255,255,255,0.2)', padding: '5px 12px', borderRadius: '20px', color: '#fff' }}>
+            <i className="fa-solid fa-gamepad"></i> الألعاب
+          </a>
         </div>
       </nav>
 

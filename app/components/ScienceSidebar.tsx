@@ -9,6 +9,7 @@ import { FaEdit, FaMagic } from "react-icons/fa";
 import QuestionBuilderModal from "./QuestionBuilderModal";
 import PageQuestionsModal from "./PageQuestionsModal";
 import SmartImporterModal from "./SmartImporterModal";
+import GamesManager from './GamesManager';
 
 
 
@@ -599,6 +600,10 @@ export default function ScienceSidebar() {
               <i className="fa-solid fa-sliders"></i>
               <span>الخصائص</span>
             </button>
+            <button className={`tab-btn ${activeTab === 'games-tab' ? 'active' : ''}`} onClick={() => setActiveTab('games-tab')} title="الألعاب التفاعلية">
+              <i className="fa-solid fa-gamepad"></i>
+              <span>الألعاب</span>
+            </button>
           </>
         )}
         
@@ -1044,6 +1049,8 @@ export default function ScienceSidebar() {
         {currentAdmin?.permissions?.manageStudents && activeTab === 'students-tab' && <StudentsManager />}
         
         {currentAdmin?.permissions?.manageAdmins && activeTab === 'admins-tab' && <AdminsManager />}
+
+        {activeTab === 'games-tab' && <GamesManager />}
 
         {activeTab === 'quiz-tab' && (
           <div className="tab-panel active">

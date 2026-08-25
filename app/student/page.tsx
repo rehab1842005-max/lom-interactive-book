@@ -67,12 +67,17 @@ export default function StudentMode() {
         </div>
         
         <div className="header-actions">
+          <Link href="/games" style={{ textDecoration: "none" }}>
+            <button className="nav-btn" style={{ color: '#ec4899', fontWeight: 'bold' }}>
+              <i className="fa-solid fa-gamepad"></i> <span className="btn-text">الألعاب التفاعلية</span>
+            </button>
+          </Link>
           <Link href="/" style={{ textDecoration: "none" }}>
             <button className="nav-btn">
               <i className="fa-solid fa-home"></i> <span className="btn-text">الرئيسية</span>
             </button>
           </Link>
-          <Link href="/teacher" style={{ textDecoration: "none" }}>
+          <Link href="/rehab-elsibai" style={{ textDecoration: "none" }}>
             <button className="nav-btn primary-btn">
               <i className="fa-solid fa-pen-ruler"></i> <span className="btn-text">العودة كمعلم</span>
             </button>

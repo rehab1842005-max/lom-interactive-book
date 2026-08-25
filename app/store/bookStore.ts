@@ -141,6 +141,21 @@ export interface Experiment {
   linkedLessonId?: string;
 }
 
+export interface GameQuestion {
+  id: string;
+  questionText: string;
+  correctAnswer: string;
+  wrongAnswers: string[];
+}
+
+export interface Game {
+  id: string;
+  title: string;
+  lessonId?: string; // Optional, to link to a lesson
+  grade?: number;
+  template: 'stars' | 'millionaire' | 'racing';
+  questions: GameQuestion[];
+}
 
 export type Curriculum = {
   [grade: number]: Unit[];
@@ -153,6 +168,7 @@ interface BookState {
   pages: Page[];
   zones: Zone[];
   experiments: Experiment[];
+  games: Game[];
   activePageId: string | null;
   selectedZoneId: string | null;
   

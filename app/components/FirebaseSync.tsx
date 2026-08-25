@@ -41,7 +41,8 @@ export default function FirebaseSync() {
           if (isTeacher) {
             setDoc(docRef, {
               curriculum: localState.curriculum || {},
-              zones: localState.zones || []
+              zones: localState.zones || [],
+              games: localState.games || []
             }, { merge: true });
           }
           return;
@@ -75,10 +76,12 @@ export default function FirebaseSync() {
         });
 
         if (JSON.stringify(localState.curriculum) !== JSON.stringify(data.curriculum) || 
-            JSON.stringify(localState.zones) !== JSON.stringify(mergedZones)) {
+            JSON.stringify(localState.zones) !== JSON.stringify(mergedZones) ||
+            JSON.stringify(localState.games) !== JSON.stringify(data.games || [])) {
           useBookStore.setState({
             curriculum: data.curriculum || {},
-            zones: mergedZones.length > 0 ? mergedZones : localZones
+            zones: mergedZones.length > 0 ? mergedZones : localZones,
+            games: data.games || []
           });
           
           setTimeout(() => {
@@ -158,7 +161,8 @@ export default function FirebaseSync() {
 
           const rawDataToSave = {
             curriculum: currentState.curriculum || {},
-            zones: cleanZones
+            zones: cleanZones,
+            games: currentState.games || []
           };
           const dataToSave = JSON.parse(JSON.stringify(rawDataToSave));
           
