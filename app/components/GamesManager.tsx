@@ -3,7 +3,8 @@
 import React, { useState } from 'react';
 import { useBookStore, Game } from '@/app/store/bookStore';
 import { v4 as uuidv4 } from 'uuid';
-import { FaGamepad, FaPlus, FaTrash, FaEdit, FaStar, FaCar, FaMoneyBillWave } from 'react-icons/fa';
+import { FaGamepad, FaPlus, FaTrash, FaEdit, FaStar, FaCar, FaMoneyBillWave, FaMagic } from 'react-icons/fa';
+import GameSmartImporterModal from './GameSmartImporterModal';
 
 export default function GamesManager() {
   const games = useBookStore(state => state.games || []);
@@ -13,6 +14,7 @@ export default function GamesManager() {
   const activeLessonId = useBookStore(state => state.activeLessonId);
 
   const [editingGame, setEditingGame] = useState<Game | null>(null);
+  const [showSmartImporter, setShowSmartImporter] = useState(false);
 
   const handleCreateGame = (template: Game['template']) => {
     const newGame: Game = {
@@ -152,25 +154,38 @@ export default function GamesManager() {
           <h4 style={{ marginTop: '20px', marginBottom: '10px', color: '#64748b' }}>إضافة لعبة جديدة:</h4>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '8px' }}>
             <button 
+              onClick={() => setShowSmartImporter(true)}
+              style={{ background: 'linear-gradient(135deg, #ff4fa3 0%, #db2777 100%)', color: 'white', border: 'none', padding: '12px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontWeight: 'bold', marginBottom: '8px' }}
+            >
+              <FaMagic /> منظم الألعاب التلقائي (لصق أسئلة)
+            </button>
+            <button 
               onClick={() => handleCreateGame('stars')}
               style={{ background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)', color: 'white', border: 'none', padding: '12px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontWeight: 'bold' }}
             >
-              <FaStar /> تحدي النجوم
+              <FaStar /> تحدي النجوم (يدوي)
             </button>
             <button 
               onClick={() => handleCreateGame('millionaire')}
               style={{ background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)', color: 'white', border: 'none', padding: '12px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontWeight: 'bold' }}
             >
-              <FaMoneyBillWave /> من سيربح المليون
+              <FaMoneyBillWave /> من سيربح المليون (يدوي)
             </button>
             <button 
               onClick={() => handleCreateGame('racing')}
               style={{ background: 'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)', color: 'white', border: 'none', padding: '12px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontWeight: 'bold' }}
             >
-              <FaCar /> سباق السيارات
+              <FaCar /> سباق السيارات (يدوي)
             </button>
           </div>
         </div>
+      )}
+      
+      {showSmartImporter && activeLessonId && (
+        <GameSmartImporterModal
+          lessonId={activeLessonId}
+          onClose={() => setShowSmartImporter(false)}
+        />
       )}
     </div>
   );
