@@ -313,7 +313,7 @@ export default function Home() {
                           exit={{ height: 0, opacity: 0 }}
                           style={{ overflow: 'hidden' }}
                         >
-                          {unit.lessons.map(lesson => (
+                          {unit.lessons.filter(l => l.isPublished !== false).map(lesson => (
                             <div 
                               key={lesson.id} 
                               className={styles.lessonItem}

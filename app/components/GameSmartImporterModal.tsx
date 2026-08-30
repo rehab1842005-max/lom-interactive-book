@@ -15,7 +15,9 @@ export default function GameSmartImporterModal({
 }) {
   const [text, setText] = useState("");
   const [template, setTemplate] = useState<Game['template']>('stars');
-  const [gameTitle, setGameTitle] = useState("لعبة تحدي جديدة");
+  const [gameTitle, setGameTitle] = useState("تحدي النجوم");
+  const [millionaireTimer, setMillionaireTimer] = useState(45);
+  const [millionaireMoneyLadder, setMillionaireMoneyLadder] = useState("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15");
   const { addGame } = useBookStore();
   const [status, setStatus] = useState("");
   
@@ -79,7 +81,7 @@ export default function GameSmartImporterModal({
         // Try to find if multiple options are smashed into one line
         // e.g. "أ) كذا ب) كذا ج) كذا"
         // Only letters (أ-يa-zA-Z) followed by . or ) are options, OR dashes. Numbers are usually question titles!
-        const optionPrefixPattern = /(?:[أ-يa-zA-Z][\.\)]|\-|\*(?!\*))/;
+        const optionPrefixPattern = /(?:[\(]?[أ-يa-zA-Z][\.\)]|\-|\*(?!\*))/;
         const smashedOptionsRegex = new RegExp(`(?:^|\\s+)(${optionPrefixPattern.source})\\s*(.*?)(?=\\s+${optionPrefixPattern.source}|\\s*$)`, 'g');
         
         // Count how many options are in this line
@@ -103,10 +105,11 @@ export default function GameSmartImporterModal({
 
           // This line contains multiple options
           smashedMatches.forEach(match => {
-            let cleanOpt = match[2].replace('✅', '').trim();
+            const isCorrect = match[2].includes('✅') || match[2].includes('✓') || match[2].includes('الإجابة الصحيحة');
+            let cleanOpt = match[2].replace(/✅|✓|\(الإجابة الصحيحة\)|الإجابة الصحيحة/g, '').trim();
             if (cleanOpt) {
               optionsCollected.push(cleanOpt);
-              if (match[2].includes('✅')) {
+              if (isCorrect) {
                 correctAnswerIdx = optionsCollected.length - 1;
               }
             }
@@ -114,28 +117,46 @@ export default function GameSmartImporterModal({
           continue; // Skip the rest of the loop for this line since we parsed its options
         }
 
-        // Normal check if line is a single option (starts with أ-ي or a-z followed by . or ) or starts with dash)
-        const isOption = !!line.match(/^(?:[أ-يa-zA-Z][\.\)]|\-|\*(?!\*))\s*(.+)/);
-        const isCorrectMarked = line.includes('✅');
+        // Remove standard right-to-left marks if any
+        line = line.replace(/[\u200B-\u200D\uFEFF]/g, '');
 
-        if (isOption) {
-          let cleanOpt = line.replace(/^(?:[أ-يa-zA-Z][\.\)]|\-|\*(?!\*))\s*/, '').replace('✅', '').trim();
-          if (cleanOpt) {
-            optionsCollected.push(cleanOpt);
-            if (isCorrectMarked) {
+        // Is it an option? 
+        // Handles "أ)", "(أ)", "1)", "- ", etc.
+        const cleanLineForCheck = line.replace(/\(الإجابة الصحيحة\)/g, '').replace(/[✅✓✔❌x×]/g, '').trim();
+        const isMcqOption = /^(?:[\(]?\s*[أ-يa-zA-Z0-9]\s*[\)\.-]|\-)\s*(.+)/.test(cleanLineForCheck);
+        const isTfAnswer = /^(صح|خطأ|غلط)$/.test(cleanLineForCheck);
+        
+        if (isMcqOption || isTfAnswer) {
+          // Extract the actual option text without the prefix
+          let optText = line;
+          const mcqMatch = line.match(/^(?:[\(]?\s*[أ-يa-zA-Z0-9]\s*[\)\.-]|\-)\s*(.+)/);
+          if (mcqMatch && mcqMatch[1]) {
+            optText = mcqMatch[1].trim();
+          } else if (isTfAnswer) {
+            optText = cleanLineForCheck; // 'صح', 'خطأ' or 'غلط'
+          }
+
+          let isCorrect = false;
+          // check if marked correct with ✅, ✓, ✔, or (الإجابة الصحيحة)
+          if (line.includes('✅') || line.includes('✓') || line.includes('✔') || line.includes('(الإجابة الصحيحة)')) {
+            isCorrect = true;
+          }
+          
+          if (currentQ) {
+            optionsCollected.push(optText);
+            if (isCorrect) {
               correctAnswerIdx = optionsCollected.length - 1;
             }
           }
         } else {
-          // It's a new question title
-          saveCurrentQuestion();
-          
-          let cleanTitle = line.replace(/^\*\*?\d+\.?\*\*?\s*/, '').replace(/\*+/g, '').trim();
-          cleanTitle = cleanTitle.replace(/^(?:س\s*\d+|\d+)[\.\-:\)]\s*/, '').trim();
-          
-          if (cleanTitle && !cleanTitle.startsWith('#') && !cleanTitle.toLowerCase().includes('eof')) {
-            currentQ = { questionText: cleanTitle };
+          // If a question is currently open and we hit non-option text, save it and start new
+          if (currentQ) {
+            saveCurrentQuestion();
           }
+          
+          currentQ = { questionText: line };
+          optionsCollected = [];
+          correctAnswerIdx = 0;
         }
       }
       
@@ -148,7 +169,11 @@ export default function GameSmartImporterModal({
           title: gameTitle,
           template: template,
           lessonId: lessonId,
-          questions: parsedQuestions
+          questions: parsedQuestions,
+          settings: template === 'millionaire' ? { 
+            timer: millionaireTimer,
+            customMoneyLadder: millionaireMoneyLadder.split(',').map(n => parseInt(n.trim())).filter(n => !isNaN(n))
+          } : undefined
         };
         
         addGame(newGame);
@@ -181,11 +206,11 @@ export default function GameSmartImporterModal({
         background: 'white',
         borderRadius: '24px',
         width: '100%',
-        maxWidth: '800px',
+        maxWidth: '700px',
         maxHeight: '90vh',
+        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
         display: 'flex',
         flexDirection: 'column',
-        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
         overflow: 'hidden'
       }}>
         {/* Header */}
@@ -214,7 +239,13 @@ export default function GameSmartImporterModal({
               <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#475569' }}>قالب اللعبة</label>
               <select 
                 value={template} 
-                onChange={e => setTemplate(e.target.value as any)}
+                onChange={e => {
+                  const val = e.target.value as any;
+                  setTemplate(val);
+                  if (val === 'stars') setGameTitle('تحدي النجوم');
+                  if (val === 'millionaire') setGameTitle('من سيربح المليون');
+                  if (val === 'racing') setGameTitle('سباق السيارات');
+                }}
                 style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '1rem' }}
               >
                 <option value="stars">تحدي النجوم ⭐</option>
@@ -224,12 +255,37 @@ export default function GameSmartImporterModal({
             </div>
           </div>
 
+          {template === 'millionaire' && (
+            <div style={{ background: '#e0f2fe', padding: '15px', borderRadius: '12px', border: '1px solid #bae6fd', marginBottom: '20px' }}>
+              <h4 style={{ color: '#0369a1', margin: '0 0 10px 0' }}>إعدادات سيربح المليون</h4>
+              <div style={{ marginBottom: '15px' }}>
+                <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold', color: '#0284c7' }}>مدة السؤال (بالثواني):</label>
+                <input 
+                  type="number" 
+                  value={millionaireTimer} 
+                  onChange={e => setMillionaireTimer(parseInt(e.target.value) || 45)}
+                  style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #7dd3fc', fontSize: '1rem' }}
+                />
+              </div>
+              <div>
+                <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold', color: '#0284c7' }}>قيم الجوائز (مفصولة بفاصلة لـ 15 سؤال):</label>
+                <textarea 
+                  value={millionaireMoneyLadder}
+                  onChange={e => setMillionaireMoneyLadder(e.target.value)}
+                  style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #7dd3fc', fontSize: '1rem', minHeight: '60px', fontFamily: 'var(--font-cairo)' }}
+                  placeholder="مثال: 1, 2, 3, 4, ..."
+                />
+                <small style={{ color: '#0369a1' }}>تأكدي من كتابة 15 رقم لتغطية جميع المستويات.</small>
+              </div>
+            </div>
+          )}
+
           <div style={{ background: '#f8fafc', padding: '16px', borderRadius: '12px', border: '1px solid #e2e8f0', marginBottom: '20px' }}>
             <h4 style={{ margin: '0 0 10px 0', color: '#334155' }}>تعليمات النسخ واللصق:</h4>
             <ul style={{ margin: 0, paddingRight: '20px', color: '#64748b', fontSize: '0.9rem', lineHeight: '1.6' }}>
               <li>انسخي الأسئلة بصيغة "اختيار من متعدد".</li>
               <li>اجعلي كل خيار في سطر جديد يبدأ بحرف (أ، ب، ج، د) أو شرطة (-).</li>
-              <li>ضعي علامة ✅ بجانب الإجابة الصحيحة (أو اجعليها دائماً الخيار الأول وسيقوم النظام بخلطها تلقائياً للمتعة).</li>
+              <li>اكتبي كلمة (الإجابة الصحيحة) بجوار الخيار الصحيح.</li>
             </ul>
           </div>
 
@@ -238,7 +294,7 @@ export default function GameSmartImporterModal({
             onChange={(e) => setText(e.target.value)}
             placeholder={`الصقي الأسئلة هنا... مثال:
 ما هو أكبر كوكب في المجموعة الشمسية؟
-أ) المشتري ✅
+أ) المشتري (الإجابة الصحيحة)
 ب) زحل
 ج) المريخ
 د) الأرض`}

@@ -115,7 +115,7 @@ export default function RacingGame({ game, onComplete }: { game: Game, onComplet
           {question.questionText}
         </h2>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', width: '100%', maxWidth: '800px' }}>
+        <div className="game-answers-grid" style={{ width: '100%', maxWidth: '800px' }}>
           {shuffledAnswers.map((ans, idx) => {
             let bg = '#374151';
             let borderColor = '#4b5563';

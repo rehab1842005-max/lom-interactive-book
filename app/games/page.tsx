@@ -24,12 +24,15 @@ export default function GamesPage() {
 
     return (
       <div style={{ width: '100vw', height: '100vh', backgroundColor: '#0f172a', overflow: 'hidden' }}>
-        <button 
-          onClick={handleExit}
-          style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 100, background: 'rgba(0,0,0,0.5)', color: 'white', border: 'none', padding: '10px 15px', borderRadius: '8px', cursor: 'pointer', fontSize: '16px' }}
-        >
-          <i className="fa-solid fa-arrow-right"></i> خروج من اللعبة
-        </button>
+        {playingGame.template !== 'millionaire' && (
+          <button 
+            onClick={handleExit}
+            className="game-exit-btn"
+            style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 100, background: 'rgba(0,0,0,0.5)', color: 'white', border: 'none', padding: '10px 15px', borderRadius: '8px', cursor: 'pointer', fontSize: '16px' }}
+          >
+            <i className="fa-solid fa-arrow-right"></i> خروج من اللعبة
+          </button>
+        )}
 
         {playingGame.template === 'stars' && <StarChallengeGame game={playingGame} onComplete={handleExit} />}
         {playingGame.template === 'millionaire' && <MillionaireGame game={playingGame} onComplete={handleExit} />}
@@ -52,7 +55,7 @@ export default function GamesPage() {
           </Link>
         </header>
 
-        {games.length === 0 ? (
+        {games.filter(g => g.isPublished !== false).length === 0 ? (
           <div style={{ textAlign: 'center', padding: '60px', background: 'white', borderRadius: '16px', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
             <FaGamepad style={{ fontSize: '4rem', color: '#cbd5e1', marginBottom: '20px' }} />
             <h2 style={{ color: '#475569' }}>لا توجد ألعاب متاحة حالياً</h2>
@@ -67,8 +70,9 @@ export default function GamesPage() {
               const lessonsWithGames: { id: string, title: string, games: Game[] }[] = [];
               
               units.forEach((u: any) => {
-                u.lessons.forEach((l: any) => {
-                  const lessonGames = games.filter(g => g.lessonId === l.id);
+                const publishedLessons = u.lessons.filter((l: any) => l.isPublished !== false);
+                publishedLessons.forEach((l: any) => {
+                  const lessonGames = games.filter(g => g.lessonId === l.id && g.isPublished !== false);
                   if (lessonGames.length > 0) {
                     lessonsWithGames.push({
                       id: l.id,

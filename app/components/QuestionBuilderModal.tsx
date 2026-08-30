@@ -294,8 +294,8 @@ export default function QuestionBuilderModal({
           <button onClick={onClose} style={{ padding: '12px 25px', borderRadius: '25px', border: '1px solid var(--border-color)', background: 'transparent', cursor: 'pointer', fontWeight: 'bold' }}>
             إلغاء
           </button>
-          <button onClick={() => onSave(q)} style={{ padding: '12px 35px', borderRadius: '25px', border: 'none', background: 'var(--color-purple)', color: 'white', cursor: 'pointer', fontWeight: 'bold', boxShadow: '0 4px 10px rgba(142, 68, 173, 0.3)' }}>
-            حفظ الإعدادات
+          <button onClick={() => onSave(q)} style={{ padding: '12px 35px', borderRadius: '25px', border: 'none', background: 'red', color: 'white', cursor: 'pointer', fontWeight: 'bold', boxShadow: '0 4px 10px rgba(255, 0, 0, 0.5)' }}>
+            حفظ الإعدادات (أحمر)
           </button>
         </div>
       </div>

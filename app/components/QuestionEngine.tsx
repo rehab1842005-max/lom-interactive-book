@@ -42,64 +42,41 @@ export default function QuestionEngine({ question, onComplete, forceSingleAttemp
       const ctx = new AudioContextClass();
 
       if (type === 'success') {
-        // Triumphant Victory Fanfare (Ta-da-da-DAAA!)
+        // Gentle, soft, single ding for success
         const t = ctx.currentTime;
-        const notes = [
-          { freq: 523.25, time: 0 },    // C5
-          { freq: 659.25, time: 0.15 }, // E5
-          { freq: 783.99, time: 0.3 },  // G5
-          { freq: 1046.50, time: 0.5 }, // C6 (long)
-          // Add harmony to the final C6
-          { freq: 523.25, time: 0.5 },  // C5
-          { freq: 659.25, time: 0.5 },  // E5
-        ];
-
-        notes.forEach(note => {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          
-          osc.type = 'triangle';
-          osc.frequency.value = note.freq;
-          
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          
-          gain.gain.setValueAtTime(0, t + note.time);
-          gain.gain.linearRampToValueAtTime(0.8, t + note.time + 0.05); // Louder!
-          
-          const isFinal = note.time >= 0.5;
-          const duration = isFinal ? 2.0 : 0.15;
-          
-          gain.gain.exponentialRampToValueAtTime(0.01, t + note.time + duration);
-          osc.start(t + note.time);
-          osc.stop(t + note.time + duration);
-        });
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        
+        osc.type = 'sine'; // Soft sine wave
+        osc.frequency.value = 880; // A5
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        gain.gain.setValueAtTime(0, t);
+        gain.gain.linearRampToValueAtTime(0.3, t + 0.05); // Lower volume (0.3 instead of 0.8)
+        gain.gain.exponentialRampToValueAtTime(0.01, t + 0.6); // Quick fade
+        
+        osc.start(t);
+        osc.stop(t + 0.7);
       } else {
-        // Loud Dissonant Buzzer (Wrong Answer)
+        // Gentle, soft "boop" for error
+        const t = ctx.currentTime;
         const gain = ctx.createGain();
         gain.connect(ctx.destination);
         
-        gain.gain.setValueAtTime(0, ctx.currentTime);
-        gain.gain.linearRampToValueAtTime(1, ctx.currentTime + 0.05); // Loud volume
-        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.6);
+        gain.gain.setValueAtTime(0, t);
+        gain.gain.linearRampToValueAtTime(0.3, t + 0.05); // Low volume
+        gain.gain.exponentialRampToValueAtTime(0.01, t + 0.4);
 
-        // Two oscillators slightly out of tune for a harsh buzz
-        const osc1 = ctx.createOscillator();
-        osc1.type = 'sawtooth';
-        osc1.connect(gain);
-        osc1.frequency.setValueAtTime(150, ctx.currentTime);
-        osc1.frequency.exponentialRampToValueAtTime(60, ctx.currentTime + 0.6);
+        const osc = ctx.createOscillator();
+        osc.type = 'sine'; // Soft sine instead of harsh sawtooth/square
+        osc.connect(gain);
+        osc.frequency.setValueAtTime(300, t); // Low pitch
+        osc.frequency.exponentialRampToValueAtTime(250, t + 0.3); // Slight drop in pitch
 
-        const osc2 = ctx.createOscillator();
-        osc2.type = 'square';
-        osc2.connect(gain);
-        osc2.frequency.setValueAtTime(160, ctx.currentTime);
-        osc2.frequency.exponentialRampToValueAtTime(65, ctx.currentTime + 0.6);
-        
-        osc1.start(ctx.currentTime);
-        osc2.start(ctx.currentTime);
-        osc1.stop(ctx.currentTime + 0.6);
-        osc2.stop(ctx.currentTime + 0.6);
+        osc.start(t);
+        osc.stop(t + 0.4);
       }
     } catch (e) {
       console.log("Audio skipped", e);

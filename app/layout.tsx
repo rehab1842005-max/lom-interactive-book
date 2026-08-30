@@ -6,6 +6,15 @@ export const metadata: Metadata = {
   description: "Created by Rehab Elsibai",
 };
 
+import type { Viewport } from 'next'
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+}
+
 import FirebaseSync from "./components/FirebaseSync";
 
 export default function RootLayout({

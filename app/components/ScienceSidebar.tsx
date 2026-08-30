@@ -700,6 +700,20 @@ export default function ScienceSidebar() {
                           >
                             {lesson.isFree ? '🔓' : '🔒'}
                           </button>
+                          <button 
+                            onClick={() => updateLesson(editingGrade, unit.id, lesson.id, { isPublished: lesson.isPublished === false ? true : false })}
+                            style={{ 
+                              background: 'none', 
+                              border: 'none', 
+                              cursor: 'pointer', 
+                              fontSize: '16px',
+                              color: lesson.isPublished !== false ? '#3b82f6' : '#94a3b8',
+                              padding: '0 5px'
+                            }}
+                            title={lesson.isPublished !== false ? 'الدرس معروض للطلاب (اضغط للإخفاء)' : 'الدرس مخفي ومسودة (اضغط للنشر)'}
+                          >
+                            {lesson.isPublished !== false ? '👁️' : '🙈'}
+                          </button>
                           <input 
                             type="text" 
                             value={lesson.title} 

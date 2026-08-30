@@ -124,6 +124,7 @@ export interface Lesson {
   title: string;
   isFree?: boolean; // If true, accessible without approval
   lessonVideoUrl?: string; // Optional video for the entire lesson
+  isPublished?: boolean; // If true, visible to students
 }
 
 export interface Unit {
@@ -155,6 +156,8 @@ export interface Game {
   grade?: number;
   template: 'stars' | 'millionaire' | 'racing';
   questions: GameQuestion[];
+  isPublished?: boolean; // If true, visible to students
+  settings?: any; // For custom settings like timer or money ladder
 }
 
 export type Curriculum = {
@@ -318,7 +321,7 @@ export const useBookStore = create<BookState>()(
             ...state.curriculum,
             [grade]: gradeUnits.map(u => {
               if (u.id === unitId) {
-                return { ...u, lessons: [...u.lessons, { id: newLessonId, title }] };
+                return { ...u, lessons: [...u.lessons, { id: newLessonId, title, isPublished: false }] };
               }
               return u;
             })
@@ -346,6 +349,8 @@ export const useBookStore = create<BookState>()(
       removeLesson: (grade, unitId, lessonId) => set((state) => {
         const gradeUnits = state.curriculum[grade] || [];
         return {
+          activeLessonId: state.activeLessonId === lessonId ? null : state.activeLessonId,
+          activePageId: state.activeLessonId === lessonId ? null : state.activePageId,
           curriculum: {
             ...state.curriculum,
             [grade]: gradeUnits.map(u => {
@@ -450,7 +455,7 @@ export const useBookStore = create<BookState>()(
         }
       },
       
-      addGame: (game) => set((state) => ({ games: [...(state.games || []), game] })),
+      addGame: (game) => set((state) => ({ games: [...(state.games || []), { ...game, isPublished: game.isPublished ?? false }] })),
       updateGame: (id, updates) => set((state) => ({ games: (state.games || []).map(g => g.id === id ? { ...g, ...updates } : g) })),
       deleteGame: (id) => set((state) => ({ games: (state.games || []).filter(g => g.id !== id) }))
     }),
@@ -489,14 +494,21 @@ export const saveCurrentStoreToDb = async () => {
     },
     version: 0
   });
+  let msg = "تم الحفظ ";
   try {
     localStorage.setItem('interactive-book-storage', data);
-  } catch (e) {
+    msg += "في الذاكرة السريعة و";
+  } catch (e: any) {
     try { localStorage.removeItem('interactive-book-storage'); } catch(ex) {}
+    msg += "(فشل في الذاكرة السريعة: " + e.message + ") و";
   }
   try {
     await set('interactive-book-storage', data);
-  } catch (e) {
+    msg += "الذاكرة العميقة بنجاح!";
+  } catch (e: any) {
     console.error("Failed to save to IndexedDB:", e);
+    msg += "(فشل في الذاكرة العميقة: " + e.message + ")";
+    return { success: false, msg };
   }
+  return { success: true, msg };
 };

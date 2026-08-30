@@ -2,7 +2,7 @@
 
 import { useBookStore, Zone, InteractionType } from "../store/bookStore";
 import { FaVolumeUp, FaVideo, FaQuestionCircle, FaLink } from "react-icons/fa";
-import { useState, useRef, useEffect, useMemo } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import QuestionEngine from "./QuestionEngine";
 import ZoneInteractiveIcon from "./ZoneInteractiveIcon";
@@ -180,17 +180,14 @@ export default function StudentViewer({ styles }: { styles: any }) {
   };
 
   return (
-    <div className={styles.viewerContainer} style={{ overflowY: 'auto', height: '100%', display: 'flex', flexDirection: 'column', backgroundColor: '#fdf2f8', paddingBottom: '80px' }}>
-      
-      {/* Lesson Title Header */}
-      {lessonTitle && (
-        <div style={{ width: '100%', maxWidth: '800px', margin: '0 auto', padding: '20px', textAlign: 'center', backgroundColor: 'var(--color-pink)', color: 'white', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px', marginBottom: '20px', boxShadow: '0 4px 15px rgba(255, 79, 163, 0.4)' }}>
-          <h1 style={{ margin: 0, fontSize: '1.8rem', fontWeight: 'bold' }}>{lessonTitle}</h1>
-          {lessonVideoUrl && (
+    <>
+      {/* Lesson Video Button (Fixed FAB) */}
+      {lessonVideoUrl && (
+        <div style={{ position: 'fixed', top: '80px', left: '20px', zIndex: 9999, pointerEvents: 'none' }}>
             <motion.button 
               onClick={handleLessonVideoClick}
               style={{
-                marginTop: '15px',
+                pointerEvents: 'auto',
                 background: 'white',
                 color: 'var(--color-pink)',
                 border: 'none',
@@ -202,7 +199,7 @@ export default function StudentViewer({ styles }: { styles: any }) {
                 gap: '8px',
                 cursor: 'pointer',
                 borderRadius: '30px',
-                boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
+                boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
               }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -210,7 +207,15 @@ export default function StudentViewer({ styles }: { styles: any }) {
               <i className="fa-brands fa-youtube" style={{ fontSize: '1.2rem', color: '#ef4444' }}></i> 
               <span>شرح الدرس كاملاً</span>
             </motion.button>
-          )}
+        </div>
+      )}
+
+      <div className={styles.viewerContainer} style={{ overflowY: 'auto', height: '100%', display: 'flex', flexDirection: 'column', backgroundColor: '#fdf2f8', paddingBottom: '80px' }}>
+      
+      {/* Lesson Title Header */}
+      {lessonTitle && (
+        <div style={{ width: '100%', maxWidth: '800px', margin: '0 auto', padding: '20px', textAlign: 'center', backgroundColor: 'var(--color-pink)', color: 'white', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px', marginBottom: '10px', boxShadow: '0 4px 15px rgba(255, 79, 163, 0.4)' }}>
+          <h1 style={{ margin: 0, fontSize: '1.8rem', fontWeight: 'bold' }}>{lessonTitle}</h1>
         </div>
       )}
 
@@ -220,25 +225,25 @@ export default function StudentViewer({ styles }: { styles: any }) {
           const currentZones = zones.filter(z => z.pageId === page.id || zones.length <= 15);
           
           return (
-            <motion.div
-              key={page.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: idx * 0.1 }}
-              className={styles.pageWrapper}
-              style={{ containerType: 'inline-size', position: 'relative', width: '100%', boxShadow: '0 8px 30px rgba(0,0,0,0.1)', borderRadius: '12px', overflow: 'hidden', backgroundColor: 'white' }}
-            >
-              {/* Action Dock ABOVE the Page (Video) */}
+            <React.Fragment key={page.id}>
+              {/* Action Dock ABOVE the Page (Video) - Extracted for global sticky */}
               {!!page.pageVideoUrl && (
                 <div
                   style={{
+                    position: 'sticky',
+                    top: '0',
+                    zIndex: 80,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     padding: '12px',
                     background: 'rgba(255, 255, 255, 0.95)',
                     borderBottom: '1px solid rgba(255, 79, 163, 0.1)',
-                    width: '100%'
+                    width: '100%',
+                    backdropFilter: 'blur(8px)',
+                    boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
+                    borderTopLeftRadius: '12px',
+                    borderTopRightRadius: '12px'
                   }}
                 >
                   <motion.button 
@@ -248,7 +253,7 @@ export default function StudentViewer({ styles }: { styles: any }) {
                       color: 'var(--color-pink)',
                       border: 'none',
                       padding: '6px 14px',
-                      fontSize: '0.9rem',
+                      fontSize: '1rem',
                       fontWeight: 'bold',
                       display: 'flex',
                       alignItems: 'center',
@@ -261,11 +266,18 @@ export default function StudentViewer({ styles }: { styles: any }) {
                     whileHover={{ backgroundColor: 'rgba(255, 79, 163, 0.12)' }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    <i className="fa-brands fa-youtube" style={{ fontSize: '1.1rem', color: '#ef4444' }}></i> 
-                    <span>شرح الصفحة</span>
+                    <i className="fa-brands fa-youtube" style={{ fontSize: '1.2rem', color: '#ef4444' }}></i> 
+                    <span>شرح</span>
                   </motion.button>
                 </div>
               )}
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: idx * 0.1 }}
+              style={{ containerType: 'inline-size', position: 'relative', width: '100%', boxShadow: '0 8px 30px rgba(0,0,0,0.1)', borderRadius: page.pageVideoUrl ? '0 0 12px 12px' : '12px', backgroundColor: 'white' }}
+            >
 
               {/* Page Image & Zones */}
               <div style={{ position: 'relative', width: '100%', lineHeight: 0 }}>
@@ -273,7 +285,7 @@ export default function StudentViewer({ styles }: { styles: any }) {
                 <img 
                   src={page.imageUrl} 
                   alt={`Page ${idx + 1}`} 
-                  style={{ display: "block", width: "100%", height: "auto", userSelect: "none", WebkitUserSelect: "none" }}
+                  style={{ display: "block", width: "100%", height: "auto", userSelect: "none", WebkitUserSelect: "none", borderBottomLeftRadius: '12px', borderBottomRightRadius: '12px', borderTopLeftRadius: page.pageVideoUrl ? '0' : '12px', borderTopRightRadius: page.pageVideoUrl ? '0' : '12px' }}
                 />
               
                 {currentZones.filter(z => z.pageId === page.id).map(zone => {
@@ -436,7 +448,9 @@ export default function StudentViewer({ styles }: { styles: any }) {
                   </div>
                 );
               })()}
+                {/* End of Zones */}
             </motion.div>
+            </React.Fragment>
           );
         })}
       </div>
@@ -486,5 +500,6 @@ export default function StudentViewer({ styles }: { styles: any }) {
         )}
       </AnimatePresence>
     </div>
+    </>
   );
 }

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Game } from '@/app/store/bookStore';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
-import { FaPhoneAlt, FaUsers, FaStarHalfAlt } from 'react-icons/fa';
+import { FaPhoneAlt, FaUsers, FaStarHalfAlt, FaStar } from 'react-icons/fa';
 import { playSuccessSound, playWrongSound } from '@/app/utils/audio';
 
 export default function MillionaireGame({ game, onComplete }: { game: Game, onComplete: () => void }) {
@@ -15,7 +15,8 @@ export default function MillionaireGame({ game, onComplete }: { game: Game, onCo
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [earned, setEarned] = useState(0);
   const [wonMillion, setWonMillion] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(45); // 45 seconds per question
+  const timerSetting = game.settings?.timer || 45;
+  const [timeLeft, setTimeLeft] = useState(timerSetting); 
 
   // Lifelines state
   const [used5050, setUsed5050] = useState(false);
@@ -23,12 +24,13 @@ export default function MillionaireGame({ game, onComplete }: { game: Game, onCo
   const [hiddenAnswers, setHiddenAnswers] = useState<string[]>([]);
   const [showAudienceVote, setShowAudienceVote] = useState(false);
   const [audienceVotes, setAudienceVotes] = useState<{ans: string, pct: number}[]>([]);
+  const [walkedAway, setWalkedAway] = useState(false);
 
   const question = game.questions[currentQuestionIndex];
   
-  // Simple Sequential Money Tree
-  const moneyLevels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
-  const safeLevels = [5, 10, 15];
+  // Custom Money Tree or standard
+  const moneyLevels = game.settings?.customMoneyLadder || [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+  const safeLevels = [moneyLevels[4] || 5, moneyLevels[9] || 10, moneyLevels[14] || 15];
 
   useEffect(() => {
     if (question) {
@@ -42,9 +44,9 @@ export default function MillionaireGame({ game, onComplete }: { game: Game, onCo
       setIsCorrect(null);
       setHiddenAnswers([]);
       setShowAudienceVote(false);
-      setTimeLeft(45);
+      setTimeLeft(timerSetting);
     }
-  }, [currentQuestionIndex, question]);
+  }, [currentQuestionIndex, question, timerSetting]);
 
   if (!question && !gameOver && !wonMillion) {
     return <div style={{ color: 'white', textAlign: 'center', marginTop: '20vh' }}>لا توجد أسئلة.</div>;
@@ -103,7 +105,7 @@ export default function MillionaireGame({ game, onComplete }: { game: Game, onCo
     };
 
     const timer = setInterval(() => {
-      setTimeLeft(prev => {
+      setTimeLeft((prev: number) => {
         if (prev > 1 && selectedAnswer === null && !gameOver && !wonMillion) {
           playTick(prev);
         }
@@ -176,7 +178,7 @@ export default function MillionaireGame({ game, onComplete }: { game: Game, onCo
         
         setTimeout(() => {
           if (currentQuestionIndex < Math.min(game.questions.length - 1, 14)) { // Max 15 questions
-            setCurrentQuestionIndex(prev => prev + 1);
+            setCurrentQuestionIndex((prev: number) => prev + 1);
           } else {
             setWonMillion(true);
             confetti({ particleCount: 500, spread: 120, origin: { y: 0.3 }, colors: ['#fbbf24', '#f59e0b', '#fff'] });
@@ -203,7 +205,26 @@ export default function MillionaireGame({ game, onComplete }: { game: Game, onCo
     }, suspenseTime);
   };
 
+  const handleWalkAway = () => {
+    // Player gets the money of the LAST question they successfully answered
+    const walkAwayMoney = currentQuestionIndex > 0 ? moneyLevels[currentQuestionIndex - 1] : 0;
+    setEarned(walkAwayMoney);
+    setWalkedAway(true);
+    setGameOver(true);
+  };
+
   if (gameOver || wonMillion) {
+    let title = 'حظ أوفر المرة القادمة!';
+    let titleColor = '#f87171';
+    
+    if (wonMillion) {
+      title = '🎉 مبرووووك! أنت بطل! 🎉';
+      titleColor = '#fbbf24';
+    } else if (walkedAway) {
+      title = 'قررت الانسحاب بذكاء! 👏';
+      titleColor = '#60a5fa';
+    }
+
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'white', fontFamily: 'var(--font-cairo)', background: 'radial-gradient(circle at center, #1e0b35 0%, #000000 100%)' }}>
         <motion.div
@@ -212,10 +233,10 @@ export default function MillionaireGame({ game, onComplete }: { game: Game, onCo
           transition={{ type: "spring", bounce: 0.5 }}
           style={{ textAlign: 'center', background: 'rgba(30, 11, 53, 0.8)', padding: '50px', borderRadius: '30px', border: '2px solid #fbbf24', boxShadow: '0 0 50px rgba(251, 191, 36, 0.3)' }}
         >
-          <h1 style={{ fontSize: '3.5rem', marginBottom: '20px', color: wonMillion ? '#fbbf24' : '#f87171', textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>
-            {wonMillion ? '🎉 مبرووووك! أنت مليونير! 🎉' : 'حظ أوفر المرة القادمة!'}
+          <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', marginBottom: '20px', color: titleColor, textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>
+            {title}
           </h1>
-          <h2 style={{ fontSize: '2.5rem', marginBottom: '40px', color: '#e2e8f0' }}>الرصيد النهائي: <span style={{ color: '#fbbf24', fontSize: '3rem' }}>{earned.toLocaleString('en-US')} جنيه</span> 💰</h2>
+          <h2 style={{ fontSize: '2.5rem', marginBottom: '40px', color: '#e2e8f0' }}>الجائزة الحالية: <span style={{ color: '#fbbf24', fontSize: '3rem' }}>{earned.toLocaleString('en-US')}</span> 💰</h2>
           <button 
             onClick={onComplete}
             style={{ background: 'linear-gradient(180deg, #fbbf24 0%, #d97706 100%)', color: '#fff', textShadow: '0 1px 2px rgba(0,0,0,0.5)', border: 'none', padding: '15px 50px', borderRadius: '30px', fontSize: '1.5rem', cursor: 'pointer', fontWeight: 'bold', boxShadow: '0 10px 20px rgba(0,0,0,0.5)' }}
@@ -236,7 +257,7 @@ export default function MillionaireGame({ game, onComplete }: { game: Game, onCo
   };
 
   return (
-    <div style={{ height: '100%', width: '100%', display: 'flex', fontFamily: 'var(--font-cairo)', background: 'radial-gradient(circle at center, #2e0854 0%, #05010f 100%)', position: 'relative', overflow: 'hidden' }}>
+    <div className="millionaire-wrapper">
       
       {/* Background Rings / Lights */}
       <motion.div 
@@ -246,53 +267,87 @@ export default function MillionaireGame({ game, onComplete }: { game: Game, onCo
       />
       
       {/* LEFT AREA: Lifelines & Main Game */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px', position: 'relative' }}>
+      <div className="millionaire-main">
         
-        {/* Timer Circle */}
-        <div style={{ position: 'absolute', top: '20px', left: '20px', zIndex: 20 }}>
-          <div style={{ 
-            width: '70px', height: '70px', 
-            borderRadius: '50%', 
-            border: `4px solid ${timeLeft > 10 ? '#4ade80' : '#ef4444'}`,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: '1.8rem', fontWeight: 'bold',
-            color: timeLeft > 10 ? '#4ade80' : '#ef4444',
-            background: 'rgba(0,0,0,0.6)',
-            boxShadow: `0 0 20px ${timeLeft > 10 ? 'rgba(74, 222, 128, 0.5)' : 'rgba(239, 68, 68, 0.8)'}`,
-            transition: 'all 0.5s ease'
-          }}>
-            {timeLeft}
+        {/* Game Title & Timer Header */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', maxWidth: '800px', marginBottom: '15px' }}>
+          <h2 style={{ color: '#fbbf24', textShadow: '0 2px 4px rgba(0,0,0,0.5)', margin: 0, fontSize: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <FaStar /> {game.title}
+          </h2>
+          {/* Timer Circle */}
+          <div className="millionaire-timer" style={{ marginBottom: 0 }}>
+            <div style={{ 
+              width: '70px', height: '70px', 
+              borderRadius: '50%', 
+              border: `4px solid ${timeLeft > 10 ? '#4ade80' : '#ef4444'}`,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: '1.8rem', fontWeight: 'bold',
+              color: timeLeft > 10 ? '#4ade80' : '#ef4444',
+              background: 'rgba(0,0,0,0.6)',
+              boxShadow: `0 0 20px ${timeLeft > 10 ? 'rgba(74, 222, 128, 0.5)' : 'rgba(239, 68, 68, 0.8)'}`,
+              transition: 'all 0.5s ease'
+            }}>
+              {timeLeft}
+            </div>
           </div>
         </div>
 
         {/* Lifelines Bar */}
-        <div style={{ display: 'flex', gap: '20px', marginBottom: '40px' }}>
-          <button 
+        <div className="millionaire-lifelines">
+          <motion.button 
             onClick={handle5050}
             disabled={used5050 || selectedAnswer !== null}
+            animate={used5050 || selectedAnswer !== null ? {} : { 
+              scale: [1, 1.05, 1],
+              boxShadow: ['0 0 15px rgba(251, 191, 36, 0.3)', '0 0 30px rgba(251, 191, 36, 0.8)', '0 0 15px rgba(251, 191, 36, 0.3)']
+            }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
             style={{ 
               background: used5050 ? 'rgba(255,255,255,0.1)' : 'linear-gradient(180deg, #1e3a8a 0%, #172554 100%)',
               border: `2px solid ${used5050 ? '#475569' : '#fbbf24'}`,
               color: used5050 ? '#475569' : '#fbbf24',
               padding: '15px 30px', borderRadius: '50px', fontSize: '1.2rem', fontWeight: 'bold', cursor: used5050 ? 'default' : 'pointer',
-              display: 'flex', alignItems: 'center', gap: '10px', boxShadow: used5050 ? 'none' : '0 0 15px rgba(251, 191, 36, 0.3)'
+              display: 'flex', alignItems: 'center', gap: '10px'
             }}
           >
             <FaStarHalfAlt /> 50:50
-          </button>
-          <button 
+          </motion.button>
+          <motion.button 
             onClick={handleAudience}
             disabled={usedAudience || selectedAnswer !== null}
+            animate={usedAudience || selectedAnswer !== null ? {} : { 
+              scale: [1, 1.05, 1],
+              boxShadow: ['0 0 15px rgba(251, 191, 36, 0.3)', '0 0 30px rgba(251, 191, 36, 0.8)', '0 0 15px rgba(251, 191, 36, 0.3)']
+            }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
             style={{ 
               background: usedAudience ? 'rgba(255,255,255,0.1)' : 'linear-gradient(180deg, #1e3a8a 0%, #172554 100%)',
               border: `2px solid ${usedAudience ? '#475569' : '#fbbf24'}`,
               color: usedAudience ? '#475569' : '#fbbf24',
               padding: '15px 30px', borderRadius: '50px', fontSize: '1.2rem', fontWeight: 'bold', cursor: usedAudience ? 'default' : 'pointer',
-              display: 'flex', alignItems: 'center', gap: '10px', boxShadow: usedAudience ? 'none' : '0 0 15px rgba(251, 191, 36, 0.3)'
+              display: 'flex', alignItems: 'center', gap: '10px'
             }}
           >
             <FaUsers /> رأي الجمهور
-          </button>
+          </motion.button>
+          <motion.button 
+            onClick={handleWalkAway}
+            disabled={selectedAnswer !== null}
+            animate={selectedAnswer !== null ? {} : { 
+              scale: [1, 1.05, 1],
+              boxShadow: ['0 0 15px rgba(239, 68, 68, 0.3)', '0 0 30px rgba(239, 68, 68, 0.8)', '0 0 15px rgba(239, 68, 68, 0.3)']
+            }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+            style={{ 
+              background: 'linear-gradient(180deg, #b91c1c 0%, #7f1d1d 100%)',
+              border: `2px solid #ef4444`,
+              color: 'white',
+              padding: '15px 30px', borderRadius: '50px', fontSize: '1.2rem', fontWeight: 'bold', cursor: selectedAnswer !== null ? 'default' : 'pointer',
+              display: 'flex', alignItems: 'center', gap: '10px'
+            }}
+          >
+            <i className="fa-solid fa-arrow-right-from-bracket"></i> انسحاب
+          </motion.button>
         </div>
 
         <motion.div 
@@ -302,26 +357,15 @@ export default function MillionaireGame({ game, onComplete }: { game: Game, onCo
           style={{ width: '100%', maxWidth: '800px', zIndex: 10 }}
         >
           {/* Question Box */}
-          <div style={{ position: 'relative', marginBottom: '40px' }}>
+          <div style={{ position: 'relative' }}>
             <div style={{ position: 'absolute', top: '50%', left: '-50px', right: '-50px', height: '4px', background: '#fbbf24', zIndex: 0, boxShadow: '0 0 10px #fbbf24' }}></div>
-            <div style={{ 
-              ...hexagonStyle,
-              background: 'linear-gradient(180deg, #1e3a8a 0%, #0f172a 100%)', 
-              border: '2px solid #fbbf24', 
-              padding: '35px 60px', 
-              textAlign: 'center',
-              boxShadow: 'inset 0 0 20px rgba(59, 130, 246, 0.5), 0 0 20px rgba(0,0,0,0.8)',
-              position: 'relative',
-              zIndex: 1,
-              minHeight: '120px',
-              display: 'flex', alignItems: 'center', justifyContent: 'center'
-            }}>
-              <h2 style={{ color: 'white', fontSize: '1.8rem', margin: 0, lineHeight: '1.4' }}>{question.questionText}</h2>
+            <div className="millionaire-question-box">
+              <h2 className="millionaire-question-text">{question.questionText}</h2>
             </div>
           </div>
 
           {/* Answers Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+          <div className="millionaire-answers">
             {shuffledAnswers.map((ans, idx) => {
               const isHidden = hiddenAnswers.includes(ans);
               
@@ -356,21 +400,13 @@ export default function MillionaireGame({ game, onComplete }: { game: Game, onCo
                     whileTap={selectedAnswer === null && !isHidden ? { scale: 0.95 } : {}}
                     onClick={() => !isHidden && handleAnswer(ans)}
                     disabled={selectedAnswer !== null || isHidden}
+                    className="millionaire-answer-btn"
                     style={{
-                      ...hexagonStyle,
-                      width: '100%',
                       background: bg,
                       border: `2px solid ${borderColor}`,
-                      padding: '20px 40px',
-                      color: 'white',
-                      fontSize: '1.4rem',
                       cursor: (selectedAnswer !== null || isHidden) ? 'default' : 'pointer',
-                      textAlign: 'right',
                       boxShadow: glow,
-                      position: 'relative',
-                      zIndex: 1,
                       opacity: isHidden ? 0 : 1,
-                      display: 'flex', alignItems: 'center'
                     }}
                   >
                     <span style={{ color: '#fbbf24', fontWeight: 'bold', marginRight: '10px', fontSize: '1.5rem' }}>{letters[idx]}: </span>
@@ -389,7 +425,7 @@ export default function MillionaireGame({ game, onComplete }: { game: Game, onCo
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 50 }}
-              style={{ position: 'absolute', top: '20%', background: 'rgba(15, 23, 42, 0.95)', border: '2px solid #3b82f6', borderRadius: '20px', padding: '30px', width: '400px', zIndex: 50, boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }}
+              style={{ position: 'absolute', top: '20%', background: 'rgba(15, 23, 42, 0.95)', border: '2px solid #3b82f6', borderRadius: '20px', padding: '30px', width: '90%', maxWidth: '400px', zIndex: 50, boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }}
             >
               <h3 style={{ textAlign: 'center', color: '#fbbf24', marginBottom: '20px', marginTop: 0 }}>تصويت الجمهور 📊</h3>
               <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-around', height: '200px', borderBottom: '2px solid #475569', paddingBottom: '10px' }}>
@@ -397,13 +433,13 @@ export default function MillionaireGame({ game, onComplete }: { game: Game, onCo
                   const ans = shuffledAnswers[i];
                   const vote = audienceVotes.find(v => v.ans === ans)?.pct || 0;
                   return (
-                    <div key={letter} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', width: '50px' }}>
-                      <span style={{ color: '#94a3b8', fontWeight: 'bold' }}>{vote}%</span>
+                    <div key={letter} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', width: '20%' }}>
+                      <span style={{ color: '#94a3b8', fontWeight: 'bold', fontSize: '0.9rem' }}>{vote}%</span>
                       <motion.div 
                         initial={{ height: 0 }}
                         animate={{ height: `${(vote / 100) * 150}px` }}
                         transition={{ duration: 1, delay: i * 0.2 }}
-                        style={{ width: '40px', background: 'linear-gradient(0deg, #3b82f6 0%, #60a5fa 100%)', borderRadius: '5px 5px 0 0' }}
+                        style={{ width: '100%', maxWidth: '40px', background: 'linear-gradient(0deg, #3b82f6 0%, #60a5fa 100%)', borderRadius: '5px 5px 0 0' }}
                       />
                       <span style={{ color: '#fbbf24', fontWeight: 'bold' }}>{letter}</span>
                     </div>
@@ -417,8 +453,8 @@ export default function MillionaireGame({ game, onComplete }: { game: Game, onCo
       </div>
 
       {/* RIGHT AREA: Money Ladder */}
-      <div style={{ width: '250px', background: 'rgba(0,0,0,0.4)', borderRight: '1px solid rgba(255,255,255,0.1)', padding: '20px 0', display: 'flex', flexDirection: 'column-reverse', overflowY: 'auto' }}>
-        {moneyLevels.map((amount, idx) => {
+      <div className="millionaire-ladder">
+        {moneyLevels.map((amount: number, idx: number) => {
           // Limit to 15 questions maximum for the UI ladder
           if (idx >= 15) return null;
           
@@ -427,27 +463,31 @@ export default function MillionaireGame({ game, onComplete }: { game: Game, onCo
           const isSafe = safeLevels.includes(amount);
           
           return (
-            <div 
+            <motion.div 
               key={idx} 
+              className="millionaire-ladder-item"
+              animate={isCurrent ? {
+                scale: [1, 1.05, 1],
+                boxShadow: ['0 0 15px rgba(251, 191, 36, 0.4)', '0 0 25px rgba(251, 191, 36, 1)', '0 0 15px rgba(251, 191, 36, 0.4)']
+              } : {}}
+              transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
               style={{ 
-                padding: '8px 20px', 
-                display: 'flex', 
-                justifyContent: 'space-between',
-                alignItems: 'center',
                 background: isCurrent ? '#fbbf24' : 'transparent',
                 color: isCurrent ? 'black' : (isSafe ? 'white' : '#fbbf24'),
                 fontWeight: isCurrent || isSafe ? 'bold' : 'normal',
-                borderRadius: '5px',
-                margin: '2px 10px',
-                transition: 'all 0.3s'
+                opacity: isPassed ? 0.5 : 1,
+                border: isCurrent ? '2px solid white' : 'none',
+                borderRadius: '8px',
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                padding: '8px 15px', marginBottom: '5px'
               }}
             >
-              <span style={{ fontSize: '1.2rem' }}>{idx + 1}</span>
-              <span style={{ fontSize: '1.2rem' }}>
-                <span style={{ opacity: 0.8, fontSize: '1rem', marginRight: '5px' }}>💰</span>
-                {amount.toLocaleString('en-US')} جنيه
+              <span>{idx + 1}</span>
+              <span>
+                <span style={{ opacity: 0.8, marginRight: '5px' }}>💰</span>
+                {amount.toLocaleString('en-US')}
               </span>
-            </div>
+            </motion.div>
           );
         })}
       </div>

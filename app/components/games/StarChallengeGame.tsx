@@ -113,7 +113,7 @@ export default function StarChallengeGame({ game, onComplete }: { game: Game, on
           <h2 style={{ color: 'white', fontSize: '2rem', margin: 0, lineHeight: 1.5 }}>{question.questionText}</h2>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+        <div className="game-answers-grid">
           {shuffledAnswers.map((ans, idx) => {
             let bg = 'rgba(255,255,255,0.1)';
             let borderColor = 'rgba(255,255,255,0.3)';

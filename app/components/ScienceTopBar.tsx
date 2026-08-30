@@ -89,8 +89,8 @@ export default function ScienceTopBar() {
           title="حفظ المشروع فوراً وتأكيد الذاكرة"
           onClick={async () => {
             const { saveCurrentStoreToDb } = await import("../store/bookStore");
-            await saveCurrentStoreToDb();
-            alert("✅ تم حفظ كافة التعديلات والأسئلة بنجاح تام ولن تُمسح عند التحديث!");
+            const res = await saveCurrentStoreToDb();
+            if (res) alert(res.msg);
           }}
         >
           <i className="fa-solid fa-floppy-disk"></i> <span className="btn-text">حفظ</span>

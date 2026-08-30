@@ -47,6 +47,32 @@ export default function GamesManager() {
           style={{ padding: '8px', border: '1px solid #ddd', borderRadius: '4px', width: '100%' }}
           placeholder="عنوان اللعبة"
         />
+        
+        {editingGame.template === 'millionaire' && (
+          <div style={{ background: '#e0f2fe', padding: '10px', borderRadius: '8px', border: '1px solid #bae6fd' }}>
+            <h4 style={{ color: '#0369a1', margin: '0 0 10px 0' }}>إعدادات سيربح المليون</h4>
+            
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>مدة السؤال (بالثواني):</label>
+            <input 
+              type="number" 
+              value={editingGame.settings?.timer || 45}
+              onChange={e => setEditingGame({ ...editingGame, settings: { ...editingGame.settings, timer: parseInt(e.target.value) || 45 } })}
+              style={{ padding: '8px', border: '1px solid #ddd', borderRadius: '4px', width: '100%', marginBottom: '10px' }}
+            />
+
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>قيم الجوائز (مفصولة بفاصلة لـ 15 سؤال):</label>
+            <textarea 
+              value={editingGame.settings?.customMoneyLadder?.join(', ') || '1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15'}
+              onChange={e => {
+                const arr = e.target.value.split(',').map(n => parseInt(n.trim())).filter(n => !isNaN(n));
+                setEditingGame({ ...editingGame, settings: { ...editingGame.settings, customMoneyLadder: arr } });
+              }}
+              style={{ padding: '8px', border: '1px solid #ddd', borderRadius: '4px', width: '100%', minHeight: '60px' }}
+              placeholder="مثال: 1000, 2000, 3000, ..."
+            />
+            <small style={{ color: '#0284c7' }}>تأكدي من كتابة 15 رقم لتغطية جميع المستويات.</small>
+          </div>
+        )}
 
         <div style={{ background: '#f8fafc', padding: '10px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
           <h4>أسئلة اللعبة ({editingGame.questions.length})</h4>
@@ -145,6 +171,13 @@ export default function GamesManager() {
                 </span>
               </div>
               <div style={{ display: 'flex', gap: '5px' }}>
+                <button 
+                  onClick={() => updateGame(game.id, { isPublished: game.isPublished === false ? true : false })}
+                  style={{ background: 'none', border: 'none', color: game.isPublished !== false ? '#3b82f6' : '#94a3b8', padding: '6px', fontSize: '18px', cursor: 'pointer' }}
+                  title={game.isPublished !== false ? 'اللعبة ظاهرة للطلاب (اضغط للإخفاء)' : 'مسودة (اضغط للنشر)'}
+                >
+                  {game.isPublished !== false ? '👁️' : '🙈'}
+                </button>
                 <button onClick={() => setEditingGame(game)} style={{ background: '#3b82f6', color: 'white', border: 'none', padding: '6px', borderRadius: '4px', cursor: 'pointer' }}><FaEdit /></button>
                 <button onClick={() => deleteGame(game.id)} style={{ background: '#ef4444', color: 'white', border: 'none', padding: '6px', borderRadius: '4px', cursor: 'pointer' }}><FaTrash /></button>
               </div>

@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { db } from '@/lib/firebase';
-import { doc, onSnapshot, setDoc } from 'firebase/firestore';
+import { doc, onSnapshot, setDoc, collection, query, where } from 'firebase/firestore';
 import { useBookStore } from '@/app/store/bookStore';
 
 export default function FirebaseSync() {
@@ -21,32 +21,34 @@ export default function FirebaseSync() {
     let timeoutId: NodeJS.Timeout;
     let unsubStore: () => void;
     let studentPagesUnsub: () => void;
+    const isTeacherDevice = typeof window !== 'undefined' ? localStorage.getItem('isTeacherDevice') === 'true' : false;
 
     // 1. ALWAYS listen to Firebase main doc
     const unsubscribeSnapshot = onSnapshot(docRef, (snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.data();
         const localState = useBookStore.getState();
-        
-        // If teacher has already loaded the app, DO NOT let Firebase overwrite their active session!
-        if (isTeacher && initialLoadMain.current) {
-          return;
-        }
-        initialLoadMain.current = true;
-        
-        const remoteHasData = Object.keys(data.curriculum || {}).length > 0;
         const localHasData = Object.keys(localState.curriculum || {}).length > 0;
         
-        if (!remoteHasData && localHasData) {
-          if (isTeacher) {
+        // If this is the teacher's device, DO NOT let Firebase overwrite their local data!
+        // The teacher's local device is the source of truth.
+        if (isTeacherDevice) {
+          if (localHasData) {
+            // Push to Firebase just in case it's missing there
             setDoc(docRef, {
               curriculum: localState.curriculum || {},
               zones: localState.zones || [],
               games: localState.games || []
-            }, { merge: true });
+            }, { merge: true }).catch(() => {});
+            return; // EXIT! Do not overwrite local!
           }
-          return;
+          // If local has no data (e.g. new device), allow it to load once
+          if (initialLoadMain.current) return;
         }
+        
+        initialLoadMain.current = true;
+        
+        const remoteHasData = Object.keys(data.curriculum || {}).length > 0;
 
         isUpdatingFromFirebase.current = true;
         
@@ -95,40 +97,38 @@ export default function FirebaseSync() {
     const fetchLessonPages = (lessonId: string) => {
       if (studentPagesUnsub) studentPagesUnsub();
       console.log('[Sync] Fetching pages for lesson:', lessonId);
-      studentPagesUnsub = onSnapshot(doc(db, 'curriculums', `pages_${lessonId}`), (snap) => {
-        if (snap.exists()) {
-          // If teacher has already loaded this lesson, DO NOT overwrite!
-          if (isTeacher && initialLoadPages.current[lessonId]) {
-            return;
+      
+      const q = query(collection(db, 'pages'), where('lessonId', '==', lessonId));
+      
+      studentPagesUnsub = onSnapshot(q, (snapshot: any) => {
+        if (!snapshot.empty) {
+          const lessonPages = snapshot.docs.map((doc: any) => doc.data());
+          const currentState = useBookStore.getState();
+          const localLessonPages = currentState.pages.filter(p => p.lessonId === lessonId);
+          
+          // If this is the teacher's device, DO NOT let Firebase overwrite their local pages!
+          if (isTeacherDevice) {
+            if (localLessonPages.length > 0) {
+              return; // EXIT! The local pages are the source of truth for the teacher.
+            }
+            if (initialLoadPages.current[lessonId]) return;
           }
+          
           initialLoadPages.current[lessonId] = true;
 
-          const lessonPages = snap.data().pages || [];
-          const currentState = useBookStore.getState();
-          
           // Preserve local page questions if local has more questions (protects against stale remote data)
           const cleanLessonPages = lessonPages.map((rp: any) => {
             const lp = currentState.pages.find(p => p.id === rp.id);
-            if (lp && lp.questions && lp.questions.length > 0) {
-              if (!rp.questions || rp.questions.length < lp.questions.length) {
-                return { ...rp, questions: lp.questions };
-              }
+            if (lp && lp.questions && rp.questions && lp.questions.length > rp.questions.length) {
+              return { ...rp, questions: lp.questions };
             }
             return rp;
           });
 
-          // Ensure newly created local pages that haven't reached Firebase yet aren't wiped out!
-          currentState.pages.filter(p => p.lessonId === lessonId).forEach(lp => {
-            if (!cleanLessonPages.some((rp: any) => rp.id === lp.id)) {
-              cleanLessonPages.push(lp);
-            }
-          });
-
-          // Merge remote pages for this lesson with local pages for other lessons
+          // Merge fetched pages with existing pages from OTHER lessons
           const otherPages = currentState.pages.filter(p => p.lessonId !== lessonId);
           const newPages = [...otherPages, ...cleanLessonPages];
           
-          // Only update if there's an actual change to avoid infinite loops
           if (JSON.stringify(currentState.pages) !== JSON.stringify(newPages)) {
             isUpdatingFromFirebase.current = true;
             useBookStore.setState({ pages: newPages });
@@ -168,11 +168,11 @@ export default function FirebaseSync() {
           
           try {
             await setDoc(docRef, dataToSave, { merge: true });
-            const allLessonIds = Object.values(state.curriculum || {}).flatMap(units => (units as any[]).flatMap(u => u.lessons.map((l:any) => l.id)));
-            for (const lId of allLessonIds) {
-              const lPages = cleanPages.filter(p => p.lessonId === lId);
-              const safePages = JSON.parse(JSON.stringify({ pages: lPages }));
-              await setDoc(doc(db, 'curriculums', `pages_${lId}`), safePages, { merge: true });
+            // Save each page individually to bypass 1MB Firestore limit
+            for (const p of cleanPages) {
+              if (!p.id) continue;
+              const safePage = JSON.parse(JSON.stringify(p));
+              await setDoc(doc(db, 'pages', p.id), safePage, { merge: true });
             }
             const unassignedPages = cleanPages.filter(p => !p.lessonId);
             if (unassignedPages.length > 0) {

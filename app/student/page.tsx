@@ -19,6 +19,23 @@ export default function StudentMode() {
     document.documentElement.setAttribute("data-theme", theme);
   }, [theme]);
 
+  useEffect(() => {
+    if (activeLessonId) {
+      let foundAndVisible = false;
+      for (const [g, units] of Object.entries(curriculum)) {
+        for (const u of (units as any[])) {
+          const lesson = u.lessons.find((l: any) => l.id === activeLessonId);
+          if (lesson && lesson.isPublished !== false) {
+             foundAndVisible = true;
+          }
+        }
+      }
+      if (!foundAndVisible) {
+         useBookStore.getState().setActiveLesson(null);
+      }
+    }
+  }, [activeLessonId, curriculum]);
+
   if (!isClient) return null;
 
   // Find grade and unit for active lesson
@@ -53,15 +70,24 @@ export default function StudentMode() {
               style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc', outline: 'none' }}
             >
               <option value="" disabled>اختر الدرس...</option>
-              {Object.entries(curriculum).map(([grade, units]) => (
-                <optgroup key={grade} label={`الصف ${grade}`}>
-                  {units.map((u: any) => (
-                    u.lessons.map((l: any) => (
-                      <option key={l.id} value={l.id}>{u.title} - {l.title}</option>
-                    ))
-                  ))}
-                </optgroup>
-              ))}
+              {Object.entries(curriculum).map(([grade, units]) => {
+                const visibleUnits = units.map((u: any) => ({
+                  ...u,
+                  lessons: u.lessons.filter((l: any) => l.isPublished !== false)
+                })).filter((u: any) => u.lessons.length > 0);
+                
+                if (visibleUnits.length === 0) return null;
+                
+                return (
+                  <optgroup key={grade} label={`الصف ${grade}`}>
+                    {visibleUnits.map((u: any) => (
+                      u.lessons.map((l: any) => (
+                        <option key={l.id} value={l.id}>{u.title} - {l.title}</option>
+                      ))
+                    ))}
+                  </optgroup>
+                );
+              })}
             </select>
           </div>
         </div>

@@ -28,7 +28,7 @@ export default function SmartImporterModal({
 
       const normalizedText = normalizeDigits(text);
       const lines = normalizedText.split('\n');
-      let currentTarget: 'zone' | 'page' | null = null;
+      let currentTarget: 'zone' | 'page' = 'page';
       let currentZoneSeq: string | null = null;
       
       let pageQuestions: Question[] = [];
@@ -114,7 +114,7 @@ export default function SmartImporterModal({
         }
         
         // 2. Check for mode switches
-        if (line.includes('صح أم غلط') || line.includes('صح ام غلط') || line.includes('صح و خطأ') || line.includes('صح أو خطأ') || line.includes('صح أم خطأ')) {
+        if (line.includes('صح أم غلط') || line.includes('صح ام غلط') || line.includes('صح و خطأ') || line.includes('صح أو خطأ') || line.includes('صح أم خطأ') || line.includes('ضع علامة') || line.includes('العبارة الصحيحة')) {
           saveCurrentQuestion();
           currentMode = 'tf';
           continue;
@@ -127,41 +127,46 @@ export default function SmartImporterModal({
         }
         
         // 3. Process line based on whether it's an answer option or a new question title
-        const isMcqOption = !!line.match(/^[أ-يa-d][\.\)]/) || !!line.match(/^[\-\*]\s*[أ-يa-d]/) || !!line.match(/^\d+[\.\)]\s*[أ-يa-d]/);
-        const isTfAnswer = line.includes('✅') || line.includes('❌') || line === 'صح' || line === 'خطأ' || line === 'غلط' || line === 'صواب';
+        const isMcqOption = !!line.match(/^[\(]?[أ-يa-d][\.\)]/) || !!line.match(/^[\-\*]\s*[\(]?[أ-يa-d]/) || !!line.match(/^\d+[\.\)]\s*[\(]?[أ-يa-d]/);
+        const isTfAnswer = !!line.match(/^[\(\s]*(✅|❌|✓|×|صح|خطأ|غلط|صواب)/) || line === 'صح' || line === 'خطأ' || line === 'غلط' || line === 'صواب';
         
         if (!isMcqOption && !isTfAnswer) {
           // This must be a new question title!
           saveCurrentQuestion();
-          if (!currentMode) {
-            currentMode = 'tf';
-          }
-          if (currentMode) {
-            let cleanTitle = line.replace(/^\*\*?\d+\.?\*\*?\s*/, '').replace(/\*+/g, '').trim();
-            cleanTitle = cleanTitle.replace(/^(?:س\s*\d+|\d+)[\.\-:\)]\s*/, '').trim();
-            
-            if (cleanTitle && !cleanTitle.startsWith('#')) {
-              currentQ = {
-                type: currentMode,
-                title: cleanTitle,
-                options: currentMode === 'tf' ? ['صح', 'خطأ'] : []
-              };
-            }
+          
+          let cleanTitle = line.replace(/^\*\*?\d+\.?\*\*?\s*/, '').replace(/\*+/g, '').trim();
+          cleanTitle = cleanTitle.replace(/^(?:س\s*\d+|\d+)[\.\-:\)]\s*/, '').trim();
+          
+          if (cleanTitle && !cleanTitle.startsWith('#')) {
+            currentQ = {
+              type: 'mcq', // Default to mcq, will change to tf if we see tf options
+              title: cleanTitle,
+              options: [],
+              correctAnswer: undefined
+            };
           }
         } else if (currentQ) {
-          if (currentQ.type === 'tf') {
-            if (line.includes('✅ صح') || line.includes('صح ✅') || line === 'صح' || (line.includes('✅') && !line.includes('غلط') && !line.includes('خطأ'))) {
-              currentQ.correctAnswer = 'صح';
-            } else if (line.includes('❌ غلط') || line.includes('غلط ❌') || line.includes('خطأ') || line === 'غلط' || line.includes('❌')) {
-              currentQ.correctAnswer = 'خطأ';
-            }
-          } else if (currentQ.type === 'mcq') {
-            const isCorrect = line.includes('✅');
-            const cleanOption = line.replace(/^[أ-يa-d\d][\.\)]/, '').replace('✅', '').replace(/\*+/g, '').trim();
-            if (cleanOption) {
-              currentQ.options = [...(currentQ.options || []), cleanOption];
+          const isOption = !!line.match(/^(?:[\(]?[أ-يa-zA-Z][\.\)]|\-|\*(?!\*))\s*(.+)/);
+          const cleanLineForTf = line.replace(/\(الإجابة الصحيحة\)/g, '').replace(/[✅✓✔❌x×]/g, '').trim();
+          const isTfOption = /^(صح|خطأ|غلط)$/.test(cleanLineForTf);
+
+          if (isOption || isTfOption) {
+            const isCorrect = line.includes('✅') || line.includes('✓') || line.includes('(الإجابة الصحيحة)');
+            
+            if (isTfOption) {
+              currentQ.type = 'tf';
+              currentQ.options = ['صح', 'خطأ'];
               if (isCorrect) {
-                currentQ.correctAnswer = cleanOption;
+                currentQ.correctAnswer = cleanLineForTf === 'غلط' ? 'خطأ' : cleanLineForTf;
+              }
+            } else {
+              let cleanOption = line.replace(/^[\(]?[أ-يa-zA-Z\d][\.\)]?/, '').replace(/✅|✓|\(الإجابة الصحيحة\)|x|❌|\(|\)/g, '').replace(/\*+/g, '').trim();
+              if (cleanOption) {
+                currentQ.type = 'mcq';
+                currentQ.options = [...(currentQ.options || []), cleanOption];
+                if (isCorrect) {
+                  currentQ.correctAnswer = cleanOption;
+                }
               }
             }
           }
@@ -243,34 +248,10 @@ export default function SmartImporterModal({
       }
       
       // Atomic state update in Zustand
-      // FALLBACK: If user didn't use any zone dividers (### 1) but they DO have squares drawn,
-      // assign all the parsed page questions to their first square automatically!
-      if (Object.keys(zoneQuestionsMap).length === 0 && pageQuestions.length > 0 && visualZones.length > 0) {
-        const targetZone = visualZones[0];
-        const interactions = new Set(targetZone.interactionTypes || []);
-        interactions.add('question');
-        
-        zoneUpdates.push({
-          id: targetZone.id,
-          updates: {
-            interactionTypes: Array.from(interactions),
-            content: {
-              ...targetZone.content,
-              questions: [...pageQuestions],
-              question: undefined
-            }
-          }
-        });
-        appliedZones = 1;
-        // Move them out of page questions so they don't duplicate
-        pageQuestions = [];
-      }
+      // Removed the fallback that steals page questions and puts them into the first zone.
 
       if (zoneUpdates.length > 0) {
-        alert("Debug: We are updating " + zoneUpdates.length + " zones. The first zone has " + (zoneUpdates[0].updates.content?.questions?.length || 0) + " questions. Target Zone ID: " + zoneUpdates[0].id);
         updateMultipleZones(zoneUpdates);
-      } else {
-        alert("Debug: zoneUpdates is empty! Parsed pageQuestions=" + pageQuestions.length + " zoneQuestionsMapKeys=" + Object.keys(zoneQuestionsMap).length);
       }
       
       if (pageQuestions.length > 0) {
@@ -329,19 +310,24 @@ export default function SmartImporterModal({
           </button>
         </div>
         
-        <p style={{ color: '#666', marginBottom: '15px' }}>
-          انسخي الأسئلة التي قمتِ بتحضيرها والصقيها هنا. سيقوم النظام تلقائياً بتوزيعها على المربعات الصحيحة (1، 2، 3...) واختبار الصفحة.
-        </p>
+        <div style={{ background: '#f8fafc', padding: '16px', borderRadius: '12px', border: '1px solid #e2e8f0', marginBottom: '20px' }}>
+          <h4 style={{ margin: '0 0 10px 0', color: '#334155' }}>تعليمات النسخ واللصق:</h4>
+          <ul style={{ margin: 0, paddingRight: '20px', color: '#64748b', fontSize: '0.9rem', lineHeight: '1.6' }}>
+            <li>انسخي الأسئلة التي قمتِ بتحضيرها والصقيها هنا ليقوم النظام بتوزيعها تلقائياً.</li>
+            <li>اجعلي كل خيار في سطر جديد.</li>
+            <li>اكتبي كلمة <strong>(الإجابة الصحيحة)</strong> بجوار الخيار الصحيح حتى يتعرف عليها النظام.</li>
+          </ul>
+        </div>
 
         <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
           <button 
-            onClick={() => setText("المقطع 1\nصح أم غلط\nالسؤال الأول هنا\n✅ صح\nالسؤال الثاني هنا\n❌ غلط\n\nالمقطع 2\nاختيار من متعدد\nالسؤال الثالث هنا\nأ) إجابة أولى\nب) إجابة ثانية ✅\nج) إجابة ثالثة")}
+            onClick={() => setText("المقطع 1\n\nالسؤال الأول هنا\nصح (الإجابة الصحيحة)\nغلط\n\nالسؤال الثاني هنا\nصح\nغلط (الإجابة الصحيحة)\n\nالمقطع 2\n\nالسؤال الثالث هنا\nأ) إجابة أولى\nب) إجابة ثانية (الإجابة الصحيحة)\nج) إجابة ثالثة")}
             style={{ padding: '6px 12px', background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', color: '#475569' }}
           >
             قالب: أسئلة المربعات
           </button>
           <button 
-            onClick={() => setText("اختبار الصفحة\nصح أم غلط\nالسؤال الأول هنا\n✅ صح\n\nاختيار من متعدد\nالسؤال الثاني هنا\nأ) إجابة أولى\nب) إجابة ثانية ✅\nج) إجابة ثالثة")}
+            onClick={() => setText("اختبار الصفحة\n\nالسؤال الأول هنا\nصح (الإجابة الصحيحة)\nغلط\n\nالسؤال الثاني هنا\nأ) إجابة أولى\nب) إجابة ثانية (الإجابة الصحيحة)\nج) إجابة ثالثة")}
             style={{ padding: '6px 12px', background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', color: '#475569' }}
           >
             قالب: أسئلة اختبر نفسك
@@ -351,7 +337,19 @@ export default function SmartImporterModal({
         <textarea
           value={text}
           onChange={e => setText(e.target.value)}
-          placeholder="### 1 — ماذا يوجد حولنا؟&#10;&#10;**صح أم غلط:**&#10;كل ما يوجد حولنا في الطبيعة يعتبر كائنًا حيًا.&#10;❌ غلط&#10;..."
+          placeholder={`الصقي الأسئلة هنا... مثال:
+
+اختبار الصفحة
+
+ما هو أكبر كوكب في المجموعة الشمسية؟
+أ) المشتري (الإجابة الصحيحة)
+ب) زحل
+ج) المريخ
+د) الأرض
+
+الأرض هي مركز المجموعة الشمسية
+صح
+غلط (الإجابة الصحيحة)`}
           style={{
             width: '100%',
             height: '240px',

@@ -9,6 +9,7 @@ type StudentGroup = {
   id: string;
   name: string;
   names: string[];
+  password?: string;
 };
 
 export default function SpinningWheel() {
@@ -19,6 +20,7 @@ export default function SpinningWheel() {
   const [editingGroupId, setEditingGroupId] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
   const [editNamesText, setEditNamesText] = useState('');
+  const [editPassword, setEditPassword] = useState('');
 
   const [rotation, setRotation] = useState(0);
   const [isSpinning, setIsSpinning] = useState(false);
@@ -74,19 +76,35 @@ export default function SpinningWheel() {
   const handleCreateGroup = () => {
     setEditName('');
     setEditNamesText('');
+    setEditPassword('');
     setEditingGroupId('new');
   };
 
   const handleEditGroup = (g: StudentGroup) => {
+    if (g.password) {
+      const entered = prompt('الرجاء إدخال الرقم السري لهذه المجموعة:');
+      if (entered !== g.password) {
+        alert('الرقم السري غير صحيح!');
+        return;
+      }
+    }
     setEditName(g.name);
     setEditNamesText(g.names.join('\n'));
+    setEditPassword(g.password || '');
     setEditingGroupId(g.id);
   };
 
-  const handleDeleteGroup = (id: string) => {
+  const handleDeleteGroup = (g: StudentGroup) => {
+    if (g.password) {
+      const entered = prompt('الرجاء إدخال الرقم السري لهذه المجموعة لحذفها:');
+      if (entered !== g.password) {
+        alert('الرقم السري غير صحيح!');
+        return;
+      }
+    }
     if (confirm('هل أنت متأكد من حذف هذه المجموعة؟')) {
-      setGroups(groups.filter(g => g.id !== id));
-      setSelectedGroupIds(selectedGroupIds.filter(gid => gid !== id));
+      setGroups(groups.filter(group => group.id !== g.id));
+      setSelectedGroupIds(selectedGroupIds.filter(gid => gid !== g.id));
     }
   };
 
@@ -102,11 +120,11 @@ export default function SpinningWheel() {
     }
 
     if (editingGroupId === 'new') {
-      const newGroup = { id: Date.now().toString(), name: editName, names: parsedNames };
+      const newGroup = { id: Date.now().toString(), name: editName, names: parsedNames, password: editPassword.trim() };
       setGroups([...groups, newGroup]);
       if (selectedGroupIds.length === 0) setSelectedGroupIds([newGroup.id]);
     } else {
-      setGroups(groups.map(g => g.id === editingGroupId ? { ...g, name: editName, names: parsedNames } : g));
+      setGroups(groups.map(g => g.id === editingGroupId ? { ...g, name: editName, names: parsedNames, password: editPassword.trim() } : g));
     }
     setEditingGroupId(null);
   };
@@ -195,6 +213,13 @@ export default function SpinningWheel() {
               onChange={e => setEditName(e.target.value)}
               style={{ width: '100%', padding: '10px', marginBottom: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}
             />
+            <input 
+              type="text" 
+              placeholder="كلمة المرور (مطلوبة للتعديل أو الحذف)" 
+              value={editPassword}
+              onChange={e => setEditPassword(e.target.value)}
+              style={{ width: '100%', padding: '10px', marginBottom: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}
+            />
             <textarea 
               placeholder="أسماء الطلاب (كل اسم في سطر)"
               value={editNamesText}
@@ -222,11 +247,13 @@ export default function SpinningWheel() {
                     }}
                     style={{ width: '20px', height: '20px', cursor: 'pointer' }}
                   />
-                  {g.name} <span style={{ color: '#94a3b8', fontSize: '0.8rem', fontWeight: 'normal' }}>({g.names.length} طلاب)</span>
+                  {g.name} 
+                  {g.password && <i className="fa-solid fa-lock" style={{ color: '#cbd5e1', fontSize: '0.8rem', marginRight: '5px' }} title="محمية بكلمة مرور"></i>}
+                  <span style={{ color: '#94a3b8', fontSize: '0.8rem', fontWeight: 'normal' }}>({g.names.length} طلاب)</span>
                 </label>
                 <div style={{ display: 'flex', gap: '10px' }}>
                   <button onClick={() => handleEditGroup(g)} style={{ background: 'none', border: 'none', color: '#3b82f6', cursor: 'pointer' }} title="تعديل"><i className="fa-solid fa-pen"></i></button>
-                  <button onClick={() => handleDeleteGroup(g.id)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }} title="حذف"><i className="fa-solid fa-trash"></i></button>
+                  <button onClick={() => handleDeleteGroup(g)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }} title="حذف"><i className="fa-solid fa-trash"></i></button>
                 </div>
               </div>
             ))}
