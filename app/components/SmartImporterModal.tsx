@@ -127,10 +127,10 @@ export default function SmartImporterModal({
         }
         
         // 3. Process line based on whether it's an answer option or a new question title
-        const isMcqOption = !!line.match(/^[\(]?[أ-يa-d][\.\)]/) || !!line.match(/^[\-\*]\s*[\(]?[أ-يa-d]/) || !!line.match(/^\d+[\.\)]\s*[\(]?[أ-يa-d]/);
+        const isMcqOption = !!line.match(/^[\(]?[أ-يa-d][\.\):]/) || !!line.match(/^[\-\*]\s+/) || !!line.match(/^\d+[\.\)]\s*[\(]?[أبجدهـa-d][\.\):]/);
         const isTfAnswer = !!line.match(/^[\(\s]*(✅|❌|✓|×|صح|خطأ|غلط|صواب)/) || line === 'صح' || line === 'خطأ' || line === 'غلط' || line === 'صواب';
         
-        if (!isMcqOption && !isTfAnswer) {
+        if ((!isMcqOption && !isTfAnswer) || !currentQ) {
           // This must be a new question title!
           saveCurrentQuestion();
           
@@ -146,7 +146,7 @@ export default function SmartImporterModal({
             };
           }
         } else if (currentQ) {
-          const isOption = !!line.match(/^(?:[\(]?[أ-يa-zA-Z][\.\)]|\-|\*(?!\*))\s*(.+)/);
+          const isOption = !!line.match(/^(?:[\(]?[أ-يa-zA-Z][\.\):]|\-|\*(?!\*))\s*(.+)/);
           const cleanLineForTf = line.replace(/\(الإجابة الصحيحة\)/g, '').replace(/[✅✓✔❌x×]/g, '').trim();
           const isTfOption = /^(صح|خطأ|غلط)$/.test(cleanLineForTf);
 
@@ -160,7 +160,7 @@ export default function SmartImporterModal({
                 currentQ.correctAnswer = cleanLineForTf === 'غلط' ? 'خطأ' : cleanLineForTf;
               }
             } else {
-              let cleanOption = line.replace(/^[\(]?[أ-يa-zA-Z\d][\.\)]?/, '').replace(/✅|✓|\(الإجابة الصحيحة\)|x|❌|\(|\)/g, '').replace(/\*+/g, '').trim();
+              let cleanOption = line.replace(/^[\(]?[أ-يa-zA-Z\d][\.\):]?\s*/, '').replace(/✅|✓|\(الإجابة الصحيحة\)|x|❌|\(|\)/g, '').replace(/\*+/g, '').trim();
               if (cleanOption) {
                 currentQ.type = 'mcq';
                 currentQ.options = [...(currentQ.options || []), cleanOption];
@@ -265,12 +265,8 @@ export default function SmartImporterModal({
       // Let Zustand persist handle IndexedDB identically to Manual Add
       
       if ((window as any).forceFirebaseSync) {
-        try {
-          setStatus("جاري الرفع والسحابة (Firebase)... يرجى الانتظار");
-          await (window as any).forceFirebaseSync();
-        } catch (e) {
-          console.error("Firebase sync failed:", e);
-        }
+        // Fire and forget - do not block the UI for slow internet connections
+        (window as any).forceFirebaseSync().catch((e: any) => console.error("Firebase sync failed:", e));
       }
       
       setStatus(`✅ تم بنجاح! تم ربط الأسئلة بـ ${appliedZones} مربعات، وتحديث اختبار الصفحة الشامل (${pageQuestions.length} أسئلة).`);

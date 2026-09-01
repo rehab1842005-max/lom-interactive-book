@@ -173,21 +173,8 @@ export default function MillionaireGame({ game, onComplete }: { game: Game, onCo
       if (correct) {
         const currentMoney = moneyLevels[currentQuestionIndex] || (currentQuestionIndex * 1000);
         setEarned(currentMoney);
-        
         playSuccessSound();
-        
-        setTimeout(() => {
-          if (currentQuestionIndex < Math.min(game.questions.length - 1, 14)) { // Max 15 questions
-            setCurrentQuestionIndex((prev: number) => prev + 1);
-          } else {
-            setWonMillion(true);
-            confetti({ particleCount: 500, spread: 120, origin: { y: 0.3 }, colors: ['#fbbf24', '#f59e0b', '#fff'] });
-            
-            // Extra confetti waves
-            setTimeout(() => confetti({ particleCount: 300, spread: 100, origin: { y: 0.4, x: 0.2 } }), 500);
-            setTimeout(() => confetti({ particleCount: 300, spread: 100, origin: { y: 0.4, x: 0.8 } }), 1000);
-          }
-        }, 2000);
+        // Wait for user to click Next manually
       } else {
         playWrongSound();
         
@@ -203,6 +190,19 @@ export default function MillionaireGame({ game, onComplete }: { game: Game, onCo
         }, 2000);
       }
     }, suspenseTime);
+  };
+
+  const handleNextQuestion = () => {
+    if (currentQuestionIndex < Math.min(game.questions.length - 1, 14)) { // Max 15 questions
+      setCurrentQuestionIndex((prev: number) => prev + 1);
+    } else {
+      setWonMillion(true);
+      confetti({ particleCount: 500, spread: 120, origin: { y: 0.3 }, colors: ['#fbbf24', '#f59e0b', '#fff'] });
+      
+      // Extra confetti waves
+      setTimeout(() => confetti({ particleCount: 300, spread: 100, origin: { y: 0.4, x: 0.2 } }), 500);
+      setTimeout(() => confetti({ particleCount: 300, spread: 100, origin: { y: 0.4, x: 0.8 } }), 1000);
+    }
   };
 
   const handleWalkAway = () => {
@@ -416,6 +416,34 @@ export default function MillionaireGame({ game, onComplete }: { game: Game, onCo
               );
             })}
           </div>
+          
+          {isCorrect === true && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              style={{ display: 'flex', justifyContent: 'center', marginTop: '30px' }}
+            >
+              <button
+                onClick={handleNextQuestion}
+                style={{
+                  background: 'linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%)',
+                  color: 'black',
+                  fontSize: '1.5rem',
+                  fontWeight: 'bold',
+                  padding: '15px 50px',
+                  borderRadius: '30px',
+                  border: '2px solid white',
+                  cursor: 'pointer',
+                  boxShadow: '0 0 20px rgba(251, 191, 36, 0.8)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px'
+                }}
+              >
+                التالي ➡
+              </button>
+            </motion.div>
+          )}
         </motion.div>
         
         {/* Audience Vote Modal */}

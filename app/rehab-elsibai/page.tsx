@@ -13,9 +13,7 @@ export default function TeacherMode() {
 
   useEffect(() => {
     setIsClient(true);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('isTeacherDevice', 'true');
-    }
+    // Removed isTeacherDevice localStorage to prevent multi-device sync conflicts
   }, []);
 
   if (!isClient) return null;

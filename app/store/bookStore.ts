@@ -211,6 +211,8 @@ interface BookState {
   addGame: (game: Game) => void;
   updateGame: (id: string, updates: Partial<Game>) => void;
   deleteGame: (id: string) => void;
+  _hasHydrated: boolean;
+  setHasHydrated: (state: boolean) => void;
 }
 
 export const useBookStore = create<BookState>()(
@@ -321,7 +323,7 @@ export const useBookStore = create<BookState>()(
             ...state.curriculum,
             [grade]: gradeUnits.map(u => {
               if (u.id === unitId) {
-                return { ...u, lessons: [...u.lessons, { id: newLessonId, title, isPublished: false }] };
+                return { ...u, lessons: [...u.lessons, { id: newLessonId, title, isPublished: true }] };
               }
               return u;
             })
@@ -455,13 +457,18 @@ export const useBookStore = create<BookState>()(
         }
       },
       
-      addGame: (game) => set((state) => ({ games: [...(state.games || []), { ...game, isPublished: game.isPublished ?? false }] })),
+      addGame: (game) => set((state) => ({ games: [...(state.games || []), { ...game, isPublished: game.isPublished ?? true }] })),
       updateGame: (id, updates) => set((state) => ({ games: (state.games || []).map(g => g.id === id ? { ...g, ...updates } : g) })),
-      deleteGame: (id) => set((state) => ({ games: (state.games || []).filter(g => g.id !== id) }))
+      deleteGame: (id) => set((state) => ({ games: (state.games || []).filter(g => g.id !== id) })),
+      _hasHydrated: false,
+      setHasHydrated: (state) => set({ _hasHydrated: state })
     }),
     {
       name: 'interactive-book-storage',
       storage: createJSONStorage(() => idbStorage),
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true);
+      },
       partialize: (state) => ({
         curriculum: state.curriculum,
         activeGrade: state.activeGrade,

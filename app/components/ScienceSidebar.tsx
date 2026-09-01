@@ -720,17 +720,29 @@ export default function ScienceSidebar() {
                             onChange={(e) => updateLesson(editingGrade, unit.id, lesson.id, { title: e.target.value })}
                             style={{ flex: 1, padding: '4px', border: '1px solid #ddd', borderRadius: '4px', fontSize: '13px' }}
                           />
+                          <button onClick={() => removeLesson(editingGrade, unit.id, lesson.id)} style={{ background: 'transparent', color: '#ff4d4f', border: 'none', cursor: 'pointer', padding: '0 5px' }}><i className="fa-solid fa-times"></i></button>
+                        </div>
+                        <div style={{ display: 'flex', gap: '8px' }}>
                           <button 
                             onClick={() => {
                               setActiveLesson(lesson.id);
                               setActiveTab('pages-tab');
                             }}
-                            style={{ background: activeLessonId === lesson.id ? '#4caf50' : '#2196F3', color: 'white', border: 'none', borderRadius: '4px', padding: '4px 8px', cursor: 'pointer', fontSize: '12px' }}
+                            style={{ flex: 1, background: activeLessonId === lesson.id ? '#4caf50' : '#2196F3', color: 'white', border: 'none', borderRadius: '4px', padding: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold' }}
                             title="تعديل محتوى الدرس"
                           >
-                            <i className="fa-solid fa-pen-to-square"></i> المحتوى
+                            <i className="fa-solid fa-pen-to-square"></i> إضافة المحتوى
                           </button>
-                          <button onClick={() => removeLesson(editingGrade, unit.id, lesson.id)} style={{ background: 'transparent', color: '#ff4d4f', border: 'none', cursor: 'pointer' }}><i className="fa-solid fa-times"></i></button>
+                          <button 
+                            onClick={() => {
+                              setActiveLesson(lesson.id);
+                              setActiveTab('games-tab');
+                            }}
+                            style={{ flex: 1, background: activeLessonId === lesson.id ? '#4caf50' : '#8b5cf6', color: 'white', border: 'none', borderRadius: '4px', padding: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold' }}
+                            title="إدارة ألعاب الدرس"
+                          >
+                            <i className="fa-solid fa-gamepad"></i> إضافة الألعاب
+                          </button>
                         </div>
                         <input 
                           type="text" 

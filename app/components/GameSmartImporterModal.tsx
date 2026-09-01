@@ -123,17 +123,15 @@ export default function GameSmartImporterModal({
         // Is it an option? 
         // Handles "أ)", "(أ)", "1)", "- ", etc.
         const cleanLineForCheck = line.replace(/\(الإجابة الصحيحة\)/g, '').replace(/[✅✓✔❌x×]/g, '').trim();
-        const isMcqOption = /^(?:[\(]?\s*[أ-يa-zA-Z0-9]\s*[\)\.-]|\-)\s*(.+)/.test(cleanLineForCheck);
+        const isMcqOption = /^(?:[\(]?\s*[أبجدهـa-zA-Z]\s*[\)\.\-:]|\-)\s*(.+)/.test(cleanLineForCheck);
         const isTfAnswer = /^(صح|خطأ|غلط)$/.test(cleanLineForCheck);
         
-        if (isMcqOption || isTfAnswer) {
+        if ((isMcqOption || isTfAnswer) && currentQ) {
           // Extract the actual option text without the prefix
-          let optText = line;
-          const mcqMatch = line.match(/^(?:[\(]?\s*[أ-يa-zA-Z0-9]\s*[\)\.-]|\-)\s*(.+)/);
+          let optText = cleanLineForCheck;
+          const mcqMatch = cleanLineForCheck.match(/^(?:[\(]?\s*[أبجدهـa-zA-Z]\s*[\)\.\-:]|\-)\s*(.+)/);
           if (mcqMatch && mcqMatch[1]) {
             optText = mcqMatch[1].trim();
-          } else if (isTfAnswer) {
-            optText = cleanLineForCheck; // 'صح', 'خطأ' or 'غلط'
           }
 
           let isCorrect = false;
@@ -175,8 +173,11 @@ export default function GameSmartImporterModal({
             customMoneyLadder: millionaireMoneyLadder.split(',').map(n => parseInt(n.trim())).filter(n => !isNaN(n))
           } : undefined
         };
-        
         addGame(newGame);
+        
+        if ((window as any).forceFirebaseSync) {
+          (window as any).forceFirebaseSync().catch((e: any) => console.error("Firebase sync failed:", e));
+        }
         
         setStatus(`تم استيراد اللعبة بنجاح! تم العثور على ${parsedQuestions.length} سؤال.`);
         setTimeout(() => onClose(), 2000);

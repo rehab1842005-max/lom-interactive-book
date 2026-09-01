@@ -12,9 +12,23 @@ export default function GamesManager() {
   const updateGame = useBookStore(state => state.updateGame);
   const deleteGame = useBookStore(state => state.deleteGame);
   const activeLessonId = useBookStore(state => state.activeLessonId);
+  const curriculum = useBookStore(state => state.curriculum);
 
   const [editingGame, setEditingGame] = useState<Game | null>(null);
   const [showSmartImporter, setShowSmartImporter] = useState(false);
+
+  let activeLessonTitle = "غير معروف";
+  if (activeLessonId && curriculum) {
+    for (const grade of Object.values(curriculum)) {
+      for (const unit of grade) {
+        const lesson = unit.lessons.find(l => l.id === activeLessonId);
+        if (lesson) {
+          activeLessonTitle = lesson.title;
+          break;
+        }
+      }
+    }
+  }
 
   const handleCreateGame = (template: Game['template']) => {
     const newGame: Game = {
@@ -154,13 +168,36 @@ export default function GamesManager() {
         <h3><FaGamepad /> الألعاب التفاعلية</h3>
       </div>
       
+      <div style={{ marginTop: '15px', padding: '15px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+        <h4 style={{ marginBottom: '10px' }}>اختر الدرس الذي تريد إضافة الألعاب إليه:</h4>
+        <select 
+          value={activeLessonId || ''} 
+          onChange={(e) => useBookStore.getState().setActiveLesson(e.target.value)}
+          style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '14px', background: 'white' }}
+        >
+          <option value="" disabled>-- الرجاء اختيار درس --</option>
+          {curriculum && Object.entries(curriculum).map(([grade, units]) => (
+            <optgroup key={grade} label={`الصف ${grade}`}>
+              {(units as any[]).map(u => 
+                u.lessons.map((l: any) => (
+                  <option key={l.id} value={l.id}>{l.title}</option>
+                ))
+              )}
+            </optgroup>
+          ))}
+        </select>
+      </div>
+
       {!activeLessonId ? (
         <div style={{ padding: '15px', background: '#fff3cd', color: '#856404', borderRadius: '8px', textAlign: 'center', marginTop: '15px' }}>
-          يرجى اختيار درس من "المنهج" لربط الألعاب به.
+          الرجاء اختيار درس من القائمة أعلاه أولاً لإضافة أو عرض الألعاب.
         </div>
       ) : (
         <div style={{ marginTop: '15px' }}>
-          <h4>ألعاب الدرس الحالي:</h4>
+          <div style={{ padding: '10px', background: '#e0f2fe', color: '#0369a1', borderRadius: '8px', marginBottom: '15px', fontWeight: 'bold' }}>
+            الدرس المحدد حالياً: {activeLessonTitle}
+          </div>
+          <h4>الألعاب المضافة لهذا الدرس:</h4>
           {games.filter(g => g.lessonId === activeLessonId).map(game => (
             <div key={game.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#f8fafc', padding: '10px', borderRadius: '8px', marginBottom: '8px', border: '1px solid #e2e8f0' }}>
               <div>
